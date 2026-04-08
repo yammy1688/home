@@ -94,6 +94,12 @@ header .wave-emoji{font-size:1.5rem;display:inline-block;animation:waveHand 2s e
 .toggle-btn[data-part=angle].on{background:#ef476f20;border-color:#ef476f}
 .toggle-btn[data-part=arcLength]{color:#e9c46a;border-color:#e9c46a44}
 .toggle-btn[data-part=arcLength].on{background:#e9c46a20;border-color:#e9c46a}
+.toggle-btn[data-part=sectorArea]{color:#f4a261;border-color:#f4a26144}
+.toggle-btn[data-part=sectorArea].on{background:#f4a26120;border-color:#f4a261}
+.toggle-btn[data-part=sectorPerim]{color:#118ab2;border-color:#118ab244}
+.toggle-btn[data-part=sectorPerim].on{background:#118ab220;border-color:#118ab2}
+.toggle-btn[data-part=chord]{color:#83c5be;border-color:#83c5be44}
+.toggle-btn[data-part=chord].on{background:#83c5be20;border-color:#83c5be}
 
 /* stats */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0}
@@ -110,6 +116,9 @@ header .wave-emoji{font-size:1.5rem;display:inline-block;animation:waveHand 2s e
 .stat:nth-child(4)::before{background:radial-gradient(circle at 50% 100%,rgba(255,209,102,.1),transparent 70%)}
 .stat:nth-child(5)::before{background:radial-gradient(circle at 50% 100%,rgba(239,71,111,.1),transparent 70%)}
 .stat:nth-child(6)::before{background:radial-gradient(circle at 50% 100%,rgba(233,196,106,.1),transparent 70%)}
+.stat:nth-child(7)::before{background:radial-gradient(circle at 50% 100%,rgba(244,162,97,.1),transparent 70%)}
+.stat:nth-child(8)::before{background:radial-gradient(circle at 50% 100%,rgba(17,138,178,.1),transparent 70%)}
+.stat:nth-child(9)::before{background:radial-gradient(circle at 50% 100%,rgba(131,197,190,.1),transparent 70%)}
 .stat-icon{font-size:1.2rem;margin-bottom:.2rem}
 .stat-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:#5a8a9e;font-weight:700}
 .stat-value{font-size:clamp(1rem,3vw,1.5rem);font-weight:700;margin-top:.15rem;
@@ -124,6 +133,9 @@ header .wave-emoji{font-size:1.5rem;display:inline-block;animation:waveHand 2s e
 .stat-value.area{color:#ffd166}
 .stat-value.angle{color:#ef476f}
 .stat-value.arclen{color:#e9c46a}
+.stat-value.secarea{color:#f4a261}
+.stat-value.secperim{color:#118ab2}
+.stat-value.chord{color:#83c5be}
 
 /* info cards */
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -283,6 +295,9 @@ input[type=range]::-webkit-slider-thumb{
         <button class="toggle-btn on" data-part="area">&#x2600;&#xFE0F; Area 面積</button>
         <button class="toggle-btn on" data-part="angle">&#x1F4D0; Angle 角度</button>
         <button class="toggle-btn on" data-part="arcLength">&#x1F308; Arc 弧長</button>
+        <button class="toggle-btn on" data-part="sectorArea">&#x1F3D6;&#xFE0F; Sector 扇形</button>
+        <button class="toggle-btn on" data-part="sectorPerim">&#x1F6A7; Perimeter 周界</button>
+        <button class="toggle-btn on" data-part="chord">&#x1FA80; Chord 弦</button>
       </div>
       <div class="slider-row">
         <label>Radius 半徑</label>
@@ -302,6 +317,9 @@ input[type=range]::-webkit-slider-thumb{
       <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area 面積</div><div class="stat-value area" id="lA">38013.27</div></div>
       <div class="stat"><div class="stat-icon">&#x1F4D0;</div><div class="stat-label">Angle 角度 (θ)</div><div class="stat-value angle" id="lAngle">90°</div></div>
       <div class="stat"><div class="stat-icon">&#x1F308;</div><div class="stat-label">Arc Length 弧長</div><div class="stat-value arclen" id="lArc">172.79</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F3D6;&#xFE0F;</div><div class="stat-label">Sector Area 扇形面積</div><div class="stat-value secarea" id="lSecA">9503.32</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F6A7;</div><div class="stat-label">Sector Perim 扇形周界</div><div class="stat-value secperim" id="lSecP">392.79</div></div>
+      <div class="stat"><div class="stat-icon">&#x1FA80;</div><div class="stat-label">Chord 弦長</div><div class="stat-value chord" id="lChord">155.56</div></div>
     </div>
 
     <div class="glass pi-demo">
@@ -346,6 +364,24 @@ input[type=range]::-webkit-slider-thumb{
         <h3><span class="dot" style="background:#e9c46a"></span> Arc Length 弧長</h3>
         <p>The distance along the curved edge between two points &mdash; like the length of shoreline between two piers. It's a <em>fraction</em> of the full circumference based on the angle.<br><span style="color:#6a9bb0">圓弧上兩點之間的曲線距離——就像兩個碼頭之間的海岸線長度。根據角度，它是整個周長的一<em>部分</em>。</span></p>
         <div class="formula">s = (&theta; &divide; 360) &times; 2&pi;r</div>
+      </div>
+      <div class="glass info">
+        <div class="icon-bg">&#x1F3D6;&#xFE0F;</div>
+        <h3><span class="dot" style="background:#f4a261"></span> Sector Area 扇形面積</h3>
+        <p>The area of the "pizza slice" &mdash; the region enclosed by two radii and the arc. It's a fraction of the full circle's area based on the angle.<br><span style="color:#6a9bb0">「披薩片」的面積——由兩條半徑和弧圍成的區域。根據角度，它是整個圓面積的一部分。</span></p>
+        <div class="formula">A<sub>sector</sub> = (&theta; &divide; 360) &times; &pi;r&sup2;</div>
+      </div>
+      <div class="glass info">
+        <div class="icon-bg">&#x1F6A7;</div>
+        <h3><span class="dot" style="background:#118ab2"></span> Sector Perimeter 扇形周界</h3>
+        <p>The total distance around the sector &mdash; two straight edges (radii) plus the curved arc. Like fencing around a pie slice.<br><span style="color:#6a9bb0">扇形的總邊長——兩條直邊（半徑）加上弧長。就像在一塊派的四周圍上柵欄。</span></p>
+        <div class="formula">P<sub>sector</sub> = 2r + arc length</div>
+      </div>
+      <div class="glass info">
+        <div class="icon-bg">&#x1FA80;</div>
+        <h3><span class="dot" style="background:#83c5be"></span> Chord 弦</h3>
+        <p>A straight line connecting two points on the circle &mdash; like a rope stretched across a bay. The diameter is the longest possible chord.<br><span style="color:#6a9bb0">連接圓上兩點的直線——就像一條繩子橫跨海灣。直徑是最長的弦。</span></p>
+        <div class="formula">chord = 2r &times; sin(&theta; &divide; 2)</div>
       </div>
     </div>
   </div>
@@ -500,7 +536,7 @@ function canvasPos(canvas,e){
 const lCanvas=document.getElementById('learnCanvas');
 let lCtx,lW,lH;
 const lSlider=document.getElementById('learnRadius');
-const showParts={radius:true,diameter:true,circumference:true,area:true,angle:true,arcLength:true};
+const showParts={radius:true,diameter:true,circumference:true,area:true,angle:true,arcLength:true,sectorArea:true,sectorPerim:true,chord:true};
 const aSlider=document.getElementById('learnAngle');
 const angleDisplay=document.getElementById('angleDisplay');
 let learnAnimAngle=0;
@@ -634,6 +670,55 @@ function drawLearn(){
     lCtx.fillText('s='+arcLen,alx-15,aly+4);
   }
 
+  // sector area fill
+  const secArea=+(angleDeg/360*PI*rDisplay*rDisplay).toFixed(2);
+  const secPerim=+(2*rDisplay+arcLen).toFixed(2);
+  const chordLen=+(2*rDisplay*Math.sin(angleRad/2)).toFixed(2);
+
+  if(showParts.sectorArea&&angleDeg>0&&angleDeg<360){
+    lCtx.beginPath();lCtx.moveTo(cx,cy);
+    lCtx.arc(cx,cy,r,-PI/2,-PI/2+angleRad);
+    lCtx.closePath();
+    lCtx.fillStyle='rgba(244,162,97,.12)';lCtx.fill();
+    // label
+    const saMid=-PI/2+angleRad/2;
+    const saD=r*.5;
+    lCtx.font=`bold ${Math.max(9,w*0.018)}px JetBrains Mono, monospace`;
+    lCtx.fillStyle='#f4a261';
+    lCtx.fillText('Sec='+secArea,cx+Math.cos(saMid)*saD-25,cy+Math.sin(saMid)*saD+4);
+  }
+
+  if(showParts.sectorPerim&&angleDeg>0&&angleDeg<360){
+    // draw the two radii of the sector solid
+    const rx2=cx+Math.cos(-PI/2+angleRad)*r;
+    const ry2=cy+Math.sin(-PI/2+angleRad)*r;
+    lCtx.beginPath();lCtx.moveTo(cx,cy);lCtx.lineTo(cx,cy-r);
+    lCtx.strokeStyle='#118ab2';lCtx.lineWidth=2;lCtx.stroke();
+    lCtx.beginPath();lCtx.moveTo(cx,cy);lCtx.lineTo(rx2,ry2);
+    lCtx.strokeStyle='#118ab2';lCtx.lineWidth=2;lCtx.stroke();
+    // perimeter label near the edge
+    lCtx.font=`bold ${Math.max(9,w*0.016)}px JetBrains Mono, monospace`;
+    lCtx.fillStyle='#118ab2';
+    lCtx.fillText('P='+secPerim,cx+12,cy-r-2);
+  }
+
+  // chord
+  if(showParts.chord&&angleDeg>0&&angleDeg<360){
+    const cx1=cx+Math.cos(-PI/2)*r;
+    const cy1=cy+Math.sin(-PI/2)*r;
+    const cx2=cx+Math.cos(-PI/2+angleRad)*r;
+    const cy2=cy+Math.sin(-PI/2+angleRad)*r;
+    lCtx.beginPath();lCtx.moveTo(cx1,cy1);lCtx.lineTo(cx2,cy2);
+    lCtx.strokeStyle='#83c5be';lCtx.lineWidth=2.5;lCtx.stroke();
+    // dots at endpoints
+    lCtx.beginPath();lCtx.arc(cx1,cy1,4,0,TAU);lCtx.fillStyle='#83c5be';lCtx.fill();
+    lCtx.beginPath();lCtx.arc(cx2,cy2,4,0,TAU);lCtx.fillStyle='#83c5be';lCtx.fill();
+    // label
+    lCtx.font=`bold ${Math.max(9,w*0.018)}px JetBrains Mono, monospace`;
+    lCtx.fillStyle='#83c5be';
+    lCtx.fillText('c='+chordLen,(cx1+cx2)/2+8,(cy1+cy2)/2-6);
+  }
+
   // center — sun dot
   lCtx.beginPath();lCtx.arc(cx,cy,5,0,TAU);
   lCtx.fillStyle='#ffd166';lCtx.shadowColor='#ffd166';lCtx.shadowBlur=12;lCtx.fill();
@@ -660,6 +745,9 @@ function drawLearn(){
   updateStat('lA',(PI*rDisplay*rDisplay).toFixed(2));
   updateStat('lAngle',angleDeg+'\u00B0');
   updateStat('lArc',arcLen);
+  updateStat('lSecA',secArea);
+  updateStat('lSecP',secPerim);
+  updateStat('lChord',chordLen);
   angleDisplay.textContent=angleDeg+'\u00B0';
 
   const pct=(rDisplay-25)/(190-25)*100;
@@ -977,7 +1065,7 @@ function setupQuizCanvas(){
 }
 
 function genQuestion(){
-  const type=rnd(0,13);
+  const type=rnd(0,17);
   let q,correct,choices,visual=null,explain='';
   const r=rnd(3,25);
   const d=r*2;
@@ -1070,6 +1158,35 @@ function genQuestion(){
       explain=`Sector area = (\u03B8/360) \u00D7 \u03C0r\u00B2 = (${ang}/360) \u00D7 \u03C0 \u00D7 ${r}\u00B2 = ${secA}<br><span class="zh">\u6252\u5F62\u9762\u7A4D = (\u03B8/360) \u00D7 \u03C0r\u00B2 = (${ang}/360) \u00D7 \u03C0 \u00D7 ${r}\u00B2 = ${secA}</span>`;
       choices=[secA,+(PI*r*r).toFixed(2),+(ang/360*TAU*r).toFixed(2),+(ang/180*PI*r*r).toFixed(2)];break;
     }
+    case 14:{
+      // sector perimeter
+      const ang=rnd(1,6)*30;
+      const arcL=+(ang/360*TAU*r).toFixed(2);
+      const sp=+(2*r+arcL).toFixed(2);
+      q=`r = <strong class="highlight">${r}</strong>, \u03B8 = <strong class="pink">${ang}\u00B0</strong>. What is the sector perimeter?<br><span style="color:#7bafc4">\u534A\u5F91 = <strong>${r}</strong>\uFF0C\u03B8 = <strong>${ang}\u00B0</strong>\u3002\u6252\u5F62\u7684\u5468\u754C\u662F\u591A\u5C11\uFF1F</span>`;
+      correct=sp;visual={r,show:'circumference'};
+      explain=`P = 2r + arc = 2\u00D7${r} + ${arcL} = ${sp}<br><span class="zh">\u6252\u5F62\u5468\u754C = 2r + \u5F27\u9577 = 2\u00D7${r} + ${arcL} = ${sp}</span>`;
+      choices=[sp,+(2*r).toFixed(2),arcL,+(TAU*r).toFixed(2)];break;
+    }
+    case 15:{
+      // chord length
+      const ang=rnd(1,5)*30; // 30-150
+      const ch=+(2*r*Math.sin(ang*PI/360)).toFixed(2);
+      q=`r = <strong class="highlight">${r}</strong>, \u03B8 = <strong class="pink">${ang}\u00B0</strong>. What is the chord length?<br><span style="color:#7bafc4">\u534A\u5F91 = <strong>${r}</strong>\uFF0C\u03B8 = <strong>${ang}\u00B0</strong>\u3002\u5F26\u9577\u662F\u591A\u5C11\uFF1F</span>`;
+      correct=ch;visual={r,show:'radius'};
+      explain=`chord = 2r\u00D7sin(\u03B8/2) = 2\u00D7${r}\u00D7sin(${ang/2}\u00B0) = ${ch}<br><span class="zh">\u5F26\u9577 = 2r\u00D7sin(\u03B8/2) = 2\u00D7${r}\u00D7sin(${ang/2}\u00B0) = ${ch}</span>`;
+      choices=[ch,+(2*r).toFixed(2),+(r*Math.sin(ang*PI/180)).toFixed(2),+(ang/360*TAU*r).toFixed(2)];break;
+    }
+    case 16:
+      q=`Which formula gives the <span style="color:#f4a261;font-weight:700">sector area</span>?<br><span style="color:#7bafc4">\u54EA\u500B\u516C\u5F0F\u8A08\u7B97<span style="color:#f4a261;font-weight:700">\u6252\u5F62\u9762\u7A4D</span>\uFF1F</span>`;
+      correct='(\u03B8/360)\u00D7\u03C0r\u00B2';
+      explain=`Sector area is the angle fraction of the full circle area: (\u03B8/360)\u00D7\u03C0r\u00B2.<br><span class="zh">\u6252\u5F62\u9762\u7A4D\u662F\u89D2\u5EA6\u5360\u5168\u5713\u9762\u7A4D\u7684\u6BD4\u4F8B\uFF1A(\u03B8/360)\u00D7\u03C0r\u00B2\u3002</span>`;
+      choices=['(\u03B8/360)\u00D7\u03C0r\u00B2','\u03B8\u00D7\u03C0r','2\u03C0r\u03B8','(\u03B8/180)\u00D7\u03C0r\u00B2'];break;
+    case 17:
+      q=`Which formula gives the <span style="color:#83c5be;font-weight:700">chord length</span>?<br><span style="color:#7bafc4">\u54EA\u500B\u516C\u5F0F\u8A08\u7B97<span style="color:#83c5be;font-weight:700">\u5F26\u9577</span>\uFF1F</span>`;
+      correct='2r\u00D7sin(\u03B8/2)';
+      explain=`Chord = 2r\u00D7sin(\u03B8/2). The sine of half the central angle times the diameter.<br><span class="zh">\u5F26\u9577 = 2r\u00D7sin(\u03B8/2)\u3002\u5713\u5FC3\u89D2\u4E00\u534A\u7684\u6B63\u5F26\u4E58\u4EE5\u76F4\u5F91\u3002</span>`;
+      choices=['2r\u00D7sin(\u03B8/2)','r\u00D7cos(\u03B8)','2\u03C0r\u03B8','r\u00D7sin(\u03B8)'];break;
   }
   const set=new Set(choices.map(String));
   set.add(String(correct));
