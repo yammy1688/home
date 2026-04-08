@@ -2167,8 +2167,8 @@ initStreak();renderQuiz();
     // shaded center
     ctx.fillStyle='rgba(255,107,157,.2)';ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2;
     ctx.beginPath();ctx.moveTo(x+hr,y);ctx.arc(x,y,hr,0,Math.PI/2);
-    ctx.arc(x+s,y,hr,Math.PI/2,Math.PI);ctx.arc(x+s,y+s,hr,Math.PI,Math.PI*1.5);
-    ctx.arc(x,y+s,hr,Math.PI*1.5,Math.PI*2);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.arc(x,y+s,hr,Math.PI*1.5,Math.PI*2);ctx.arc(x+s,y+s,hr,Math.PI,Math.PI*1.5);
+    ctx.arc(x+s,y,hr,Math.PI/2,Math.PI);ctx.closePath();ctx.fill();ctx.stroke();
     // labels
     ctx.font='bold 13px JetBrains Mono,monospace';
     ctx.fillStyle='#e8dff5';ctx.fillText('30 cm',x+s/2-25,y+s+22);
@@ -2186,11 +2186,11 @@ initStreak();renderQuiz();
     ctx.beginPath();ctx.moveTo(ox,oy);ctx.arc(ox,oy,s,-Math.PI,-Math.PI/2);ctx.closePath();ctx.fill();ctx.stroke();
     // semicircle
     ctx.fillStyle='rgba(244,162,97,.25)';ctx.strokeStyle='#f4a261';ctx.lineWidth=2;
-    ctx.beginPath();ctx.arc(ox-s/2,oy,s/2,-Math.PI,0,true);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.arc(ox-s/2,oy,s/2,Math.PI,0);ctx.closePath();ctx.fill();ctx.stroke();
     // shaded region highlight
     ctx.fillStyle='rgba(127,245,195,.2)';ctx.strokeStyle='#7ff5c3';ctx.lineWidth=2.5;
     ctx.beginPath();ctx.arc(ox,oy,s,-Math.PI,-Math.PI/2);
-    ctx.lineTo(ox-s/2,oy);ctx.arc(ox-s/2,oy,s/2,0,-Math.PI,true);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.lineTo(ox,oy);ctx.arc(ox-s/2,oy,s/2,0,Math.PI);ctx.closePath();ctx.fill();ctx.stroke();
     // labels
     ctx.font='bold 13px JetBrains Mono,monospace';
     ctx.fillStyle='#ffd166';ctx.fillText('R=20',ox-s-35,oy-s/2);
@@ -2209,10 +2209,10 @@ initStreak();renderQuiz();
     ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI);ctx.closePath();ctx.fill();ctx.stroke();
     // left small semicircle (d=16, r=8 → visual r1=64)
     ctx.fillStyle='rgba(255,179,217,.15)';ctx.strokeStyle='#ffb3d9';ctx.lineWidth=2;
-    ctx.beginPath();ctx.arc(cx-r2,cy,r1,Math.PI,0,true);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.arc(cx-r2,cy,r1,Math.PI,0);ctx.closePath();ctx.fill();ctx.stroke();
     // right small semicircle (d=8, r=4 → visual r2=32)
     ctx.fillStyle='rgba(127,245,195,.15)';ctx.strokeStyle='#7ff5c3';ctx.lineWidth=2;
-    ctx.beginPath();ctx.arc(cx+r1,cy,r2,Math.PI,0,true);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.arc(cx+r1,cy,r2,Math.PI,0);ctx.closePath();ctx.fill();ctx.stroke();
     // baseline
     ctx.strokeStyle='#4a366088';ctx.lineWidth=1;
     ctx.beginPath();ctx.moveTo(cx-R,cy);ctx.lineTo(cx+R,cy);ctx.stroke();
