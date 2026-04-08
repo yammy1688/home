@@ -71,8 +71,10 @@ header .wave-emoji{font-size:1.5rem;display:inline-block;animation:waveHand 2s e
 .canvas-wrap{text-align:center;position:relative}
 .canvas-wrap canvas{
   border-radius:1rem;width:100%;height:auto;
-  touch-action:none;-webkit-touch-callout:none;cursor:crosshair;
+  touch-action:pan-y;-webkit-touch-callout:none;cursor:crosshair;
 }
+/* playground canvas needs full touch control */
+#playCanvas{touch-action:none}
 
 /* toggle row */
 .toggle-row{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
@@ -792,7 +794,7 @@ function updateStat(id,val){
 lSlider.addEventListener('input',drawLearn);
 aSlider.addEventListener('input',drawLearn);
 
-// pinch-to-zoom on learn canvas
+// pinch-to-zoom on learn canvas (only 2-finger pinch, single-finger scrolls page normally)
 (function(){
   let pinchStart=null,pinchStartVal=null;
   lCanvas.addEventListener('touchstart',e=>{
@@ -802,6 +804,7 @@ aSlider.addEventListener('input',drawLearn);
       pinchStart=Math.hypot(t1.clientX-t2.clientX,t1.clientY-t2.clientY);
       pinchStartVal=+lSlider.value;
     }
+    // single finger: do NOT preventDefault, let page scroll
   },{passive:false});
   lCanvas.addEventListener('touchmove',e=>{
     if(pinchStart&&e.touches.length===2){
@@ -811,15 +814,10 @@ aSlider.addEventListener('input',drawLearn);
       const nv=Math.max(25,Math.min(190,Math.round(pinchStartVal*(d/pinchStart))));
       lSlider.value=nv;drawLearn();
     }
+    // single finger: do NOT preventDefault, let page scroll
   },{passive:false});
   lCanvas.addEventListener('touchend',()=>{pinchStart=null});
   lCanvas.addEventListener('touchcancel',()=>{pinchStart=null});
-  // scroll wheel on desktop
-  lCanvas.addEventListener('wheel',e=>{
-    e.preventDefault();
-    lSlider.value=Math.max(25,Math.min(190,+lSlider.value-Math.round(e.deltaY*.15)));
-    drawLearn();
-  },{passive:false});
 })();
 
 (function learnLoop(){
@@ -1121,7 +1119,7 @@ function setupQuizCanvas(){
 // Question bank: builds from an array of generator functions for massive variety
 const QB=[];
 let _qt='basics'; // current tag for question push
-function qp(fn){fn._t=_qt;qp(fn)}
+function qp(fn){fn._t=_qt;QB.push(fn)}
 // helper: bilingual question builder
 function bq(en,zh){return en+'<br><span style="color:#7bafc4">'+zh+'</span>'}
 function bx(en,zh){return en+'<br><span class="zh">'+zh+'</span>'}
@@ -1231,21 +1229,14 @@ qp(()=>{const r=rnd(5,25),ang=rnd(1,5)*60,ch=+(2*r*Math.sin(ang*PI/360)).toFixed
 // total: 63 generators. With random r (3-25) and angles, this yields thousands of unique questions.
 
 let quizTopic='all';
-document.getElementById('topicRow').addEventListener('click',function(e){
-  const btn=e.target.closest('.topic-btn');
-  if(!btn)return;
-  this.querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  quizTopic=btn.dataset.topic;
-});
-// also handle touch explicitly for iPad
-document.getElementById('topicRow').addEventListener('touchend',function(e){
-  const btn=e.target.closest('.topic-btn');
-  if(!btn)return;
-  e.preventDefault();
-  this.querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  quizTopic=btn.dataset.topic;
+// attach click to each topic button individually
+document.getElementById('topicRow').querySelectorAll('.topic-btn').forEach(function(btn){
+  function activate(){
+    document.getElementById('topicRow').querySelectorAll('.topic-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    quizTopic=btn.getAttribute('data-topic');
+  }
+  btn.onclick=activate;
 });
 
 function genQuestion(){
