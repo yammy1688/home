@@ -5,355 +5,695 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Circle Explorer - 8th Grade</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
+
 *{margin:0;padding:0;box-sizing:border-box}
 body{
-  font-family:'Segoe UI',system-ui,sans-serif;
-  background:#0d1117;color:#c9d1d9;
+  font-family:'Inter',system-ui,sans-serif;
+  background:#06080d;color:#c9d1d9;
   min-height:100vh;overflow-x:hidden;
 }
-.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 50% 50% at 30% 30%,rgba(88,166,255,.08),transparent),
-             radial-gradient(ellipse 40% 40% at 70% 70%,rgba(163,113,247,.07),transparent);
-}
 
-.wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:1.5rem}
+/* full-screen animated background */
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-header{text-align:center;padding:2rem 0 1rem}
-header h1{font-size:2rem;font-weight:700;
-  background:linear-gradient(90deg,#58a6ff,#a371f7);
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:1.5rem}
+
+.back{display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.5rem;color:#58a6ff;text-decoration:none;font-size:.85rem;
+  padding:.4rem .8rem;border-radius:2rem;border:1px solid transparent;transition:all .25s}
+.back:hover{border-color:#58a6ff22;background:#58a6ff0a}
+
+header{text-align:center;padding:1.5rem 0 1rem}
+header h1{font-size:clamp(2rem,5vw,2.8rem);font-weight:800;letter-spacing:-.03em;
+  background:linear-gradient(135deg,#58a6ff 0%,#a371f7 40%,#ff7b72 100%);
+  background-size:200% 200%;animation:shiftGrad 6s ease infinite alternate;
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
 }
-header p{color:#8b949e;margin-top:.4rem;font-size:1rem}
-.back{display:inline-block;margin-bottom:1rem;color:#58a6ff;text-decoration:none;font-size:.9rem}
-.back:hover{text-decoration:underline}
+@keyframes shiftGrad{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+header p{color:#484f58;margin-top:.3rem;font-size:.95rem}
 
 /* tabs */
-.tabs{display:flex;gap:.5rem;margin:1.5rem 0;flex-wrap:wrap}
+.tabs{display:flex;gap:.4rem;margin:1.25rem 0;padding:.3rem;
+  background:#0d1117;border:1px solid #1b2028;border-radius:2rem;width:fit-content;margin-inline:auto}
 .tab{
-  padding:.55rem 1.2rem;border-radius:2rem;border:1px solid #30363d;
-  background:#161b22;color:#8b949e;cursor:pointer;font-size:.85rem;
-  transition:all .25s;
+  padding:.5rem 1.3rem;border-radius:2rem;border:none;
+  background:transparent;color:#6e7681;cursor:pointer;font-size:.85rem;font-weight:600;
+  font-family:inherit;transition:all .3s;position:relative;
 }
-.tab:hover{border-color:#58a6ff;color:#58a6ff}
-.tab.active{background:#58a6ff;color:#fff;border-color:#58a6ff}
+.tab:hover{color:#c9d1d9}
+.tab.active{background:linear-gradient(135deg,#58a6ff,#a371f7);color:#fff;
+  box-shadow:0 4px 20px rgba(88,166,255,.3)}
 
 /* panels */
-.panel{display:none;animation:fadeUp .4s ease}
+.panel{display:none;animation:fadeUp .5s cubic-bezier(.4,0,.2,1)}
 .panel.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* glass card base */
+.glass{
+  background:linear-gradient(135deg,rgba(22,27,34,.8),rgba(13,17,23,.9));
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.06);border-radius:1.25rem;
+  padding:1.75rem;margin-bottom:1.25rem;
+  transition:border-color .3s,box-shadow .3s;
+}
+.glass:hover{border-color:rgba(88,166,255,.15);box-shadow:0 8px 40px rgba(88,166,255,.06)}
 
 /* canvas area */
-.canvas-wrap{
-  background:#161b22;border:1px solid #30363d;border-radius:1rem;
-  padding:1.5rem;margin-bottom:1.5rem;text-align:center;
-}
-canvas{border-radius:.75rem;cursor:crosshair;max-width:100%;touch-action:none}
+.canvas-wrap{text-align:center;position:relative}
+.canvas-wrap canvas{border-radius:1rem;max-width:100%;touch-action:none;cursor:crosshair}
 
-/* info cards */
-.info{
-  background:#161b22;border:1px solid #30363d;border-radius:1rem;
-  padding:1.5rem;margin-bottom:1rem;
+/* toggle row for learn mode */
+.toggle-row{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
+.toggle-btn{
+  padding:.35rem .9rem;border-radius:2rem;font-size:.78rem;font-weight:600;
+  border:1.5px solid;cursor:pointer;font-family:inherit;transition:all .25s;
+  background:transparent;
 }
-.info h3{color:#58a6ff;font-size:1.1rem;margin-bottom:.75rem}
-.info p{line-height:1.7;color:#8b949e;margin-bottom:.5rem}
-
-.formula{
-  background:#0d1117;border-left:3px solid #a371f7;
-  padding:.8rem 1rem;margin:.75rem 0;border-radius:0 .5rem .5rem 0;
-  font-family:'Fira Code','Courier New',monospace;font-size:1.05rem;color:#e6edf3;
-}
-
-.highlight{color:#ff7b72;font-weight:600}
-.blue{color:#58a6ff}
-.purple{color:#a371f7}
-.green{color:#3fb950}
+.toggle-btn[data-part=radius]{color:#ff7b72;border-color:#ff7b7244}
+.toggle-btn[data-part=radius].on{background:#ff7b7220;border-color:#ff7b72}
+.toggle-btn[data-part=diameter]{color:#58a6ff;border-color:#58a6ff44}
+.toggle-btn[data-part=diameter].on{background:#58a6ff20;border-color:#58a6ff}
+.toggle-btn[data-part=circumference]{color:#3fb950;border-color:#3fb95044}
+.toggle-btn[data-part=circumference].on{background:#3fb95020;border-color:#3fb950}
+.toggle-btn[data-part=area]{color:#a371f7;border-color:#a371f744}
+.toggle-btn[data-part=area].on{background:#a371f720;border-color:#a371f7}
 
 /* live stats */
-.stats{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:1rem;margin:1rem 0;
-}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:1.25rem 0}
 .stat{
-  background:#0d1117;border:1px solid #30363d;border-radius:.75rem;
-  padding:1rem;text-align:center;transition:border-color .3s;
+  background:rgba(13,17,23,.6);border:1px solid #1b2028;border-radius:1rem;
+  padding:1rem .75rem;text-align:center;position:relative;overflow:hidden;
+  transition:all .35s cubic-bezier(.4,0,.2,1);
 }
-.stat:hover{border-color:#58a6ff}
-.stat-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:#8b949e}
-.stat-value{font-size:1.6rem;font-weight:700;margin-top:.3rem}
+.stat::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .35s;border-radius:1rem}
+.stat:hover{transform:translateY(-2px)}
+.stat:hover::before{opacity:1}
+.stat:nth-child(1)::before{background:radial-gradient(circle at 50% 100%,rgba(255,123,114,.08),transparent 70%)}
+.stat:nth-child(2)::before{background:radial-gradient(circle at 50% 100%,rgba(88,166,255,.08),transparent 70%)}
+.stat:nth-child(3)::before{background:radial-gradient(circle at 50% 100%,rgba(63,185,80,.08),transparent 70%)}
+.stat:nth-child(4)::before{background:radial-gradient(circle at 50% 100%,rgba(163,113,247,.08),transparent 70%)}
+.stat-icon{font-size:1.4rem;margin-bottom:.3rem}
+.stat-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:#484f58;font-weight:600}
+.stat-value{font-size:1.5rem;font-weight:800;margin-top:.2rem;font-family:'JetBrains Mono',monospace;
+  transition:transform .15s}
+.stat-value.pop{animation:popNum .3s ease}
+@keyframes popNum{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
 .stat-value.radius{color:#ff7b72}
 .stat-value.diameter{color:#58a6ff}
 .stat-value.circumference{color:#3fb950}
 .stat-value.area{color:#a371f7}
 
-/* slider */
-.slider-row{display:flex;align-items:center;gap:1rem;margin:1rem 0;flex-wrap:wrap}
-.slider-row label{font-size:.9rem;color:#8b949e;min-width:60px}
-input[type=range]{
-  flex:1;min-width:200px;accent-color:#58a6ff;height:6px;
-  -webkit-appearance:none;background:#30363d;border-radius:3px;outline:none;
+/* info cards */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.info{position:relative;overflow:hidden}
+.info .icon-bg{position:absolute;right:-10px;top:-10px;font-size:4rem;opacity:.06;pointer-events:none}
+.info h3{display:flex;align-items:center;gap:.5rem;font-size:1rem;margin-bottom:.6rem}
+.info h3 .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.info p{line-height:1.7;color:#8b949e;font-size:.88rem;position:relative;z-index:1}
+
+.formula{
+  background:rgba(13,17,23,.7);border-left:3px solid #a371f7;
+  padding:.7rem 1rem;margin:.6rem 0 0;border-radius:0 .5rem .5rem 0;
+  font-family:'JetBrains Mono',monospace;font-size:.95rem;color:#e6edf3;
 }
-input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
-  background:#58a6ff;cursor:pointer;box-shadow:0 0 8px rgba(88,166,255,.4);
+
+.highlight{color:#ff7b72;font-weight:600}
+.blue{color:#58a6ff;font-weight:600}
+.purple{color:#a371f7;font-weight:600}
+.green{color:#3fb950;font-weight:600}
+
+/* playground mode buttons */
+.mode-row{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:1rem 0 .5rem}
+.mode-btn{
+  padding:.4rem 1rem;border-radius:2rem;font-size:.8rem;font-weight:600;
+  border:1px solid #30363d;background:transparent;color:#8b949e;
+  cursor:pointer;font-family:inherit;transition:all .25s;
 }
+.mode-btn:hover{border-color:#58a6ff;color:#58a6ff}
+.mode-btn.active{background:#58a6ff;color:#fff;border-color:#58a6ff}
+
+/* pi unwrap animation */
+.pi-demo{margin-top:1rem;text-align:center}
+.pi-demo canvas{border-radius:.75rem;max-width:100%}
 
 /* quiz */
-.quiz-area{margin-top:1.5rem}
-.question{
-  background:#161b22;border:1px solid #30363d;border-radius:1rem;
-  padding:1.5rem;margin-bottom:1rem;
+.quiz-header{
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+  padding:1.25rem 1.5rem;margin-bottom:1.25rem;
 }
-.question h4{color:#e6edf3;font-size:1rem;margin-bottom:1rem}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-.choice{
-  padding:.7rem 1rem;border-radius:.5rem;border:1px solid #30363d;
-  background:#0d1117;color:#c9d1d9;cursor:pointer;text-align:center;
-  transition:all .2s;font-size:.9rem;
-}
-.choice:hover{border-color:#58a6ff;background:#161b22}
-.choice.correct{background:#0f2d1a;border-color:#3fb950;color:#3fb950}
-.choice.wrong{background:#2d0f0f;border-color:#ff7b72;color:#ff7b72}
-.choice.disabled{pointer-events:none;opacity:.6}
+.quiz-header .streak{display:flex;gap:.25rem}
+.streak-dot{width:24px;height:24px;border-radius:50%;border:2px solid #1b2028;
+  display:grid;place-items:center;font-size:.7rem;transition:all .3s}
+.streak-dot.correct{border-color:#3fb950;background:#3fb95020;color:#3fb950}
+.streak-dot.wrong{border-color:#ff7b72;background:#ff7b7220;color:#ff7b72}
+.streak-dot.pending{border-color:#30363d}
 
-.score-bar{
-  display:flex;align-items:center;gap:1rem;margin-bottom:1rem;
-  padding:1rem;background:#161b22;border:1px solid #30363d;border-radius:.75rem;
+.score-display{display:flex;align-items:baseline;gap:.3rem}
+.score-display .num{font-size:2rem;font-weight:800;font-family:'JetBrains Mono',monospace;
+  background:linear-gradient(135deg,#58a6ff,#a371f7);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.score-display .label{color:#484f58;font-size:.8rem;font-weight:600}
+
+.quiz-canvas-area{text-align:center;margin-bottom:1.25rem}
+.quiz-canvas-area canvas{border-radius:.75rem;max-width:100%}
+
+.question{margin-bottom:1.25rem}
+.question h4{color:#e6edf3;font-size:1.05rem;margin-bottom:1rem;font-weight:600;line-height:1.5}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.choice{
+  padding:.85rem 1rem;border-radius:.75rem;border:1.5px solid #1b2028;
+  background:rgba(13,17,23,.5);color:#c9d1d9;cursor:pointer;text-align:center;
+  transition:all .25s cubic-bezier(.4,0,.2,1);font-size:.9rem;font-weight:500;
+  font-family:'JetBrains Mono',monospace;position:relative;overflow:hidden;
 }
-.score-bar span{font-size:.9rem;color:#8b949e}
-.score-bar .pts{font-weight:700;color:#58a6ff;font-size:1.1rem}
+.choice::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s}
+.choice:hover{border-color:#58a6ff55;transform:translateY(-2px)}
+.choice:hover::before{opacity:1;background:radial-gradient(circle at 50% 50%,rgba(88,166,255,.06),transparent 70%)}
+.choice.correct{background:rgba(63,185,80,.12);border-color:#3fb950;color:#3fb950;
+  box-shadow:0 0 25px rgba(63,185,80,.15);transform:scale(1.02)}
+.choice.wrong{background:rgba(255,123,114,.1);border-color:#ff7b72;color:#ff7b72}
+.choice.disabled{pointer-events:none;opacity:.5}
+
 .btn{
-  padding:.6rem 1.4rem;border-radius:.5rem;border:none;
-  background:#58a6ff;color:#fff;cursor:pointer;font-size:.85rem;font-weight:600;
-  transition:background .2s;
+  padding:.6rem 1.5rem;border-radius:2rem;border:none;
+  background:linear-gradient(135deg,#58a6ff,#a371f7);color:#fff;cursor:pointer;
+  font-size:.85rem;font-weight:700;font-family:inherit;
+  transition:all .25s;box-shadow:0 4px 15px rgba(88,166,255,.2);
 }
-.btn:hover{background:#79c0ff}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 25px rgba(88,166,255,.3)}
 
 .feedback{
-  padding:.75rem 1rem;border-radius:.5rem;margin-top:.75rem;
-  font-size:.9rem;line-height:1.5;display:none;
+  padding:.85rem 1.2rem;border-radius:.75rem;margin-top:1rem;
+  font-size:.9rem;line-height:1.5;display:none;font-weight:500;
 }
-.feedback.show{display:block}
-.feedback.right{background:#0f2d1a;border:1px solid #3fb950;color:#3fb950}
-.feedback.wrong-fb{background:#2d0f0f;border:1px solid #ff7b72;color:#ff7b72}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.right{background:rgba(63,185,80,.1);border:1px solid #3fb95044;color:#3fb950}
+.feedback.wrong-fb{background:rgba(255,123,114,.08);border:1px solid #ff7b7244;color:#ff7b72}
+
+.confetti-burst{position:fixed;pointer-events:none;z-index:100}
+
+/* slider */
+.slider-row{display:flex;align-items:center;gap:1rem;margin:1rem 0;flex-wrap:wrap}
+.slider-row label{font-size:.85rem;color:#6e7681;min-width:55px;font-weight:600}
+input[type=range]{
+  flex:1;min-width:180px;height:6px;
+  -webkit-appearance:none;background:#1b2028;border-radius:3px;outline:none;
+  background-image:linear-gradient(90deg,#58a6ff,#a371f7);
+  background-size:50% 100%;background-repeat:no-repeat;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:#fff;cursor:pointer;box-shadow:0 0 12px rgba(88,166,255,.5),0 2px 8px rgba(0,0,0,.3);
+  border:3px solid #58a6ff;transition:box-shadow .2s;
+}
+input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 20px rgba(88,166,255,.7),0 2px 8px rgba(0,0,0,.3)}
 
 /* responsive */
-@media(max-width:600px){
-  .choices{grid-template-columns:1fr}
-  header h1{font-size:1.5rem}
+@media(max-width:700px){
+  .info-grid{grid-template-columns:1fr}
   .stats{grid-template-columns:1fr 1fr}
+  .choices{grid-template-columns:1fr}
+  header h1{font-size:1.6rem}
 }
 </style>
 </head>
 <body>
 
-<div class="bg"></div>
+<canvas id="bgCanvas"></canvas>
+
 <div class="wrap">
-  <a href="./" class="back">&larr; Back to Math Games</a>
+  <a href="index.html" class="back">&larr; Back to Math Games</a>
   <header>
     <h1>Circle Explorer</h1>
-    <p>Drag, resize, and master circles &mdash; 8th grade level</p>
+    <p>Drag, resize, and master circles</p>
   </header>
 
   <div class="tabs">
-    <div class="tab active" data-tab="learn">Learn</div>
-    <div class="tab" data-tab="playground">Playground</div>
-    <div class="tab" data-tab="quiz">Quiz</div>
+    <button class="tab active" data-tab="learn">Learn</button>
+    <button class="tab" data-tab="playground">Playground</button>
+    <button class="tab" data-tab="quiz">Quiz</button>
   </div>
 
   <!-- LEARN PANEL -->
   <div class="panel active" id="learn">
-    <div class="canvas-wrap">
-      <canvas id="learnCanvas" width="500" height="500"></canvas>
+    <div class="glass canvas-wrap">
+      <canvas id="learnCanvas" width="560" height="480"></canvas>
+      <div class="toggle-row">
+        <button class="toggle-btn on" data-part="radius">Radius</button>
+        <button class="toggle-btn on" data-part="diameter">Diameter</button>
+        <button class="toggle-btn on" data-part="circumference">Circumference</button>
+        <button class="toggle-btn on" data-part="area">Area</button>
+      </div>
       <div class="slider-row">
         <label>Radius</label>
-        <input type="range" id="learnRadius" min="30" max="200" value="120">
+        <input type="range" id="learnRadius" min="25" max="190" value="110">
       </div>
     </div>
 
     <div class="stats" id="learnStats">
-      <div class="stat"><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="lR">120</div></div>
-      <div class="stat"><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="lD">240</div></div>
-      <div class="stat"><div class="stat-label">Circumference (C)</div><div class="stat-value circumference" id="lC">753.98</div></div>
-      <div class="stat"><div class="stat-label">Area (A)</div><div class="stat-value area" id="lA">45238.93</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F534;</div><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="lR">110</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F535;</div><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="lD">220</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F7E2;</div><div class="stat-label">Circumference</div><div class="stat-value circumference" id="lC">691.15</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F7E3;</div><div class="stat-label">Area</div><div class="stat-value area" id="lA">38013.27</div></div>
     </div>
 
-    <div class="info">
-      <h3>Radius</h3>
-      <p>The <span class="highlight">radius</span> is the distance from the <strong>center</strong> of the circle to any point on its edge. Every radius of the same circle is the same length.</p>
-      <div class="formula">r = d &divide; 2</div>
+    <div class="glass pi-demo">
+      <h3 style="color:#3fb950;margin-bottom:.75rem;font-size:1rem">Unrolling the Circumference</h3>
+      <p style="color:#6e7681;font-size:.85rem;margin-bottom:.75rem">Watch the circumference unroll into a straight line &mdash; it equals exactly &pi; &times; diameter</p>
+      <canvas id="piCanvas" width="560" height="160"></canvas>
     </div>
 
-    <div class="info">
-      <h3>Diameter</h3>
-      <p>The <span class="blue">diameter</span> is a straight line passing through the center, connecting two points on the circle. It's always <strong>twice the radius</strong>.</p>
-      <div class="formula">d = 2r</div>
-    </div>
-
-    <div class="info">
-      <h3>Circumference</h3>
-      <p>The <span class="green">circumference</span> is the distance <em>around</em> the circle &mdash; like wrapping a string around it and measuring. It uses the special number <strong>&pi; &approx; 3.14159</strong>.</p>
-      <div class="formula">C = 2&pi;r &nbsp; or &nbsp; C = &pi;d</div>
-    </div>
-
-    <div class="info">
-      <h3>Area</h3>
-      <p>The <span class="purple">area</span> is the space <em>inside</em> the circle. Think of it as how much paint you'd need to fill it in.</p>
-      <div class="formula">A = &pi;r&sup2;</div>
-    </div>
-
-    <div class="info">
-      <h3>How are they connected?</h3>
-      <p>Everything starts with the <span class="highlight">radius</span>. Double it to get <span class="blue">diameter</span>. Multiply by 2&pi; for <span class="green">circumference</span>. Square it and multiply by &pi; for <span class="purple">area</span>. Move the slider above and watch all the values change together!</p>
+    <div class="info-grid">
+      <div class="glass info">
+        <div class="icon-bg">r</div>
+        <h3><span class="dot" style="background:#ff7b72"></span> Radius</h3>
+        <p>The distance from the <strong>center</strong> to any point on the edge. Every radius in the same circle is equal.</p>
+        <div class="formula">r = d &divide; 2</div>
+      </div>
+      <div class="glass info">
+        <div class="icon-bg">d</div>
+        <h3><span class="dot" style="background:#58a6ff"></span> Diameter</h3>
+        <p>A line through the center connecting two edge points. Always <strong>twice</strong> the radius.</p>
+        <div class="formula">d = 2r</div>
+      </div>
+      <div class="glass info">
+        <div class="icon-bg">C</div>
+        <h3><span class="dot" style="background:#3fb950"></span> Circumference</h3>
+        <p>The distance <em>around</em> the circle. Uses the special number <strong>&pi; &asymp; 3.14159</strong>.</p>
+        <div class="formula">C = 2&pi;r = &pi;d</div>
+      </div>
+      <div class="glass info">
+        <div class="icon-bg">A</div>
+        <h3><span class="dot" style="background:#a371f7"></span> Area</h3>
+        <p>The space <em>inside</em>. Double the radius and the area <strong>quadruples</strong>!</p>
+        <div class="formula">A = &pi;r&sup2;</div>
+      </div>
     </div>
   </div>
 
   <!-- PLAYGROUND PANEL -->
   <div class="panel" id="playground">
-    <div class="canvas-wrap">
-      <canvas id="playCanvas" width="600" height="500"></canvas>
-      <p style="color:#8b949e;font-size:.85rem;margin-top:.75rem">Click &amp; drag to move the circle. Drag the edge to resize. Scroll to zoom.</p>
+    <div class="glass canvas-wrap">
+      <canvas id="playCanvas" width="640" height="500"></canvas>
+      <div class="mode-row">
+        <button class="mode-btn active" data-mode="free">Free Move</button>
+        <button class="mode-btn" data-mode="compare">Compare Two</button>
+        <button class="mode-btn" data-mode="trace">Trace Path</button>
+      </div>
+      <p style="color:#484f58;font-size:.8rem;margin-top:.5rem">Drag to move &bull; Drag edge to resize &bull; Scroll to zoom</p>
     </div>
     <div class="stats" id="playStats">
-      <div class="stat"><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="pR">100</div></div>
-      <div class="stat"><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="pD">200</div></div>
-      <div class="stat"><div class="stat-label">Circumference (C)</div><div class="stat-value circumference" id="pC">628.32</div></div>
-      <div class="stat"><div class="stat-label">Area (A)</div><div class="stat-value area" id="pA">31415.93</div></div>
-    </div>
-    <div class="info">
-      <h3>Experiment!</h3>
-      <p>Drag the circle around the canvas. Grab its <span class="highlight">edge</span> to change the radius. Watch how circumference and area change. Notice: when you <strong>double</strong> the radius, the circumference doubles but the area <strong>quadruples</strong>!</p>
+      <div class="stat"><div class="stat-icon">&#x1F534;</div><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="pR">100</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F535;</div><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="pD">200</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F7E2;</div><div class="stat-label">Circumference</div><div class="stat-value circumference" id="pC">628.32</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F7E3;</div><div class="stat-label">Area</div><div class="stat-value area" id="pA">31415.93</div></div>
     </div>
   </div>
 
   <!-- QUIZ PANEL -->
   <div class="panel" id="quiz">
-    <div class="score-bar">
-      <span>Score:</span> <span class="pts" id="score">0</span>
-      <span style="margin-left:auto" id="qProgress">Question 1 / 10</span>
-      <button class="btn" id="newQuiz">New Quiz</button>
+    <div class="glass quiz-header">
+      <div class="score-display"><span class="num" id="score">0</span><span class="label">/ 10</span></div>
+      <div class="streak" id="streak"></div>
+      <button class="btn" id="newQuiz" style="margin-left:auto">New Quiz</button>
+    </div>
+    <div class="glass quiz-canvas-area" id="quizVisual" style="display:none">
+      <canvas id="quizCanvas" width="300" height="220"></canvas>
     </div>
     <div class="quiz-area" id="quizArea"></div>
   </div>
 </div>
 
 <script>
-// --- TABS ---
+const PI=Math.PI;
+const TAU=PI*2;
+
+// ===================== ANIMATED BACKGROUND =====================
+(function(){
+  const c=document.getElementById('bgCanvas');
+  const ctx=c.getContext('2d');
+  let w,h;
+  const particles=[];
+  const connections=[];
+
+  function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
+  resize();
+  addEventListener('resize',resize);
+
+  class Particle{
+    constructor(){this.reset()}
+    reset(){
+      this.x=Math.random()*w;this.y=Math.random()*h;
+      this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;
+      this.r=Math.random()*1.5+.5;
+      this.hue=200+Math.random()*80;
+      this.alpha=Math.random()*.3+.1;
+    }
+    update(){
+      this.x+=this.vx;this.y+=this.vy;
+      if(this.x<0||this.x>w)this.vx*=-1;
+      if(this.y<0||this.y>h)this.vy*=-1;
+    }
+    draw(){
+      ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,TAU);
+      ctx.fillStyle=`hsla(${this.hue},80%,70%,${this.alpha})`;ctx.fill();
+    }
+  }
+  for(let i=0;i<60;i++)particles.push(new Particle());
+
+  function frame(){
+    ctx.clearRect(0,0,w,h);
+    // connections
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<150){
+          ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`hsla(220,60%,50%,${.08*(1-d/150)})`;
+          ctx.lineWidth=.5;ctx.stroke();
+        }
+      }
+      particles[i].update();particles[i].draw();
+    }
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+// ===================== TABS =====================
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click',()=>{
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
     t.classList.add('active');
     document.getElementById(t.dataset.tab).classList.add('active');
-    if(t.dataset.tab==='playground') initPlayground();
   });
 });
 
-// --- LEARN CANVAS ---
+// ===================== LEARN =====================
 const lCanvas=document.getElementById('learnCanvas');
 const lCtx=lCanvas.getContext('2d');
 const lSlider=document.getElementById('learnRadius');
+const showParts={radius:true,diameter:true,circumference:true,area:true};
+let learnAnimAngle=0;
+
+document.querySelectorAll('.toggle-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const p=btn.dataset.part;
+    showParts[p]=!showParts[p];
+    btn.classList.toggle('on');
+    drawLearn();
+  });
+});
 
 function drawLearn(){
+  const dpr=1;
   const w=lCanvas.width,h=lCanvas.height,cx=w/2,cy=h/2;
   const r=+lSlider.value;
   lCtx.clearRect(0,0,w,h);
 
-  // grid
-  lCtx.strokeStyle='rgba(48,54,61,.5)';lCtx.lineWidth=1;
-  for(let i=0;i<w;i+=40){lCtx.beginPath();lCtx.moveTo(i,0);lCtx.lineTo(i,h);lCtx.stroke()}
-  for(let i=0;i<h;i+=40){lCtx.beginPath();lCtx.moveTo(0,i);lCtx.lineTo(w,i);lCtx.stroke()}
+  // subtle grid
+  lCtx.save();
+  for(let i=0;i<w;i+=30){
+    lCtx.beginPath();lCtx.moveTo(i,0);lCtx.lineTo(i,h);
+    lCtx.strokeStyle=i===Math.round(cx/30)*30?'rgba(88,166,255,.12)':'rgba(48,54,61,.25)';
+    lCtx.lineWidth=i===Math.round(cx/30)*30?1.5:0.5;lCtx.stroke();
+  }
+  for(let i=0;i<h;i+=30){
+    lCtx.beginPath();lCtx.moveTo(0,i);lCtx.lineTo(w,i);
+    lCtx.strokeStyle=i===Math.round(cy/30)*30?'rgba(88,166,255,.12)':'rgba(48,54,61,.25)';
+    lCtx.lineWidth=i===Math.round(cy/30)*30?1.5:0.5;lCtx.stroke();
+  }
+  lCtx.restore();
 
-  // filled circle (area)
-  lCtx.beginPath();lCtx.arc(cx,cy,r,0,Math.PI*2);
-  lCtx.fillStyle='rgba(163,113,247,.1)';lCtx.fill();
+  // area glow
+  if(showParts.area){
+    const grd=lCtx.createRadialGradient(cx,cy,0,cx,cy,r);
+    grd.addColorStop(0,'rgba(163,113,247,.18)');
+    grd.addColorStop(.7,'rgba(163,113,247,.08)');
+    grd.addColorStop(1,'rgba(163,113,247,.02)');
+    lCtx.beginPath();lCtx.arc(cx,cy,r,0,TAU);
+    lCtx.fillStyle=grd;lCtx.fill();
+  }
 
-  // circumference
-  lCtx.beginPath();lCtx.arc(cx,cy,r,0,Math.PI*2);
-  lCtx.strokeStyle='#3fb950';lCtx.lineWidth=3;lCtx.stroke();
+  // circumference with animated dash
+  if(showParts.circumference){
+    lCtx.beginPath();lCtx.arc(cx,cy,r,0,TAU);
+    lCtx.strokeStyle='#3fb950';lCtx.lineWidth=3;
+    lCtx.setLineDash([6,4]);lCtx.lineDashOffset=-learnAnimAngle*2;
+    lCtx.stroke();lCtx.setLineDash([]);
+  }
 
-  // diameter line
-  lCtx.beginPath();lCtx.moveTo(cx-r,cy);lCtx.lineTo(cx+r,cy);
-  lCtx.strokeStyle='#58a6ff';lCtx.lineWidth=2;lCtx.setLineDash([8,4]);lCtx.stroke();lCtx.setLineDash([]);
+  // diameter
+  if(showParts.diameter){
+    lCtx.save();
+    lCtx.translate(cx,cy);lCtx.rotate(learnAnimAngle*.3);
+    lCtx.beginPath();lCtx.moveTo(-r,0);lCtx.lineTo(r,0);
+    lCtx.strokeStyle='#58a6ff';lCtx.lineWidth=2;lCtx.globalAlpha=.8;
+    lCtx.setLineDash([10,5]);lCtx.stroke();lCtx.setLineDash([]);
+    // endpoints
+    lCtx.beginPath();lCtx.arc(-r,0,4,0,TAU);lCtx.fillStyle='#58a6ff';lCtx.fill();
+    lCtx.beginPath();lCtx.arc(r,0,4,0,TAU);lCtx.fillStyle='#58a6ff';lCtx.fill();
+    lCtx.restore();
+  }
 
-  // radius line
-  lCtx.beginPath();lCtx.moveTo(cx,cy);lCtx.lineTo(cx,cy-r);
-  lCtx.strokeStyle='#ff7b72';lCtx.lineWidth=2.5;lCtx.stroke();
+  // radius (animated angle)
+  if(showParts.radius){
+    const angle=-PI/2+Math.sin(learnAnimAngle*.5)*.5;
+    const rx=cx+Math.cos(angle)*r,ry=cy+Math.sin(angle)*r;
+    lCtx.beginPath();lCtx.moveTo(cx,cy);lCtx.lineTo(rx,ry);
+    lCtx.strokeStyle='#ff7b72';lCtx.lineWidth=3;lCtx.stroke();
+    // glow dot at endpoint
+    lCtx.beginPath();lCtx.arc(rx,ry,6,0,TAU);
+    lCtx.fillStyle='#ff7b72';lCtx.shadowColor='#ff7b72';lCtx.shadowBlur=15;lCtx.fill();
+    lCtx.shadowBlur=0;
+    // label
+    const lx=(cx+rx)/2,ly=(cy+ry)/2;
+    lCtx.font='bold 14px JetBrains Mono, monospace';
+    lCtx.fillStyle='#ff7b72';lCtx.fillText('r = '+r,lx+10,ly-5);
+  }
 
   // center dot
-  lCtx.beginPath();lCtx.arc(cx,cy,5,0,Math.PI*2);
+  lCtx.beginPath();lCtx.arc(cx,cy,4,0,TAU);
   lCtx.fillStyle='#e6edf3';lCtx.fill();
+  lCtx.beginPath();lCtx.arc(cx,cy,8,0,TAU);
+  lCtx.strokeStyle='rgba(230,237,243,.3)';lCtx.lineWidth=1;lCtx.stroke();
 
-  // labels
-  lCtx.font='bold 14px Segoe UI, sans-serif';
-  lCtx.fillStyle='#ff7b72';lCtx.fillText('r = '+r,cx+8,cy-r/2);
-  lCtx.fillStyle='#58a6ff';lCtx.fillText('d = '+r*2,cx-r/2-10,cy+20);
-  lCtx.fillStyle='#3fb950';lCtx.fillText('C = '+(2*Math.PI*r).toFixed(1),cx+r*0.5,cy-r-10);
-  lCtx.fillStyle='#a371f7';lCtx.fillText('A = '+(Math.PI*r*r).toFixed(1),cx-45,cy+r/3);
+  // floating labels
+  if(showParts.diameter){
+    lCtx.font='bold 13px JetBrains Mono, monospace';
+    lCtx.fillStyle='#58a6ff';lCtx.fillText('d = '+(r*2),cx+r*.3,cy+25);
+  }
+  if(showParts.circumference){
+    lCtx.fillStyle='#3fb950';lCtx.fillText('C = '+(TAU*r).toFixed(1),cx+r*.55,cy-r-14);
+  }
+  if(showParts.area){
+    lCtx.fillStyle='#a371f7';lCtx.fillText('A = '+(PI*r*r).toFixed(1),cx-50,cy+r*.45);
+  }
 
-  // update stat cards
-  document.getElementById('lR').textContent=r;
-  document.getElementById('lD').textContent=r*2;
-  document.getElementById('lC').textContent=(2*Math.PI*r).toFixed(2);
-  document.getElementById('lA').textContent=(Math.PI*r*r).toFixed(2);
+  // update stats with pop animation
+  updateStat('lR',r);
+  updateStat('lD',r*2);
+  updateStat('lC',(TAU*r).toFixed(2));
+  updateStat('lA',(PI*r*r).toFixed(2));
+
+  // update slider track fill
+  const pct=(r-25)/(190-25)*100;
+  lSlider.style.backgroundSize=pct+'% 100%';
 }
+
+function updateStat(id,val){
+  const el=document.getElementById(id);
+  const sv=String(val);
+  if(el.textContent!==sv){
+    el.textContent=sv;
+    el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');
+  }
+}
+
 lSlider.addEventListener('input',drawLearn);
-drawLearn();
 
-// --- PLAYGROUND ---
-let pCircle={x:300,y:250,r:100};
-let dragging=null; // 'move' | 'resize'
+// animation loop for learn
+(function learnLoop(){
+  learnAnimAngle+=.015;
+  if(document.getElementById('learn').classList.contains('active'))drawLearn();
+  requestAnimationFrame(learnLoop);
+})();
+
+// ===================== PI UNWRAP ANIMATION =====================
+(function(){
+  const c=document.getElementById('piCanvas');
+  const ctx=c.getContext('2d');
+  let t=0;
+
+  function draw(){
+    const w=c.width,h=c.height;
+    ctx.clearRect(0,0,w,h);
+    const r=+lSlider.value;
+    const circR=35;
+    const cx=70,cy=h/2;
+    const lineY=cy;
+    const lineStart=cx+circR+30;
+
+    // draw small circle
+    ctx.beginPath();ctx.arc(cx,cy,circR,0,TAU);
+    ctx.strokeStyle='#3fb950';ctx.lineWidth=2.5;ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,2,0,TAU);ctx.fillStyle='#e6edf3';ctx.fill();
+
+    // animated point on circle
+    const angle=t%TAU;
+    const sweep=angle;
+    const px=cx+Math.cos(angle-PI/2)*circR;
+    const py=cy+Math.sin(angle-PI/2)*circR;
+
+    // highlight swept arc
+    ctx.beginPath();ctx.arc(cx,cy,circR,-PI/2,-PI/2+sweep);
+    ctx.strokeStyle='#ff7b72';ctx.lineWidth=4;ctx.stroke();
+
+    // dot on circle
+    ctx.beginPath();ctx.arc(px,py,5,0,TAU);
+    ctx.fillStyle='#ff7b72';ctx.shadowColor='#ff7b72';ctx.shadowBlur=10;ctx.fill();ctx.shadowBlur=0;
+
+    // unwrapped line
+    const lineLen=(sweep/TAU)*(TAU*circR);
+    const maxLen=w-lineStart-20;
+    const drawLen=Math.min(lineLen,maxLen);
+
+    // full length marker (pi*d)
+    const fullLen=Math.min(TAU*circR,maxLen);
+    ctx.beginPath();ctx.moveTo(lineStart,lineY);ctx.lineTo(lineStart+fullLen,lineY);
+    ctx.strokeStyle='rgba(63,185,80,.2)';ctx.lineWidth=3;ctx.stroke();
+
+    // active part
+    ctx.beginPath();ctx.moveTo(lineStart,lineY);ctx.lineTo(lineStart+drawLen,lineY);
+    ctx.strokeStyle='#ff7b72';ctx.lineWidth=4;ctx.stroke();
+
+    // endpoint dot
+    ctx.beginPath();ctx.arc(lineStart+drawLen,lineY,4,0,TAU);
+    ctx.fillStyle='#ff7b72';ctx.fill();
+
+    // labels
+    ctx.font='bold 12px JetBrains Mono, monospace';
+    ctx.fillStyle='#3fb950';
+    ctx.fillText('\u03C0 \u00D7 d = '+(TAU*circR).toFixed(1)+'px',lineStart,lineY-15);
+    ctx.fillStyle='#484f58';
+    ctx.fillText((sweep/TAU*100).toFixed(0)+'% unrolled',lineStart+fullLen/2-40,lineY+22);
+
+    t+=.03;
+    if(document.getElementById('learn').classList.contains('active'))requestAnimationFrame(draw);
+    else setTimeout(()=>requestAnimationFrame(draw),200);
+  }
+  draw();
+})();
+
+// ===================== PLAYGROUND =====================
+let circles=[{x:320,y:250,r:100,color:'#58a6ff'}];
+let activeCircle=0;
+let playMode='free';
+let dragging=null;
 let dragOff={x:0,y:0};
+let tracePoints=[];
 
-function initPlayground(){
-  const c=document.getElementById('playCanvas');
-  drawPlayground();
-}
+document.querySelectorAll('.mode-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    playMode=btn.dataset.mode;
+    if(playMode==='compare'&&circles.length<2){
+      circles.push({x:420,y:250,r:60,color:'#a371f7'});
+    }
+    if(playMode==='trace')tracePoints=[];
+    drawPlayground();
+  });
+});
 
 function drawPlayground(){
   const c=document.getElementById('playCanvas');
   const ctx=c.getContext('2d');
   const w=c.width,h=c.height;
-  const {x,y,r}=pCircle;
   ctx.clearRect(0,0,w,h);
 
   // grid
-  ctx.strokeStyle='rgba(48,54,61,.4)';ctx.lineWidth=1;
-  for(let i=0;i<w;i+=40){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,h);ctx.stroke()}
-  for(let i=0;i<h;i+=40){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(w,i);ctx.stroke()}
+  ctx.save();
+  for(let i=0;i<w;i+=30){
+    ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,h);
+    ctx.strokeStyle='rgba(48,54,61,.2)';ctx.lineWidth=.5;ctx.stroke();
+  }
+  for(let i=0;i<h;i+=30){
+    ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(w,i);
+    ctx.strokeStyle='rgba(48,54,61,.2)';ctx.lineWidth=.5;ctx.stroke();
+  }
+  ctx.restore();
 
-  // area fill
-  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
-  ctx.fillStyle='rgba(163,113,247,.12)';ctx.fill();
+  // trace path
+  if(playMode==='trace'&&tracePoints.length>1){
+    ctx.beginPath();ctx.moveTo(tracePoints[0].x,tracePoints[0].y);
+    for(let i=1;i<tracePoints.length;i++)ctx.lineTo(tracePoints[i].x,tracePoints[i].y);
+    ctx.strokeStyle='rgba(255,123,114,.4)';ctx.lineWidth=2;ctx.stroke();
+  }
 
-  // circumference
-  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
-  ctx.strokeStyle='#3fb950';ctx.lineWidth=3;ctx.stroke();
+  // draw circles
+  const drawList=playMode==='compare'?circles:[circles[activeCircle]];
+  drawList.forEach((circ,i)=>{
+    const{x,y,r,color}=circ;
+    const isActive=circ===circles[activeCircle];
 
-  // diameter
-  ctx.beginPath();ctx.moveTo(x-r,y);ctx.lineTo(x+r,y);
-  ctx.strokeStyle='#58a6ff';ctx.lineWidth=2;ctx.setLineDash([8,4]);ctx.stroke();ctx.setLineDash([]);
+    // glow
+    const grd=ctx.createRadialGradient(x,y,0,x,y,r);
+    grd.addColorStop(0,color+'25');grd.addColorStop(1,color+'05');
+    ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fillStyle=grd;ctx.fill();
 
-  // radius
-  ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-r);
-  ctx.strokeStyle='#ff7b72';ctx.lineWidth=2.5;ctx.stroke();
+    // ring
+    ctx.beginPath();ctx.arc(x,y,r,0,TAU);
+    ctx.strokeStyle=color;ctx.lineWidth=isActive?3:2;
+    ctx.shadowColor=color;ctx.shadowBlur=isActive?15:0;ctx.stroke();ctx.shadowBlur=0;
 
-  // center
-  ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);
-  ctx.fillStyle='#e6edf3';ctx.fill();
+    // diameter
+    ctx.beginPath();ctx.moveTo(x-r,y);ctx.lineTo(x+r,y);
+    ctx.strokeStyle=color+'66';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);ctx.stroke();ctx.setLineDash([]);
 
-  // edge handle
-  ctx.beginPath();ctx.arc(x+r,y,7,0,Math.PI*2);
-  ctx.fillStyle='#58a6ff';ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.fill();ctx.stroke();
+    // radius
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-r);
+    ctx.strokeStyle='#ff7b72';ctx.lineWidth=2;ctx.stroke();
 
-  // labels
-  ctx.font='bold 13px Segoe UI, sans-serif';
-  ctx.fillStyle='#ff7b72';ctx.fillText('r='+r.toFixed(0),x+6,y-r/2);
-  ctx.fillStyle='#58a6ff';ctx.fillText('d='+(r*2).toFixed(0),x-r/2-8,y+18);
+    // center
+    ctx.beginPath();ctx.arc(x,y,4,0,TAU);ctx.fillStyle='#fff';ctx.fill();
 
-  document.getElementById('pR').textContent=r.toFixed(1);
-  document.getElementById('pD').textContent=(r*2).toFixed(1);
-  document.getElementById('pC').textContent=(2*Math.PI*r).toFixed(2);
-  document.getElementById('pA').textContent=(Math.PI*r*r).toFixed(2);
+    // resize handle
+    ctx.beginPath();ctx.arc(x+r,y,8,0,TAU);
+    ctx.fillStyle=color;ctx.strokeStyle='#fff';ctx.lineWidth=2;
+    ctx.shadowColor=color;ctx.shadowBlur=10;ctx.fill();ctx.stroke();ctx.shadowBlur=0;
+
+    // labels
+    ctx.font='bold 12px JetBrains Mono, monospace';
+    ctx.fillStyle='#ff7b72';ctx.fillText('r='+r.toFixed(0),x+6,y-r/2-2);
+    ctx.fillStyle=color;ctx.fillText('d='+(r*2).toFixed(0),x-r/2,y+16);
+
+    if(playMode==='compare'){
+      ctx.font='bold 11px JetBrains Mono, monospace';
+      ctx.fillStyle=color;
+      ctx.fillText('A='+(PI*r*r).toFixed(0),x-25,y+r/2+5);
+    }
+  });
+
+  // ratio display for compare mode
+  if(playMode==='compare'&&circles.length>=2){
+    const c1=circles[0],c2=circles[1];
+    const ratio=(c1.r/c2.r).toFixed(2);
+    const areaRatio=((c1.r*c1.r)/(c2.r*c2.r)).toFixed(2);
+    ctx.font='bold 13px JetBrains Mono, monospace';
+    ctx.fillStyle='#e6edf3';
+    ctx.fillText(`Radius ratio: ${ratio}x   Area ratio: ${areaRatio}x`,15,25);
+  }
+
+  const ac=circles[activeCircle];
+  updateStat('pR',ac.r.toFixed(1));
+  updateStat('pD',(ac.r*2).toFixed(1));
+  updateStat('pC',(TAU*ac.r).toFixed(2));
+  updateStat('pA',(PI*ac.r*ac.r).toFixed(2));
 }
 
 (function setupPlayground(){
@@ -361,34 +701,42 @@ function drawPlayground(){
 
   function getPos(e){
     const rect=c.getBoundingClientRect();
-    const scaleX=c.width/rect.width;
-    const scaleY=c.height/rect.height;
-    const clientX=e.touches?e.touches[0].clientX:e.clientX;
-    const clientY=e.touches?e.touches[0].clientY:e.clientY;
-    return{x:(clientX-rect.left)*scaleX,y:(clientY-rect.top)*scaleY};
+    const sx=c.width/rect.width,sy=c.height/rect.height;
+    const cx=e.touches?e.touches[0].clientX:e.clientX;
+    const cy=e.touches?e.touches[0].clientY:e.clientY;
+    return{x:(cx-rect.left)*sx,y:(cy-rect.top)*sy};
   }
   function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
 
   function onDown(e){
     e.preventDefault();
     const p=getPos(e);
-    const edgeDist=Math.abs(dist(p,pCircle)-pCircle.r);
-    if(edgeDist<15){
-      dragging='resize';
-    }else if(dist(p,pCircle)<pCircle.r){
-      dragging='move';
-      dragOff={x:p.x-pCircle.x,y:p.y-pCircle.y};
+    // find which circle
+    const drawList=playMode==='compare'?circles:[circles[activeCircle]];
+    for(let i=drawList.length-1;i>=0;i--){
+      const circ=drawList[i];
+      const edgeDist=Math.abs(dist(p,circ)-circ.r);
+      if(edgeDist<18){
+        activeCircle=circles.indexOf(circ);
+        dragging='resize';drawPlayground();return;
+      }
+      if(dist(p,circ)<circ.r){
+        activeCircle=circles.indexOf(circ);
+        dragging='move';dragOff={x:p.x-circ.x,y:p.y-circ.y};
+        drawPlayground();return;
+      }
     }
   }
   function onMove(e){
     if(!dragging)return;
     e.preventDefault();
     const p=getPos(e);
+    const circ=circles[activeCircle];
     if(dragging==='move'){
-      pCircle.x=p.x-dragOff.x;
-      pCircle.y=p.y-dragOff.y;
+      circ.x=p.x-dragOff.x;circ.y=p.y-dragOff.y;
+      if(playMode==='trace')tracePoints.push({x:circ.x,y:circ.y});
     }else{
-      pCircle.r=Math.max(20,Math.min(240,dist(p,pCircle)));
+      circ.r=Math.max(15,Math.min(280,dist(p,circ)));
     }
     drawPlayground();
   }
@@ -396,131 +744,217 @@ function drawPlayground(){
 
   c.addEventListener('mousedown',onDown);
   c.addEventListener('mousemove',onMove);
-  c.addEventListener('mouseup',onUp);
-  c.addEventListener('mouseleave',onUp);
+  c.addEventListener('mouseup',onUp);c.addEventListener('mouseleave',onUp);
   c.addEventListener('touchstart',onDown,{passive:false});
   c.addEventListener('touchmove',onMove,{passive:false});
   c.addEventListener('touchend',onUp);
-
   c.addEventListener('wheel',e=>{
     e.preventDefault();
-    pCircle.r=Math.max(20,Math.min(240,pCircle.r-e.deltaY*0.3));
+    const circ=circles[activeCircle];
+    circ.r=Math.max(15,Math.min(280,circ.r-e.deltaY*.4));
     drawPlayground();
   },{passive:false});
-
   drawPlayground();
 })();
 
-// --- QUIZ ---
-const PI=Math.PI;
+// ===================== QUIZ =====================
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}
 
 function genQuestion(){
-  const type=rnd(0,7);
-  let q,correct,choices;
-  const r=rnd(2,30);
+  const type=rnd(0,9);
+  let q,correct,choices,visual=null;
+  const r=rnd(3,25);
   const d=r*2;
-  const C=+(2*PI*r).toFixed(2);
+  const C=+(TAU*r).toFixed(2);
   const A=+(PI*r*r).toFixed(2);
 
   switch(type){
     case 0:
-      q=`A circle has radius <strong>${r}</strong>. What is its diameter?`;
-      correct=d;
-      choices=[d, d+rnd(1,5), d-rnd(1,Math.max(1,r)), rnd(1,60)];
-      break;
+      q=`A circle has radius <strong class="highlight">${r}</strong>. What is its diameter?`;
+      correct=d;visual={r,show:'radius'};
+      choices=[d,d+rnd(1,5),d-rnd(1,Math.max(1,r)),rnd(1,60)];break;
     case 1:
-      q=`A circle has diameter <strong>${d}</strong>. What is its radius?`;
-      correct=r;
-      choices=[r, r+rnd(1,4), r*2, rnd(1,30)];
-      break;
+      q=`A circle has diameter <strong class="blue">${d}</strong>. What is its radius?`;
+      correct=r;visual={r,show:'diameter'};
+      choices=[r,r+rnd(1,4),r*2,rnd(1,30)];break;
     case 2:
-      q=`A circle has radius <strong>${r}</strong>. What is its circumference? (round to nearest hundredth)`;
-      correct=C;
-      choices=[C, +(PI*r*r).toFixed(2), +(PI*d).toFixed(2)===C?+(2*PI*(r+1)).toFixed(2):+(PI*r).toFixed(2), +(2*PI*(r+rnd(1,3))).toFixed(2)];
-      break;
+      q=`Radius = <strong class="highlight">${r}</strong>. What is the circumference?`;
+      correct=C;visual={r,show:'circumference'};
+      choices=[C,+(PI*r*r).toFixed(2),+(PI*r).toFixed(2),+(TAU*(r+rnd(1,3))).toFixed(2)];break;
     case 3:
-      q=`A circle has diameter <strong>${d}</strong>. What is its circumference?`;
-      correct=+(PI*d).toFixed(2);
-      choices=[+(PI*d).toFixed(2), +(2*PI*d).toFixed(2), +(PI*d*d).toFixed(2), +(PI*(d+rnd(1,4))).toFixed(2)];
-      break;
+      q=`Diameter = <strong class="blue">${d}</strong>. What is the circumference?`;
+      correct=+(PI*d).toFixed(2);visual={r,show:'diameter'};
+      choices=[+(PI*d).toFixed(2),+(TAU*d).toFixed(2),+(PI*d*d).toFixed(2),+(PI*(d+rnd(1,4))).toFixed(2)];break;
     case 4:
-      q=`A circle has radius <strong>${r}</strong>. What is its area?`;
-      correct=A;
-      choices=[A, +(2*PI*r).toFixed(2), +(PI*r).toFixed(2), +(PI*(r+rnd(1,3))*(r+rnd(1,3))).toFixed(2)];
-      break;
+      q=`Radius = <strong class="highlight">${r}</strong>. What is the area?`;
+      correct=A;visual={r,show:'area'};
+      choices=[A,+(TAU*r).toFixed(2),+(PI*r).toFixed(2),+(PI*(r+rnd(1,3))**2).toFixed(2)];break;
     case 5:
-      q=`The circumference of a circle is <strong>${C}</strong>. What is the radius?`;
-      correct=r;
-      choices=[r, +(C/PI).toFixed(2), r+rnd(1,3), rnd(1,30)];
-      break;
+      q=`Circumference = <strong class="green">${C}</strong>. What is the radius?`;
+      correct=r;visual={r,show:'circumference'};
+      choices=[r,+(C/PI).toFixed(2),r+rnd(1,3),rnd(1,30)];break;
     case 6:
-      q=`Which formula gives the circumference of a circle?`;
-      correct='C = 2\u03C0r';
-      choices=['C = 2\u03C0r','C = \u03C0r\u00B2','C = 2r','C = \u03C0d\u00B2'];
-      break;
+      q=`Area = <strong class="purple">${A}</strong>. What is the radius?`;
+      correct=r;visual={r,show:'area'};
+      choices=[r,+(A/PI).toFixed(2),r+rnd(1,3),rnd(1,30)];break;
     case 7:
-      q=`Which formula gives the area of a circle?`;
+      q=`Which formula gives the <span class="green">circumference</span>?`;
+      correct='C = 2\u03C0r';
+      choices=['C = 2\u03C0r','C = \u03C0r\u00B2','C = 2r','C = \u03C0d\u00B2'];break;
+    case 8:
+      q=`Which formula gives the <span class="purple">area</span>?`;
       correct='A = \u03C0r\u00B2';
-      choices=['A = \u03C0r\u00B2','A = 2\u03C0r','A = \u03C0d','A = 2r\u00B2'];
-      break;
+      choices=['A = \u03C0r\u00B2','A = 2\u03C0r','A = \u03C0d','A = 2r\u00B2'];break;
+    case 9:
+      const r2=rnd(3,20);
+      q=`Circle A has r=${r}, Circle B has r=${r2}. How many times larger is the bigger area?`;
+      const big=Math.max(r,r2),small=Math.min(r,r2);
+      const ratio=+((big*big)/(small*small)).toFixed(2);
+      correct=ratio;
+      choices=[ratio,+((big/small)).toFixed(2),+((big*big-small*small)/(small*small)).toFixed(2),rnd(2,20)];
+      visual=null;break;
   }
-  // deduplicate and ensure 4 unique choices
   const set=new Set(choices.map(String));
   set.add(String(correct));
   while(set.size<4)set.add(String(rnd(1,100)));
-  const final=shuffle([...set].slice(0,4));
-  return{q,correct:String(correct),choices:final};
+  return{q,correct:String(correct),choices:shuffle([...set].slice(0,4)),visual};
 }
 
-let quizScore=0, quizQ=0, quizTotal=10;
+let quizScore=0,quizQ=0,quizTotal=10;
+let streakData=[];
+
+function initStreak(){
+  streakData=Array(quizTotal).fill('pending');
+  renderStreak();
+}
+
+function renderStreak(){
+  const el=document.getElementById('streak');
+  el.innerHTML=streakData.map((s,i)=>{
+    const icon=s==='correct'?'\u2713':s==='wrong'?'\u2717':'';
+    return`<div class="streak-dot ${s}">${icon}</div>`;
+  }).join('');
+}
+
+function drawQuizVisual(v){
+  const wrap=document.getElementById('quizVisual');
+  if(!v){wrap.style.display='none';return}
+  wrap.style.display='block';
+  const c=document.getElementById('quizCanvas');
+  const ctx=c.getContext('2d');
+  const w=c.width,h=c.height,cx=w/2,cy=h/2;
+  const scale=Math.min(80,v.r*3);
+  ctx.clearRect(0,0,w,h);
+
+  // circle
+  const grd=ctx.createRadialGradient(cx,cy,0,cx,cy,scale);
+  grd.addColorStop(0,'rgba(88,166,255,.12)');grd.addColorStop(1,'rgba(88,166,255,.02)');
+  ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);ctx.fillStyle=grd;ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);
+  ctx.strokeStyle='#58a6ff';ctx.lineWidth=2.5;ctx.stroke();
+
+  if(v.show==='radius'||v.show==='area'){
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+scale,cy);
+    ctx.strokeStyle='#ff7b72';ctx.lineWidth=2.5;ctx.stroke();
+    ctx.beginPath();ctx.arc(cx+scale,cy,4,0,TAU);ctx.fillStyle='#ff7b72';ctx.fill();
+    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#ff7b72';
+    ctx.fillText('r = '+v.r,cx+scale/2-10,cy-10);
+  }
+  if(v.show==='diameter'){
+    ctx.beginPath();ctx.moveTo(cx-scale,cy);ctx.lineTo(cx+scale,cy);
+    ctx.strokeStyle='#58a6ff';ctx.lineWidth=2.5;ctx.stroke();
+    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#58a6ff';
+    ctx.fillText('d = '+v.r*2,cx-15,cy-10);
+  }
+  if(v.show==='circumference'){
+    ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);
+    ctx.strokeStyle='#3fb950';ctx.lineWidth=4;ctx.stroke();
+  }
+  if(v.show==='area'){
+    ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);
+    ctx.fillStyle='rgba(163,113,247,.15)';ctx.fill();
+  }
+  ctx.beginPath();ctx.arc(cx,cy,3,0,TAU);ctx.fillStyle='#fff';ctx.fill();
+}
+
+function spawnConfetti(x,y){
+  const colors=['#3fb950','#58a6ff','#a371f7','#ff7b72','#f0883e','#ffd33d'];
+  for(let i=0;i<25;i++){
+    const el=document.createElement('div');
+    el.style.cssText=`position:fixed;left:${x}px;top:${y}px;width:${rnd(4,8)}px;height:${rnd(4,8)}px;
+      background:${colors[rnd(0,5)]};border-radius:${rnd(0,1)?'50%':'2px'};pointer-events:none;z-index:1000;
+      opacity:1;transition:all ${rnd(500,1200)}ms cubic-bezier(.25,.46,.45,.94)`;
+    document.body.appendChild(el);
+    requestAnimationFrame(()=>{
+      el.style.transform=`translate(${rnd(-120,120)}px,${rnd(-150,50)}px) rotate(${rnd(0,360)}deg)`;
+      el.style.opacity='0';
+    });
+    setTimeout(()=>el.remove(),1500);
+  }
+}
 
 function renderQuiz(){
   const area=document.getElementById('quizArea');
   if(quizQ>=quizTotal){
-    area.innerHTML=`<div class="question"><h4>Quiz Complete!</h4><p style="color:#8b949e;margin-top:.5rem">You scored <strong style="color:#58a6ff">${quizScore}</strong> out of <strong>${quizTotal}</strong>. ${quizScore>=8?'Amazing!':quizScore>=5?'Good job! Keep practicing.':'Keep studying the Learn tab and try again!'}</p></div>`;
+    const pct=Math.round(quizScore/quizTotal*100);
+    const msg=pct>=90?'Outstanding!':pct>=70?'Great work!':pct>=50?'Good effort! Keep practicing.':'Review the Learn tab and try again!';
+    const grade=pct>=90?'A+':pct>=80?'A':pct>=70?'B':pct>=60?'C':'Keep trying';
+    area.innerHTML=`<div class="glass" style="text-align:center;padding:2.5rem">
+      <div style="font-size:3rem;font-weight:800;font-family:JetBrains Mono;
+        background:linear-gradient(135deg,#58a6ff,#a371f7);-webkit-background-clip:text;
+        background-clip:text;-webkit-text-fill-color:transparent">${pct}%</div>
+      <div style="color:#6e7681;margin:.5rem 0;font-size:1.1rem;font-weight:600">${grade}</div>
+      <p style="color:#8b949e;margin:.75rem 0">${msg}</p>
+      <p style="color:#484f58;font-size:.85rem">${quizScore} of ${quizTotal} correct</p>
+    </div>`;
+    document.getElementById('quizVisual').style.display='none';
+    // confetti for good scores
+    if(pct>=70){
+      setTimeout(()=>{spawnConfetti(innerWidth/2,innerHeight/2)},200);
+      setTimeout(()=>{spawnConfetti(innerWidth/3,innerHeight/2)},400);
+      setTimeout(()=>{spawnConfetti(innerWidth*2/3,innerHeight/2)},600);
+    }
     return;
   }
-  const {q,correct,choices}=genQuestion();
-  document.getElementById('qProgress').textContent=`Question ${quizQ+1} / ${quizTotal}`;
+  const{q,correct,choices,visual}=genQuestion();
+  drawQuizVisual(visual);
 
-  let html=`<div class="question"><h4>${q}</h4><div class="choices">`;
-  choices.forEach(ch=>{
-    html+=`<div class="choice" data-val="${ch}">${ch}</div>`;
-  });
+  let html=`<div class="glass question"><h4>${q}</h4><div class="choices">`;
+  choices.forEach(ch=>{html+=`<div class="choice" data-val="${ch}">${ch}</div>`});
   html+=`</div><div class="feedback" id="fb"></div></div>`;
   area.innerHTML=html;
 
   area.querySelectorAll('.choice').forEach(el=>{
-    el.addEventListener('click',()=>{
+    el.addEventListener('click',function handler(){
       if(el.classList.contains('disabled'))return;
       area.querySelectorAll('.choice').forEach(c=>c.classList.add('disabled'));
       const fb=document.getElementById('fb');
       if(el.dataset.val===correct){
         el.classList.add('correct');
-        quizScore++;
-        fb.className='feedback show right';
-        fb.textContent='Correct!';
+        quizScore++;streakData[quizQ]='correct';
+        fb.className='feedback show right';fb.textContent='Correct!';
+        const rect=el.getBoundingClientRect();
+        spawnConfetti(rect.left+rect.width/2,rect.top);
       }else{
-        el.classList.add('wrong');
+        el.classList.add('wrong');streakData[quizQ]='wrong';
         area.querySelector(`.choice[data-val="${CSS.escape(correct)}"]`)?.classList.add('correct');
-        fb.className='feedback show wrong-fb';
-        fb.textContent=`The answer is ${correct}.`;
+        fb.className='feedback show wrong-fb';fb.textContent=`Answer: ${correct}`;
       }
+      renderStreak();
       document.getElementById('score').textContent=quizScore;
       quizQ++;
-      setTimeout(renderQuiz,1400);
+      setTimeout(renderQuiz,1500);
     });
   });
 }
 
 document.getElementById('newQuiz').addEventListener('click',()=>{
   quizScore=0;quizQ=0;
-  document.getElementById('score').textContent=0;
-  renderQuiz();
+  document.getElementById('score').textContent='0';
+  initStreak();renderQuiz();
 });
-renderQuiz();
+initStreak();renderQuiz();
 </script>
 </body>
 </html>
