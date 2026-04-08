@@ -203,6 +203,15 @@ header .wave-emoji{font-size:1.5rem;display:inline-block;animation:waveHand 2s e
 .feedback.show{display:block;animation:fadeUp .3s ease}
 .feedback.right{background:rgba(6,214,160,.12);border:1px solid #06d6a044;color:#06d6a0}
 .feedback.wrong-fb{background:rgba(239,71,111,.1);border:1px solid #ef476f44;color:#ef476f}
+.feedback .explain{margin-top:.6rem;color:#d4eaf7;font-size:.85rem;line-height:1.6;font-weight:500}
+.feedback .explain .zh{color:#8bb8cc;font-size:.82rem}
+.btn-next{
+  display:inline-block;margin-top:.8rem;padding:.55rem 1.4rem;border-radius:2rem;border:none;
+  background:linear-gradient(135deg,#5ec4d4,#06d6a0);color:#041e2e;cursor:pointer;
+  font-size:.85rem;font-weight:700;font-family:inherit;transition:all .25s;
+  box-shadow:0 4px 12px rgba(6,214,160,.2);
+}
+.btn-next:active{transform:scale(.96)}
 
 /* slider */
 .slider-row{display:flex;align-items:center;gap:1rem;margin:1rem 0;flex-wrap:wrap}
@@ -240,16 +249,16 @@ input[type=range]::-webkit-slider-thumb{
 <canvas id="bgCanvas"></canvas>
 
 <div class="wrap">
-  <a href="index.html" class="back">&larr; Back to Math Games</a>
+  <a href="index.html" class="back">&larr; Back to Math Games / \u8FD4\u56DE\u6570\u5B66\u6E38\u620F</a>
   <header>
     <h1><span class="wave-emoji">&#x1F3C4;</span> Kayla's Circle Explorer</h1>
-    <p class="subtitle">Ride the wave of circle geometry!</p>
+    <p class="subtitle">Ride the wave of circle geometry! / \u4E58\u98CE\u7834\u6D6A\uFF0C\u63A2\u7D22\u5706\u7684\u5965\u79D8\uFF01</p>
   </header>
 
   <div class="tabs">
-    <button class="tab active" data-tab="learn">&#x1F30A; Learn</button>
-    <button class="tab" data-tab="playground">&#x1F3D6;&#xFE0F; Playground</button>
-    <button class="tab" data-tab="quiz">&#x1F420; Quiz</button>
+    <button class="tab active" data-tab="learn">&#x1F30A; Learn \u5B66\u4E60</button>
+    <button class="tab" data-tab="playground">&#x1F3D6;&#xFE0F; Play \u64CD\u573A</button>
+    <button class="tab" data-tab="quiz">&#x1F420; Quiz \u6D4B\u9A8C</button>
   </div>
 
   <!-- LEARN PANEL -->
@@ -257,53 +266,53 @@ input[type=range]::-webkit-slider-thumb{
     <div class="glass canvas-wrap">
       <canvas id="learnCanvas"></canvas>
       <div class="toggle-row">
-        <button class="toggle-btn on" data-part="radius">&#x1F3C4; Radius</button>
-        <button class="toggle-btn on" data-part="diameter">&#x1F30A; Diameter</button>
-        <button class="toggle-btn on" data-part="circumference">&#x1F41A; Circumference</button>
-        <button class="toggle-btn on" data-part="area">&#x2600;&#xFE0F; Area</button>
+        <button class="toggle-btn on" data-part="radius">&#x1F3C4; Radius \u534A\u5F84</button>
+        <button class="toggle-btn on" data-part="diameter">&#x1F30A; Diameter \u76F4\u5F84</button>
+        <button class="toggle-btn on" data-part="circumference">&#x1F41A; Circumference \u5468\u957F</button>
+        <button class="toggle-btn on" data-part="area">&#x2600;&#xFE0F; Area \u9762\u79EF</button>
       </div>
       <div class="slider-row">
-        <label>Radius</label>
+        <label>Radius \u534A\u5F84</label>
         <input type="range" id="learnRadius" min="25" max="190" value="110">
       </div>
     </div>
 
     <div class="stats" id="learnStats">
-      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="lR">110</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="lD">220</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference</div><div class="stat-value circumference" id="lC">691.15</div></div>
-      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area</div><div class="stat-value area" id="lA">38013.27</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius \u534A\u5F84 (r)</div><div class="stat-value radius" id="lR">110</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter \u76F4\u5F84 (d)</div><div class="stat-value diameter" id="lD">220</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference \u5468\u957F</div><div class="stat-value circumference" id="lC">691.15</div></div>
+      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area \u9762\u79EF</div><div class="stat-value area" id="lA">38013.27</div></div>
     </div>
 
     <div class="glass pi-demo">
-      <h3 style="color:#06d6a0;margin-bottom:.75rem;font-size:1rem">&#x1F30A; Unrolling the Wave</h3>
-      <p style="color:#7bafc4;font-size:.85rem;margin-bottom:.75rem">Watch the circumference unroll like a wave stretching along the shore &mdash; it equals exactly &pi; &times; diameter</p>
+      <h3 style="color:#06d6a0;margin-bottom:.75rem;font-size:1rem">&#x1F30A; Unrolling the Wave / \u5C55\u5F00\u6D77\u6D6A</h3>
+      <p style="color:#7bafc4;font-size:.85rem;margin-bottom:.75rem">Watch the circumference unroll like a wave stretching along the shore &mdash; it equals exactly &pi; &times; diameter<br>\u770B\u5468\u957F\u50CF\u6D77\u6D6A\u4E00\u6837\u5C55\u5F00\u2014\u2014\u5B83\u6070\u597D\u7B49\u4E8E &pi; &times; \u76F4\u5F84</p>
       <canvas id="piCanvas"></canvas>
     </div>
 
     <div class="info-grid">
       <div class="glass info">
         <div class="icon-bg">&#x1F3C4;</div>
-        <h3><span class="dot" style="background:#f7936f"></span> Radius</h3>
-        <p>The distance from the <strong>center</strong> to the edge &mdash; like paddling from the middle of a tide pool to the rim. Every radius is the same length.</p>
+        <h3><span class="dot" style="background:#f7936f"></span> Radius \u534A\u5F84</h3>
+        <p>The distance from the <strong>center</strong> to the edge &mdash; like paddling from the middle of a tide pool to the rim. Every radius is the same length.<br><span style="color:#6a9bb0">\u4ECE<strong>\u5706\u5FC3</strong>\u5230\u8FB9\u7F18\u7684\u8DDD\u79BB\u2014\u2014\u5C31\u50CF\u4ECE\u6F6E\u6C60\u4E2D\u5FC3\u5212\u5230\u8FB9\u7F18\u3002\u540C\u4E00\u4E2A\u5706\u7684\u6BCF\u6761\u534A\u5F84\u90FD\u4E00\u6837\u957F\u3002</span></p>
         <div class="formula">r = d &divide; 2</div>
       </div>
       <div class="glass info">
         <div class="icon-bg">&#x1F30A;</div>
-        <h3><span class="dot" style="background:#5ec4d4"></span> Diameter</h3>
-        <p>A line straight across through the center &mdash; like swimming from one side of a circular reef to the other. Always <strong>twice</strong> the radius.</p>
+        <h3><span class="dot" style="background:#5ec4d4"></span> Diameter \u76F4\u5F84</h3>
+        <p>A line straight across through the center &mdash; like swimming from one side of a circular reef to the other. Always <strong>twice</strong> the radius.<br><span style="color:#6a9bb0">\u7A7F\u8FC7\u5706\u5FC3\u7684\u4E00\u6761\u76F4\u7EBF\u2014\u2014\u5C31\u50CF\u4ECE\u73CA\u745A\u7901\u7684\u4E00\u8FB9\u6E38\u5230\u53E6\u4E00\u8FB9\u3002\u6C38\u8FDC\u662F\u534A\u5F84\u7684<strong>\u4E24\u500D</strong>\u3002</span></p>
         <div class="formula">d = 2r</div>
       </div>
       <div class="glass info">
         <div class="icon-bg">&#x1F41A;</div>
-        <h3><span class="dot" style="background:#06d6a0"></span> Circumference</h3>
-        <p>The total distance <em>around</em> the circle &mdash; like surfing the entire perimeter of a wave ring. Uses the magical number <strong>&pi; &asymp; 3.14159</strong>.</p>
+        <h3><span class="dot" style="background:#06d6a0"></span> Circumference \u5468\u957F</h3>
+        <p>The total distance <em>around</em> the circle &mdash; like surfing the entire perimeter of a wave ring. Uses the magical number <strong>&pi; &asymp; 3.14159</strong>.<br><span style="color:#6a9bb0">\u5706\u7684<em>\u4E00\u5468</em>\u7684\u603B\u8DDD\u79BB\u2014\u2014\u5C31\u50CF\u6CBF\u7740\u6D6A\u82B1\u5708\u51B2\u6D6A\u4E00\u6574\u5708\u3002\u7528\u5230\u795E\u5947\u7684\u6570\u5B57 <strong>&pi; &asymp; 3.14159</strong>\u3002</span></p>
         <div class="formula">C = 2&pi;r = &pi;d</div>
       </div>
       <div class="glass info">
         <div class="icon-bg">&#x2600;&#xFE0F;</div>
-        <h3><span class="dot" style="background:#ffd166"></span> Area</h3>
-        <p>The space <em>inside</em> &mdash; like the sandy floor of a circular lagoon. Double the radius and the area <strong>quadruples</strong>!</p>
+        <h3><span class="dot" style="background:#ffd166"></span> Area \u9762\u79EF</h3>
+        <p>The space <em>inside</em> &mdash; like the sandy floor of a circular lagoon. Double the radius and the area <strong>quadruples</strong>!<br><span style="color:#6a9bb0">\u5706<em>\u5185\u90E8</em>\u7684\u7A7A\u95F4\u2014\u2014\u5C31\u50CF\u5706\u5F62\u6F5F\u6E56\u7684\u6C99\u5E95\u3002\u534A\u5F84\u53D8\u4E3A\u4E24\u500D\uFF0C\u9762\u79EF\u5C31\u53D8\u4E3A<strong>\u56DB\u500D</strong>\uFF01</span></p>
         <div class="formula">A = &pi;r&sup2;</div>
       </div>
     </div>
@@ -314,17 +323,17 @@ input[type=range]::-webkit-slider-thumb{
     <div class="glass canvas-wrap">
       <canvas id="playCanvas"></canvas>
       <div class="mode-row">
-        <button class="mode-btn active" data-mode="free">&#x1F3C4; Free Surf</button>
-        <button class="mode-btn" data-mode="compare">&#x1F41A; Compare</button>
-        <button class="mode-btn" data-mode="trace">&#x1F30A; Trace Wake</button>
+        <button class="mode-btn active" data-mode="free">&#x1F3C4; Free Surf \u81EA\u7531\u51B2\u6D6A</button>
+        <button class="mode-btn" data-mode="compare">&#x1F41A; Compare \u5BF9\u6BD4</button>
+        <button class="mode-btn" data-mode="trace">&#x1F30A; Trace Wake \u8F68\u8FF9</button>
       </div>
       <p class="canvas-hint" style="color:#5a8a9e;font-size:.8rem;margin-top:.5rem"></p>
     </div>
     <div class="stats" id="playStats">
-      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="pR">100</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="pD">200</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference</div><div class="stat-value circumference" id="pC">628.32</div></div>
-      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area</div><div class="stat-value area" id="pA">31415.93</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius \u534A\u5F84 (r)</div><div class="stat-value radius" id="pR">100</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter \u76F4\u5F84 (d)</div><div class="stat-value diameter" id="pD">200</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference \u5468\u957F</div><div class="stat-value circumference" id="pC">628.32</div></div>
+      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area \u9762\u79EF</div><div class="stat-value area" id="pA">31415.93</div></div>
     </div>
   </div>
 
@@ -333,7 +342,7 @@ input[type=range]::-webkit-slider-thumb{
     <div class="glass quiz-header">
       <div class="score-display"><span class="num" id="score">0</span><span class="label">/ 10</span></div>
       <div class="streak" id="streak"></div>
-      <button class="btn" id="newQuiz" style="margin-left:auto">&#x1F3C4; New Wave</button>
+      <button class="btn" id="newQuiz" style="margin-left:auto">&#x1F3C4; New Wave \u65B0\u6D6A</button>
     </div>
     <div class="glass quiz-canvas-area" id="quizVisual" style="display:none">
       <canvas id="quizCanvas"></canvas>
@@ -888,7 +897,7 @@ function setupQuizCanvas(){
 
 function genQuestion(){
   const type=rnd(0,9);
-  let q,correct,choices,visual=null;
+  let q,correct,choices,visual=null,explain='';
   const r=rnd(3,25);
   const d=r*2;
   const C=+(TAU*r).toFixed(2);
@@ -896,54 +905,64 @@ function genQuestion(){
 
   switch(type){
     case 0:
-      q=`A wave ring has radius <strong class="highlight">${r}</strong>. What's the diameter?`;
+      q=`A wave ring has radius <strong class="highlight">${r}</strong>. What's the diameter?<br><span style="color:#7bafc4">\u6D6A\u82B1\u5708\u7684\u534A\u5F84\u662F <strong>${r}</strong>\u3002\u76F4\u5F84\u662F\u591A\u5C11\uFF1F</span>`;
       correct=d;visual={r,show:'radius'};
+      explain=`Diameter = 2 \u00D7 radius = 2 \u00D7 ${r} = ${d}<br><span class="zh">\u76F4\u5F84 = 2 \u00D7 \u534A\u5F84 = 2 \u00D7 ${r} = ${d}</span>`;
       choices=[d,d+rnd(1,5),d-rnd(1,Math.max(1,r)),rnd(1,60)];break;
     case 1:
-      q=`A tide pool has diameter <strong class="blue">${d}</strong>. What's the radius?`;
+      q=`A tide pool has diameter <strong class="blue">${d}</strong>. What's the radius?<br><span style="color:#7bafc4">\u6F6E\u6C60\u7684\u76F4\u5F84\u662F <strong>${d}</strong>\u3002\u534A\u5F84\u662F\u591A\u5C11\uFF1F</span>`;
       correct=r;visual={r,show:'diameter'};
+      explain=`Radius = diameter \u00F7 2 = ${d} \u00F7 2 = ${r}<br><span class="zh">\u534A\u5F84 = \u76F4\u5F84 \u00F7 2 = ${d} \u00F7 2 = ${r}</span>`;
       choices=[r,r+rnd(1,4),r*2,rnd(1,30)];break;
     case 2:
-      q=`Radius = <strong class="highlight">${r}</strong>. What's the circumference?`;
+      q=`Radius = <strong class="highlight">${r}</strong>. What's the circumference?<br><span style="color:#7bafc4">\u534A\u5F84 = <strong>${r}</strong>\u3002\u5468\u957F\u662F\u591A\u5C11\uFF1F</span>`;
       correct=C;visual={r,show:'circumference'};
+      explain=`C = 2\u03C0r = 2 \u00D7 \u03C0 \u00D7 ${r} = ${C}<br><span class="zh">\u5468\u957F = 2\u03C0r = 2 \u00D7 \u03C0 \u00D7 ${r} = ${C}</span>`;
       choices=[C,+(PI*r*r).toFixed(2),+(PI*r).toFixed(2),+(TAU*(r+rnd(1,3))).toFixed(2)];break;
     case 3:
-      q=`A buoy ring has diameter <strong class="blue">${d}</strong>. What's the circumference?`;
+      q=`A buoy ring has diameter <strong class="blue">${d}</strong>. What's the circumference?<br><span style="color:#7bafc4">\u6D6E\u6807\u5708\u7684\u76F4\u5F84\u662F <strong>${d}</strong>\u3002\u5468\u957F\u662F\u591A\u5C11\uFF1F</span>`;
       correct=+(PI*d).toFixed(2);visual={r,show:'diameter'};
+      explain=`C = \u03C0d = \u03C0 \u00D7 ${d} = ${(PI*d).toFixed(2)}<br><span class="zh">\u5468\u957F = \u03C0d = \u03C0 \u00D7 ${d} = ${(PI*d).toFixed(2)}</span>`;
       choices=[+(PI*d).toFixed(2),+(TAU*d).toFixed(2),+(PI*d*d).toFixed(2),+(PI*(d+rnd(1,4))).toFixed(2)];break;
     case 4:
-      q=`Radius = <strong class="highlight">${r}</strong>. What's the area of the lagoon?`;
+      q=`Radius = <strong class="highlight">${r}</strong>. What's the area?<br><span style="color:#7bafc4">\u534A\u5F84 = <strong>${r}</strong>\u3002\u9762\u79EF\u662F\u591A\u5C11\uFF1F</span>`;
       correct=A;visual={r,show:'area'};
+      explain=`A = \u03C0r\u00B2 = \u03C0 \u00D7 ${r}\u00B2 = \u03C0 \u00D7 ${r*r} = ${A}<br><span class="zh">\u9762\u79EF = \u03C0r\u00B2 = \u03C0 \u00D7 ${r}\u00B2 = \u03C0 \u00D7 ${r*r} = ${A}</span>`;
       choices=[A,+(TAU*r).toFixed(2),+(PI*r).toFixed(2),+(PI*(r+rnd(1,3))**2).toFixed(2)];break;
     case 5:
-      q=`Circumference = <strong class="green">${C}</strong>. What's the radius?`;
+      q=`Circumference = <strong class="green">${C}</strong>. What's the radius?<br><span style="color:#7bafc4">\u5468\u957F = <strong>${C}</strong>\u3002\u534A\u5F84\u662F\u591A\u5C11\uFF1F</span>`;
       correct=r;visual={r,show:'circumference'};
+      explain=`r = C \u00F7 (2\u03C0) = ${C} \u00F7 ${(TAU).toFixed(4)} = ${r}<br><span class="zh">\u534A\u5F84 = \u5468\u957F \u00F7 (2\u03C0) = ${C} \u00F7 ${(TAU).toFixed(4)} = ${r}</span>`;
       choices=[r,+(C/PI).toFixed(2),r+rnd(1,3),rnd(1,30)];break;
     case 6:
-      q=`Area = <strong class="purple">${A}</strong>. What's the radius?`;
+      q=`Area = <strong class="purple">${A}</strong>. What's the radius?<br><span style="color:#7bafc4">\u9762\u79EF = <strong>${A}</strong>\u3002\u534A\u5F84\u662F\u591A\u5C11\uFF1F</span>`;
       correct=r;visual={r,show:'area'};
+      explain=`r = \u221A(A \u00F7 \u03C0) = \u221A(${A} \u00F7 \u03C0) = \u221A${(A/PI).toFixed(2)} = ${r}<br><span class="zh">\u534A\u5F84 = \u221A(\u9762\u79EF \u00F7 \u03C0) = \u221A(${A} \u00F7 \u03C0) = ${r}</span>`;
       choices=[r,+(A/PI).toFixed(2),r+rnd(1,3),rnd(1,30)];break;
     case 7:
-      q=`Which formula gives the <span class="green">circumference</span>?`;
+      q=`Which formula gives the <span class="green">circumference</span>?<br><span style="color:#7bafc4">\u54EA\u4E2A\u516C\u5F0F\u8BA1\u7B97<span class="green">\u5468\u957F</span>\uFF1F</span>`;
       correct='C = 2\u03C0r';
+      explain=`Circumference = 2\u03C0r (twice pi times the radius).<br><span class="zh">\u5468\u957F = 2\u03C0r\uFF08\u4E24\u500D\u7684\u03C0\u4E58\u4EE5\u534A\u5F84\uFF09\u3002</span>`;
       choices=['C = 2\u03C0r','C = \u03C0r\u00B2','C = 2r','C = \u03C0d\u00B2'];break;
     case 8:
-      q=`Which formula gives the <span class="purple">area</span>?`;
+      q=`Which formula gives the <span class="purple">area</span>?<br><span style="color:#7bafc4">\u54EA\u4E2A\u516C\u5F0F\u8BA1\u7B97<span class="purple">\u9762\u79EF</span>\uFF1F</span>`;
       correct='A = \u03C0r\u00B2';
+      explain=`Area = \u03C0r\u00B2 (pi times the radius squared).<br><span class="zh">\u9762\u79EF = \u03C0r\u00B2\uFF08\u03C0\u4E58\u4EE5\u534A\u5F84\u7684\u5E73\u65B9\uFF09\u3002</span>`;
       choices=['A = \u03C0r\u00B2','A = 2\u03C0r','A = \u03C0d','A = 2r\u00B2'];break;
     case 9:
       const r2=rnd(3,20);
-      q=`Reef A has r=${r}, Reef B has r=${r2}. How many times larger is the bigger area?`;
       const big=Math.max(r,r2),small=Math.min(r,r2);
       const ratio=+((big*big)/(small*small)).toFixed(2);
+      q=`Reef A has r=${r}, Reef B has r=${r2}. How many times larger is the bigger area?<br><span style="color:#7bafc4">\u73CA\u745A\u7901A\u7684r=${r}\uFF0C\u73CA\u745A\u7901B\u7684r=${r2}\u3002\u8F83\u5927\u7684\u9762\u79EF\u662F\u8F83\u5C0F\u7684\u51E0\u500D\uFF1F</span>`;
       correct=ratio;
+      explain=`Area ratio = (${big}\u00B2) \u00F7 (${small}\u00B2) = ${big*big} \u00F7 ${small*small} = ${ratio}<br><span class="zh">\u9762\u79EF\u6BD4 = (${big}\u00B2) \u00F7 (${small}\u00B2) = ${big*big} \u00F7 ${small*small} = ${ratio}</span>`;
       choices=[ratio,+((big/small)).toFixed(2),+((big*big-small*small)/(small*small)).toFixed(2),rnd(2,20)];
       visual=null;break;
   }
   const set=new Set(choices.map(String));
   set.add(String(correct));
   while(set.size<4)set.add(String(rnd(1,100)));
-  return{q,correct:String(correct),choices:shuffle([...set].slice(0,4)),visual};
+  return{q,correct:String(correct),choices:shuffle([...set].slice(0,4)),visual,explain};
 }
 
 let quizScore=0,quizQ=0,quizTotal=10;
@@ -1002,7 +1021,9 @@ function drawQuizVisual(v){
 }
 
 const surfPraise=['Radical!','Cowabunga!','Gnarly!','Tubular!','Stoked!','Hang ten!','Shaka!'];
+const surfPraiseCN=['\u592A\u68D2\u4E86\uFF01','\u5389\u5BB3\uFF01','\u5B8C\u7F8E\uFF01','\u6B63\u786E\uFF01','\u597D\u6781\u4E86\uFF01','\u771F\u68D2\uFF01','\u8D85\u7EA7\u68D2\uFF01'];
 const surfBummer=['Wipeout!','Bail!','Caught in the foam!'];
+const surfBummerCN=['\u7FFB\u8239\u4E86\uFF01','\u6CA1\u63A5\u4F4F\uFF01','\u88AB\u6D6A\u82B1\u5377\u8D70\u4E86\uFF01'];
 
 function spawnConfetti(x,y){
   const colors=['#06d6a0','#5ec4d4','#ffd166','#f7936f','#ef476f','#fff'];
@@ -1024,15 +1045,18 @@ function renderQuiz(){
   const area=document.getElementById('quizArea');
   if(quizQ>=quizTotal){
     const pct=Math.round(quizScore/quizTotal*100);
-    const msg=pct>=90?'Total shredder! You crushed it!':pct>=70?'Nice ride, Kayla! Keep it up!':pct>=50?'Good paddle out! Try catching more waves.':'Head back to the Learn tab and ride again!';
-    const grade=pct>=90?'Pro Surfer':pct>=80?'Wave Rider':pct>=70?'Beach Cruiser':pct>=60?'Paddler':'Grommet';
+    const msg=pct>=90?'Total shredder! You crushed it!':'';
+    const msgA=pct>=90?'\u5168\u80FD\u51B2\u6D6A\u624B\uFF01\u4F60\u592A\u68D2\u4E86\uFF01':pct>=70?'\u51B2\u5F97\u6F02\u4EAE\uFF0CKayla\uFF01\u7EE7\u7EED\u52A0\u6CB9\uFF01':pct>=50?'\u4E0D\u9519\u7684\u5F00\u59CB\uFF01\u518D\u591A\u7EC3\u4E60\u51E0\u6B21\u5427\u3002':'\u56DE\u5230\u5B66\u4E60\u9875\u518D\u7EC3\u4E60\u4E00\u4E0B\u5427\uFF01';
+    const msgE=pct>=90?'Total shredder! You crushed it!':pct>=70?'Nice ride, Kayla! Keep it up!':pct>=50?'Good paddle out! Try catching more waves.':'Head back to the Learn tab and ride again!';
+    const grade=pct>=90?'Pro Surfer \u51B2\u6D6A\u9AD8\u624B':pct>=80?'Wave Rider \u6D6A\u82B1\u9A91\u58EB':pct>=70?'Beach Cruiser \u6D77\u6EE9\u6F2B\u6E38':pct>=60?'Paddler \u5212\u6C34\u65B0\u624B':'Grommet \u521D\u5B66\u8005';
     area.innerHTML=`<div class="glass" style="text-align:center;padding:2.5rem">
       <div style="font-size:3rem;font-weight:700;font-family:JetBrains Mono;
         background:linear-gradient(135deg,#ffd166,#f7936f);-webkit-background-clip:text;
         background-clip:text;-webkit-text-fill-color:transparent">${pct}%</div>
       <div style="color:#5ec4d4;margin:.5rem 0;font-size:1.1rem;font-weight:700">${grade}</div>
-      <p style="color:#8bb8cc;margin:.75rem 0">${msg}</p>
-      <p style="color:#5a8a9e;font-size:.85rem">${quizScore} of ${quizTotal} waves caught</p>
+      <p style="color:#8bb8cc;margin:.75rem 0">${msgE}</p>
+      <p style="color:#7bafc4;margin:.25rem 0;font-size:.9rem">${msgA}</p>
+      <p style="color:#5a8a9e;font-size:.85rem;margin-top:.5rem">${quizScore} of ${quizTotal} waves caught / \u6355\u83B7\u4E86 ${quizScore} / ${quizTotal} \u4E2A\u6D6A</p>
     </div>`;
     document.getElementById('quizVisual').style.display='none';
     if(pct>=70){
@@ -1042,7 +1066,7 @@ function renderQuiz(){
     }
     return;
   }
-  const{q,correct,choices,visual}=genQuestion();
+  const{q,correct,choices,visual,explain}=genQuestion();
   drawQuizVisual(visual);
 
   let html=`<div class="glass question"><h4>${q}</h4><div class="choices">`;
@@ -1059,19 +1083,27 @@ function renderQuiz(){
         el.classList.add('correct');
         quizScore++;streakData[quizQ]='correct';
         fb.className='feedback show right';
-        fb.textContent=surfPraise[rnd(0,surfPraise.length-1)];
+        fb.innerHTML=surfPraise[rnd(0,surfPraise.length-1)]+' / '+surfPraiseCN[rnd(0,surfPraiseCN.length-1)];
         const rect=el.getBoundingClientRect();
         spawnConfetti(rect.left+rect.width/2,rect.top);
+        renderStreak();
+        document.getElementById('score').textContent=quizScore;
+        quizQ++;
+        setTimeout(renderQuiz,1200);
       }else{
         el.classList.add('wrong');streakData[quizQ]='wrong';
         area.querySelector(`.choice[data-val="${CSS.escape(correct)}"]`)?.classList.add('correct');
         fb.className='feedback show wrong-fb';
-        fb.textContent=surfBummer[rnd(0,surfBummer.length-1)]+` Answer: ${correct}`;
+        const bummer=surfBummer[rnd(0,surfBummer.length-1)];
+        const bummerCN=surfBummerCN[rnd(0,surfBummerCN.length-1)];
+        fb.innerHTML=`<strong>${bummer}</strong> / <strong>${bummerCN}</strong>`
+          +`<div class="explain">${explain}</div>`
+          +`<button class="btn-next" id="nextQ">\u2192 Next Question \u4E0B\u4E00\u9898</button>`;
+        renderStreak();
+        document.getElementById('score').textContent=quizScore;
+        quizQ++;
+        document.getElementById('nextQ').addEventListener('click',renderQuiz);
       }
-      renderStreak();
-      document.getElementById('score').textContent=quizScore;
-      quizQ++;
-      setTimeout(renderQuiz,1500);
     });
   });
 }
