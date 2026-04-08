@@ -3,66 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Circle Explorer - 8th Grade</title>
+<title>Kayla's Circle Explorer</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap');
 
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
-  font-family:'Inter',system-ui,-apple-system,sans-serif;
-  background:#06080d;color:#c9d1d9;
+  font-family:'Quicksand',system-ui,-apple-system,sans-serif;
+  background:#041e2e;color:#d4eaf7;
   min-height:100vh;min-height:100dvh;overflow-x:hidden;
   -webkit-tap-highlight-color:transparent;
 }
 
+/* ocean bg canvas */
 #bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 
 .wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:1.5rem}
 
-.back{display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.5rem;color:#58a6ff;text-decoration:none;font-size:.85rem;
+.back{display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.5rem;color:#5ec4d4;text-decoration:none;font-size:.85rem;
   padding:.5rem .9rem;border-radius:2rem;border:1px solid transparent;transition:all .25s;
   -webkit-touch-callout:none}
-.back:hover{border-color:#58a6ff22;background:#58a6ff0a}
-.back:active{background:#58a6ff15}
+.back:hover{border-color:#5ec4d422;background:#5ec4d40a}
+.back:active{background:#5ec4d415}
 
-header{text-align:center;padding:1.5rem 0 1rem}
-header h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;letter-spacing:-.03em;
-  background:linear-gradient(135deg,#58a6ff 0%,#a371f7 40%,#ff7b72 100%);
-  background-size:200% 200%;animation:shiftGrad 6s ease infinite alternate;
+header{text-align:center;padding:1.5rem 0 .5rem}
+header h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;letter-spacing:-.02em;
+  background:linear-gradient(135deg,#ffd166 0%,#f7936f 35%,#ef476f 65%,#5ec4d4 100%);
+  background-size:300% 300%;animation:sunsetShift 8s ease infinite alternate;
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
 }
-@keyframes shiftGrad{0%{background-position:0% 50%}100%{background-position:100% 50%}}
-header p{color:#484f58;margin-top:.3rem;font-size:.95rem}
+@keyframes sunsetShift{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+header .subtitle{color:#7bafc4;margin-top:.3rem;font-size:.95rem}
+header .wave-emoji{font-size:1.5rem;display:inline-block;animation:waveHand 2s ease-in-out infinite}
+@keyframes waveHand{0%,100%{transform:rotate(0deg)}25%{transform:rotate(20deg)}75%{transform:rotate(-10deg)}}
 
 /* tabs */
 .tabs{display:flex;gap:.4rem;margin:1.25rem 0;padding:.3rem;
-  background:#0d1117;border:1px solid #1b2028;border-radius:2rem;width:fit-content;margin-inline:auto}
+  background:rgba(4,30,46,.8);border:1px solid #0e3a52;border-radius:2rem;width:fit-content;margin-inline:auto}
 .tab{
   padding:.55rem 1.3rem;border-radius:2rem;border:none;
-  background:transparent;color:#6e7681;cursor:pointer;font-size:.85rem;font-weight:600;
+  background:transparent;color:#7bafc4;cursor:pointer;font-size:.85rem;font-weight:700;
   font-family:inherit;transition:all .3s;position:relative;
   -webkit-touch-callout:none;user-select:none;
 }
-.tab:hover{color:#c9d1d9}
+.tab:hover{color:#d4eaf7}
 .tab:active{transform:scale(.96)}
-.tab.active{background:linear-gradient(135deg,#58a6ff,#a371f7);color:#fff;
-  box-shadow:0 4px 20px rgba(88,166,255,.3)}
+.tab.active{background:linear-gradient(135deg,#5ec4d4,#06d6a0);color:#041e2e;
+  box-shadow:0 4px 20px rgba(94,196,212,.35)}
 
 /* panels */
 .panel{display:none;animation:fadeUp .5s cubic-bezier(.4,0,.2,1)}
 .panel.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-/* glass card */
+/* glass card — sandy/ocean tint */
 .glass{
-  background:linear-gradient(135deg,rgba(22,27,34,.8),rgba(13,17,23,.9));
+  background:linear-gradient(135deg,rgba(10,50,72,.75),rgba(4,30,46,.85));
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,.06);border-radius:1.25rem;
+  border:1px solid rgba(94,196,212,.12);border-radius:1.25rem;
   padding:1.5rem;margin-bottom:1.25rem;
   transition:border-color .3s,box-shadow .3s;
 }
-.glass:hover{border-color:rgba(88,166,255,.15);box-shadow:0 8px 40px rgba(88,166,255,.06)}
+.glass:hover{border-color:rgba(94,196,212,.25);box-shadow:0 8px 40px rgba(6,214,160,.08)}
 
 /* canvas area */
 .canvas-wrap{text-align:center;position:relative}
@@ -74,74 +77,74 @@ header p{color:#484f58;margin-top:.3rem;font-size:.95rem}
 /* toggle row */
 .toggle-row{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
 .toggle-btn{
-  padding:.45rem 1rem;border-radius:2rem;font-size:.78rem;font-weight:600;
+  padding:.45rem 1rem;border-radius:2rem;font-size:.78rem;font-weight:700;
   border:1.5px solid;cursor:pointer;font-family:inherit;transition:all .25s;
   background:transparent;-webkit-touch-callout:none;user-select:none;
 }
 .toggle-btn:active{transform:scale(.95)}
-.toggle-btn[data-part=radius]{color:#ff7b72;border-color:#ff7b7244}
-.toggle-btn[data-part=radius].on{background:#ff7b7220;border-color:#ff7b72}
-.toggle-btn[data-part=diameter]{color:#58a6ff;border-color:#58a6ff44}
-.toggle-btn[data-part=diameter].on{background:#58a6ff20;border-color:#58a6ff}
-.toggle-btn[data-part=circumference]{color:#3fb950;border-color:#3fb95044}
-.toggle-btn[data-part=circumference].on{background:#3fb95020;border-color:#3fb950}
-.toggle-btn[data-part=area]{color:#a371f7;border-color:#a371f744}
-.toggle-btn[data-part=area].on{background:#a371f720;border-color:#a371f7}
+.toggle-btn[data-part=radius]{color:#f7936f;border-color:#f7936f44}
+.toggle-btn[data-part=radius].on{background:#f7936f20;border-color:#f7936f}
+.toggle-btn[data-part=diameter]{color:#5ec4d4;border-color:#5ec4d444}
+.toggle-btn[data-part=diameter].on{background:#5ec4d420;border-color:#5ec4d4}
+.toggle-btn[data-part=circumference]{color:#06d6a0;border-color:#06d6a044}
+.toggle-btn[data-part=circumference].on{background:#06d6a020;border-color:#06d6a0}
+.toggle-btn[data-part=area]{color:#ffd166;border-color:#ffd16644}
+.toggle-btn[data-part=area].on{background:#ffd16620;border-color:#ffd166}
 
 /* stats */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:1.25rem 0}
 .stat{
-  background:rgba(13,17,23,.6);border:1px solid #1b2028;border-radius:1rem;
+  background:rgba(4,30,46,.7);border:1px solid #0e3a52;border-radius:1rem;
   padding:.85rem .5rem;text-align:center;position:relative;overflow:hidden;
   transition:all .35s cubic-bezier(.4,0,.2,1);
 }
 .stat::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .35s;border-radius:1rem}
-.stat:nth-child(1)::before{background:radial-gradient(circle at 50% 100%,rgba(255,123,114,.08),transparent 70%)}
-.stat:nth-child(2)::before{background:radial-gradient(circle at 50% 100%,rgba(88,166,255,.08),transparent 70%)}
-.stat:nth-child(3)::before{background:radial-gradient(circle at 50% 100%,rgba(63,185,80,.08),transparent 70%)}
-.stat:nth-child(4)::before{background:radial-gradient(circle at 50% 100%,rgba(163,113,247,.08),transparent 70%)}
+.stat:nth-child(1)::before{background:radial-gradient(circle at 50% 100%,rgba(247,147,111,.1),transparent 70%)}
+.stat:nth-child(2)::before{background:radial-gradient(circle at 50% 100%,rgba(94,196,212,.1),transparent 70%)}
+.stat:nth-child(3)::before{background:radial-gradient(circle at 50% 100%,rgba(6,214,160,.1),transparent 70%)}
+.stat:nth-child(4)::before{background:radial-gradient(circle at 50% 100%,rgba(255,209,102,.1),transparent 70%)}
 .stat-icon{font-size:1.2rem;margin-bottom:.2rem}
-.stat-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:#484f58;font-weight:600}
-.stat-value{font-size:clamp(1rem,3vw,1.5rem);font-weight:800;margin-top:.15rem;
+.stat-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:#5a8a9e;font-weight:700}
+.stat-value{font-size:clamp(1rem,3vw,1.5rem);font-weight:700;margin-top:.15rem;
   font-family:'JetBrains Mono',monospace;transition:transform .15s;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 .stat-value.pop{animation:popNum .3s ease}
 @keyframes popNum{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
-.stat-value.radius{color:#ff7b72}
-.stat-value.diameter{color:#58a6ff}
-.stat-value.circumference{color:#3fb950}
-.stat-value.area{color:#a371f7}
+.stat-value.radius{color:#f7936f}
+.stat-value.diameter{color:#5ec4d4}
+.stat-value.circumference{color:#06d6a0}
+.stat-value.area{color:#ffd166}
 
 /* info cards */
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .info{position:relative;overflow:hidden}
-.info .icon-bg{position:absolute;right:-10px;top:-10px;font-size:4rem;opacity:.06;pointer-events:none}
-.info h3{display:flex;align-items:center;gap:.5rem;font-size:1rem;margin-bottom:.6rem}
+.info .icon-bg{position:absolute;right:-10px;top:-10px;font-size:4rem;opacity:.08;pointer-events:none}
+.info h3{display:flex;align-items:center;gap:.5rem;font-size:1rem;margin-bottom:.6rem;font-weight:700}
 .info h3 .dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
-.info p{line-height:1.7;color:#8b949e;font-size:.88rem;position:relative;z-index:1}
+.info p{line-height:1.7;color:#8bb8cc;font-size:.88rem;position:relative;z-index:1}
 
 .formula{
-  background:rgba(13,17,23,.7);border-left:3px solid #a371f7;
+  background:rgba(4,30,46,.7);border-left:3px solid #ffd166;
   padding:.7rem 1rem;margin:.6rem 0 0;border-radius:0 .5rem .5rem 0;
-  font-family:'JetBrains Mono',monospace;font-size:clamp(.8rem,2.5vw,.95rem);color:#e6edf3;
+  font-family:'JetBrains Mono',monospace;font-size:clamp(.8rem,2.5vw,.95rem);color:#d4eaf7;
 }
 
-.highlight{color:#ff7b72;font-weight:600}
-.blue{color:#58a6ff;font-weight:600}
-.purple{color:#a371f7;font-weight:600}
-.green{color:#3fb950;font-weight:600}
+.highlight{color:#f7936f;font-weight:700}
+.blue{color:#5ec4d4;font-weight:700}
+.purple{color:#ffd166;font-weight:700}
+.green{color:#06d6a0;font-weight:700}
 
-/* playground mode buttons */
+/* playground */
 .mode-row{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:1rem 0 .5rem}
 .mode-btn{
-  padding:.5rem 1.1rem;border-radius:2rem;font-size:.8rem;font-weight:600;
-  border:1px solid #30363d;background:transparent;color:#8b949e;
+  padding:.5rem 1.1rem;border-radius:2rem;font-size:.8rem;font-weight:700;
+  border:1px solid #0e3a52;background:transparent;color:#7bafc4;
   cursor:pointer;font-family:inherit;transition:all .25s;
   -webkit-touch-callout:none;user-select:none;
 }
 .mode-btn:active{transform:scale(.95)}
-.mode-btn.active{background:#58a6ff;color:#fff;border-color:#58a6ff}
+.mode-btn.active{background:linear-gradient(135deg,#5ec4d4,#06d6a0);color:#041e2e;border-color:#5ec4d4}
 
 /* pi unwrap */
 .pi-demo{margin-top:1rem;text-align:center}
@@ -153,68 +156,67 @@ header p{color:#484f58;margin-top:.3rem;font-size:.95rem}
   padding:1.25rem 1.5rem;margin-bottom:1.25rem;
 }
 .quiz-header .streak{display:flex;gap:.2rem;flex-wrap:wrap}
-.streak-dot{width:22px;height:22px;border-radius:50%;border:2px solid #1b2028;
+.streak-dot{width:22px;height:22px;border-radius:50%;border:2px solid #0e3a52;
   display:grid;place-items:center;font-size:.65rem;transition:all .3s}
-.streak-dot.correct{border-color:#3fb950;background:#3fb95020;color:#3fb950}
-.streak-dot.wrong{border-color:#ff7b72;background:#ff7b7220;color:#ff7b72}
-.streak-dot.pending{border-color:#30363d}
+.streak-dot.correct{border-color:#06d6a0;background:#06d6a020;color:#06d6a0}
+.streak-dot.wrong{border-color:#ef476f;background:#ef476f20;color:#ef476f}
+.streak-dot.pending{border-color:#0e3a52}
 
 .score-display{display:flex;align-items:baseline;gap:.3rem}
-.score-display .num{font-size:1.8rem;font-weight:800;font-family:'JetBrains Mono',monospace;
-  background:linear-gradient(135deg,#58a6ff,#a371f7);
+.score-display .num{font-size:1.8rem;font-weight:700;font-family:'JetBrains Mono',monospace;
+  background:linear-gradient(135deg,#ffd166,#f7936f);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-.score-display .label{color:#484f58;font-size:.8rem;font-weight:600}
+.score-display .label{color:#5a8a9e;font-size:.8rem;font-weight:700}
 
 .quiz-canvas-area{text-align:center;margin-bottom:1.25rem}
 .quiz-canvas-area canvas{border-radius:.75rem;width:100%;height:auto;max-width:300px}
 
 .question{margin-bottom:1.25rem}
-.question h4{color:#e6edf3;font-size:1.05rem;margin-bottom:1rem;font-weight:600;line-height:1.5}
+.question h4{color:#d4eaf7;font-size:1.05rem;margin-bottom:1rem;font-weight:700;line-height:1.5}
 .choices{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
 .choice{
-  padding:.85rem 1rem;border-radius:.75rem;border:1.5px solid #1b2028;
-  background:rgba(13,17,23,.5);color:#c9d1d9;cursor:pointer;text-align:center;
-  transition:all .25s cubic-bezier(.4,0,.2,1);font-size:.9rem;font-weight:500;
+  padding:.85rem 1rem;border-radius:.75rem;border:1.5px solid #0e3a52;
+  background:rgba(4,30,46,.6);color:#d4eaf7;cursor:pointer;text-align:center;
+  transition:all .25s cubic-bezier(.4,0,.2,1);font-size:.9rem;font-weight:600;
   font-family:'JetBrains Mono',monospace;position:relative;overflow:hidden;
   -webkit-touch-callout:none;user-select:none;
 }
 .choice::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s}
 .choice:active{transform:scale(.97)}
-.choice.correct{background:rgba(63,185,80,.12);border-color:#3fb950;color:#3fb950;
-  box-shadow:0 0 25px rgba(63,185,80,.15);transform:scale(1.02)}
-.choice.wrong{background:rgba(255,123,114,.1);border-color:#ff7b72;color:#ff7b72}
+.choice.correct{background:rgba(6,214,160,.15);border-color:#06d6a0;color:#06d6a0;
+  box-shadow:0 0 25px rgba(6,214,160,.2);transform:scale(1.02)}
+.choice.wrong{background:rgba(239,71,111,.12);border-color:#ef476f;color:#ef476f}
 .choice.disabled{pointer-events:none;opacity:.5}
 
 .btn{
   padding:.65rem 1.5rem;border-radius:2rem;border:none;
-  background:linear-gradient(135deg,#58a6ff,#a371f7);color:#fff;cursor:pointer;
+  background:linear-gradient(135deg,#5ec4d4,#06d6a0);color:#041e2e;cursor:pointer;
   font-size:.85rem;font-weight:700;font-family:inherit;
-  transition:all .25s;box-shadow:0 4px 15px rgba(88,166,255,.2);
-  -webkit-touch-callout:none;user-select:none;
+  transition:all .25s;box-shadow:0 4px 15px rgba(6,214,160,.25);
 }
 .btn:active{transform:scale(.96)}
 
 .feedback{
   padding:.85rem 1.2rem;border-radius:.75rem;margin-top:1rem;
-  font-size:.9rem;line-height:1.5;display:none;font-weight:500;
+  font-size:.9rem;line-height:1.5;display:none;font-weight:600;
 }
 .feedback.show{display:block;animation:fadeUp .3s ease}
-.feedback.right{background:rgba(63,185,80,.1);border:1px solid #3fb95044;color:#3fb950}
-.feedback.wrong-fb{background:rgba(255,123,114,.08);border:1px solid #ff7b7244;color:#ff7b72}
+.feedback.right{background:rgba(6,214,160,.12);border:1px solid #06d6a044;color:#06d6a0}
+.feedback.wrong-fb{background:rgba(239,71,111,.1);border:1px solid #ef476f44;color:#ef476f}
 
 /* slider */
 .slider-row{display:flex;align-items:center;gap:1rem;margin:1rem 0;flex-wrap:wrap}
-.slider-row label{font-size:.85rem;color:#6e7681;min-width:55px;font-weight:600}
+.slider-row label{font-size:.85rem;color:#7bafc4;min-width:55px;font-weight:700}
 input[type=range]{
   flex:1;min-width:140px;height:8px;
-  -webkit-appearance:none;background:#1b2028;border-radius:4px;outline:none;
-  background-image:linear-gradient(90deg,#58a6ff,#a371f7);
+  -webkit-appearance:none;background:#0e3a52;border-radius:4px;outline:none;
+  background-image:linear-gradient(90deg,#5ec4d4,#06d6a0);
   background-size:50% 100%;background-repeat:no-repeat;
 }
 input[type=range]::-webkit-slider-thumb{
   -webkit-appearance:none;width:28px;height:28px;border-radius:50%;
-  background:#fff;cursor:pointer;box-shadow:0 0 12px rgba(88,166,255,.5),0 2px 8px rgba(0,0,0,.3);
-  border:3px solid #58a6ff;
+  background:#ffd166;cursor:pointer;box-shadow:0 0 14px rgba(255,209,102,.5),0 2px 8px rgba(0,0,0,.3);
+  border:3px solid #f7936f;
 }
 
 /* responsive */
@@ -240,14 +242,14 @@ input[type=range]::-webkit-slider-thumb{
 <div class="wrap">
   <a href="index.html" class="back">&larr; Back to Math Games</a>
   <header>
-    <h1>Circle Explorer</h1>
-    <p>Drag, resize, and master circles</p>
+    <h1><span class="wave-emoji">&#x1F3C4;</span> Kayla's Circle Explorer</h1>
+    <p class="subtitle">Ride the wave of circle geometry!</p>
   </header>
 
   <div class="tabs">
-    <button class="tab active" data-tab="learn">Learn</button>
-    <button class="tab" data-tab="playground">Playground</button>
-    <button class="tab" data-tab="quiz">Quiz</button>
+    <button class="tab active" data-tab="learn">&#x1F30A; Learn</button>
+    <button class="tab" data-tab="playground">&#x1F3D6;&#xFE0F; Playground</button>
+    <button class="tab" data-tab="quiz">&#x1F420; Quiz</button>
   </div>
 
   <!-- LEARN PANEL -->
@@ -255,10 +257,10 @@ input[type=range]::-webkit-slider-thumb{
     <div class="glass canvas-wrap">
       <canvas id="learnCanvas"></canvas>
       <div class="toggle-row">
-        <button class="toggle-btn on" data-part="radius">Radius</button>
-        <button class="toggle-btn on" data-part="diameter">Diameter</button>
-        <button class="toggle-btn on" data-part="circumference">Circumference</button>
-        <button class="toggle-btn on" data-part="area">Area</button>
+        <button class="toggle-btn on" data-part="radius">&#x1F3C4; Radius</button>
+        <button class="toggle-btn on" data-part="diameter">&#x1F30A; Diameter</button>
+        <button class="toggle-btn on" data-part="circumference">&#x1F41A; Circumference</button>
+        <button class="toggle-btn on" data-part="area">&#x2600;&#xFE0F; Area</button>
       </div>
       <div class="slider-row">
         <label>Radius</label>
@@ -267,41 +269,41 @@ input[type=range]::-webkit-slider-thumb{
     </div>
 
     <div class="stats" id="learnStats">
-      <div class="stat"><div class="stat-icon">&#x1F534;</div><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="lR">110</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F535;</div><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="lD">220</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F7E2;</div><div class="stat-label">Circumference</div><div class="stat-value circumference" id="lC">691.15</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F7E3;</div><div class="stat-label">Area</div><div class="stat-value area" id="lA">38013.27</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="lR">110</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="lD">220</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference</div><div class="stat-value circumference" id="lC">691.15</div></div>
+      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area</div><div class="stat-value area" id="lA">38013.27</div></div>
     </div>
 
     <div class="glass pi-demo">
-      <h3 style="color:#3fb950;margin-bottom:.75rem;font-size:1rem">Unrolling the Circumference</h3>
-      <p style="color:#6e7681;font-size:.85rem;margin-bottom:.75rem">Watch the circumference unroll into a straight line &mdash; it equals exactly &pi; &times; diameter</p>
+      <h3 style="color:#06d6a0;margin-bottom:.75rem;font-size:1rem">&#x1F30A; Unrolling the Wave</h3>
+      <p style="color:#7bafc4;font-size:.85rem;margin-bottom:.75rem">Watch the circumference unroll like a wave stretching along the shore &mdash; it equals exactly &pi; &times; diameter</p>
       <canvas id="piCanvas"></canvas>
     </div>
 
     <div class="info-grid">
       <div class="glass info">
-        <div class="icon-bg">r</div>
-        <h3><span class="dot" style="background:#ff7b72"></span> Radius</h3>
-        <p>The distance from the <strong>center</strong> to any point on the edge. Every radius in the same circle is equal.</p>
+        <div class="icon-bg">&#x1F3C4;</div>
+        <h3><span class="dot" style="background:#f7936f"></span> Radius</h3>
+        <p>The distance from the <strong>center</strong> to the edge &mdash; like paddling from the middle of a tide pool to the rim. Every radius is the same length.</p>
         <div class="formula">r = d &divide; 2</div>
       </div>
       <div class="glass info">
-        <div class="icon-bg">d</div>
-        <h3><span class="dot" style="background:#58a6ff"></span> Diameter</h3>
-        <p>A line through the center connecting two edge points. Always <strong>twice</strong> the radius.</p>
+        <div class="icon-bg">&#x1F30A;</div>
+        <h3><span class="dot" style="background:#5ec4d4"></span> Diameter</h3>
+        <p>A line straight across through the center &mdash; like swimming from one side of a circular reef to the other. Always <strong>twice</strong> the radius.</p>
         <div class="formula">d = 2r</div>
       </div>
       <div class="glass info">
-        <div class="icon-bg">C</div>
-        <h3><span class="dot" style="background:#3fb950"></span> Circumference</h3>
-        <p>The distance <em>around</em> the circle. Uses the special number <strong>&pi; &asymp; 3.14159</strong>.</p>
+        <div class="icon-bg">&#x1F41A;</div>
+        <h3><span class="dot" style="background:#06d6a0"></span> Circumference</h3>
+        <p>The total distance <em>around</em> the circle &mdash; like surfing the entire perimeter of a wave ring. Uses the magical number <strong>&pi; &asymp; 3.14159</strong>.</p>
         <div class="formula">C = 2&pi;r = &pi;d</div>
       </div>
       <div class="glass info">
-        <div class="icon-bg">A</div>
-        <h3><span class="dot" style="background:#a371f7"></span> Area</h3>
-        <p>The space <em>inside</em>. Double the radius and the area <strong>quadruples</strong>!</p>
+        <div class="icon-bg">&#x2600;&#xFE0F;</div>
+        <h3><span class="dot" style="background:#ffd166"></span> Area</h3>
+        <p>The space <em>inside</em> &mdash; like the sandy floor of a circular lagoon. Double the radius and the area <strong>quadruples</strong>!</p>
         <div class="formula">A = &pi;r&sup2;</div>
       </div>
     </div>
@@ -312,17 +314,17 @@ input[type=range]::-webkit-slider-thumb{
     <div class="glass canvas-wrap">
       <canvas id="playCanvas"></canvas>
       <div class="mode-row">
-        <button class="mode-btn active" data-mode="free">Free Move</button>
-        <button class="mode-btn" data-mode="compare">Compare Two</button>
-        <button class="mode-btn" data-mode="trace">Trace Path</button>
+        <button class="mode-btn active" data-mode="free">&#x1F3C4; Free Surf</button>
+        <button class="mode-btn" data-mode="compare">&#x1F41A; Compare</button>
+        <button class="mode-btn" data-mode="trace">&#x1F30A; Trace Wake</button>
       </div>
-      <p class="canvas-hint" style="color:#484f58;font-size:.8rem;margin-top:.5rem"></p>
+      <p class="canvas-hint" style="color:#5a8a9e;font-size:.8rem;margin-top:.5rem"></p>
     </div>
     <div class="stats" id="playStats">
-      <div class="stat"><div class="stat-icon">&#x1F534;</div><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="pR">100</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F535;</div><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="pD">200</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F7E2;</div><div class="stat-label">Circumference</div><div class="stat-value circumference" id="pC">628.32</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F7E3;</div><div class="stat-label">Area</div><div class="stat-value area" id="pA">31415.93</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="pR">100</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="pD">200</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference</div><div class="stat-value circumference" id="pC">628.32</div></div>
+      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area</div><div class="stat-value area" id="pA">31415.93</div></div>
     </div>
   </div>
 
@@ -331,7 +333,7 @@ input[type=range]::-webkit-slider-thumb{
     <div class="glass quiz-header">
       <div class="score-display"><span class="num" id="score">0</span><span class="label">/ 10</span></div>
       <div class="streak" id="streak"></div>
-      <button class="btn" id="newQuiz" style="margin-left:auto">New Quiz</button>
+      <button class="btn" id="newQuiz" style="margin-left:auto">&#x1F3C4; New Wave</button>
     </div>
     <div class="glass quiz-canvas-area" id="quizVisual" style="display:none">
       <canvas id="quizCanvas"></canvas>
@@ -346,39 +348,11 @@ const TAU=PI*2;
 const DPR=window.devicePixelRatio||1;
 const IS_TOUCH='ontouchstart' in window||navigator.maxTouchPoints>0;
 
-// ===================== HiDPI CANVAS HELPER =====================
-function setupCanvas(canvas,logicalW,logicalH){
-  canvas.width=logicalW*DPR;
-  canvas.height=logicalH*DPR;
-  canvas.style.width=logicalW+'px';
-  canvas.style.height=logicalH+'px';
-  const ctx=canvas.getContext('2d');
-  ctx.scale(DPR,DPR);
-  return ctx;
-}
-
-// responsive canvas sizing — fits container width
-function fitCanvas(canvas,aspectRatio){
-  const parent=canvas.parentElement;
-  const w=Math.min(parent.clientWidth-0,960);
-  const h=Math.round(w*aspectRatio);
-  canvas.width=w*DPR;
-  canvas.height=h*DPR;
-  // let CSS width:100% handle display size
-  canvas.style.aspectRatio=`${w}/${h}`;
-  const ctx=canvas.getContext('2d');
-  ctx.setTransform(DPR,0,0,DPR,0,0);
-  return{w,h,ctx};
-}
-
-// ===================== ANIMATED BACKGROUND =====================
+// ===================== OCEAN WAVE BACKGROUND =====================
 (function(){
   const c=document.getElementById('bgCanvas');
   const ctx=c.getContext('2d');
-  let w,h;
-  const particles=[];
-  // fewer particles on touch devices for perf
-  const COUNT=IS_TOUCH?30:60;
+  let w,h,t=0;
 
   function resize(){
     w=c.width=innerWidth*DPR;h=c.height=innerHeight*DPR;
@@ -388,42 +362,69 @@ function fitCanvas(canvas,aspectRatio){
   resize();
   addEventListener('resize',resize);
 
-  class Particle{
-    constructor(){this.reset()}
-    reset(){
-      this.x=Math.random()*innerWidth;this.y=Math.random()*innerHeight;
-      this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;
-      this.r=Math.random()*1.5+.5;
-      this.hue=200+Math.random()*80;
-      this.alpha=Math.random()*.3+.1;
+  // bubbles
+  const BCOUNT=IS_TOUCH?15:30;
+  const bubbles=[];
+  class Bubble{
+    constructor(){this.reset(true)}
+    reset(init){
+      this.x=Math.random()*innerWidth;
+      this.y=init?Math.random()*innerHeight:innerHeight+10;
+      this.r=Math.random()*3+1;
+      this.speed=Math.random()*.4+.1;
+      this.wobble=Math.random()*TAU;
+      this.wobbleSpeed=Math.random()*.02+.01;
+      this.alpha=Math.random()*.25+.05;
     }
     update(){
-      this.x+=this.vx;this.y+=this.vy;
-      if(this.x<0||this.x>innerWidth)this.vx*=-1;
-      if(this.y<0||this.y>innerHeight)this.vy*=-1;
+      this.y-=this.speed;
+      this.wobble+=this.wobbleSpeed;
+      this.x+=Math.sin(this.wobble)*.3;
+      if(this.y<-10)this.reset(false);
     }
     draw(){
       ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,TAU);
-      ctx.fillStyle=`hsla(${this.hue},80%,70%,${this.alpha})`;ctx.fill();
+      ctx.fillStyle=`rgba(94,196,212,${this.alpha})`;ctx.fill();
     }
   }
-  for(let i=0;i<COUNT;i++)particles.push(new Particle());
+  for(let i=0;i<BCOUNT;i++)bubbles.push(new Bubble());
+
+  function drawWave(yBase,amplitude,freq,speed,color,lw){
+    ctx.beginPath();
+    for(let x=0;x<=innerWidth;x+=3){
+      const y=yBase+Math.sin(x*freq+t*speed)*amplitude+Math.sin(x*freq*1.5+t*speed*.7)*amplitude*.3;
+      x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.stroke();
+  }
 
   function frame(){
     ctx.clearRect(0,0,innerWidth,innerHeight);
-    for(let i=0;i<particles.length;i++){
-      for(let j=i+1;j<particles.length;j++){
-        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
-        const d=Math.sqrt(dx*dx+dy*dy);
-        if(d<150){
-          ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);
-          ctx.lineTo(particles[j].x,particles[j].y);
-          ctx.strokeStyle=`hsla(220,60%,50%,${.08*(1-d/150)})`;
-          ctx.lineWidth=.5;ctx.stroke();
-        }
-      }
-      particles[i].update();particles[i].draw();
-    }
+
+    // deep ocean gradient
+    const grad=ctx.createLinearGradient(0,0,0,innerHeight);
+    grad.addColorStop(0,'rgba(4,30,46,0)');
+    grad.addColorStop(.4,'rgba(4,30,46,0)');
+    grad.addColorStop(1,'rgba(6,50,80,.3)');
+    ctx.fillStyle=grad;ctx.fillRect(0,0,innerWidth,innerHeight);
+
+    // multiple wave layers
+    drawWave(innerHeight*.15,12,.008,1.2,'rgba(94,196,212,.06)',1.5);
+    drawWave(innerHeight*.3,18,.006,.8,'rgba(6,214,160,.05)',1.5);
+    drawWave(innerHeight*.5,15,.01,1,'rgba(94,196,212,.04)',1);
+    drawWave(innerHeight*.7,20,.007,1.4,'rgba(6,214,160,.06)',1.5);
+    drawWave(innerHeight*.85,25,.005,.6,'rgba(255,209,102,.04)',2);
+
+    // bottom sand gradient
+    const sand=ctx.createLinearGradient(0,innerHeight*.88,0,innerHeight);
+    sand.addColorStop(0,'rgba(255,209,102,0)');
+    sand.addColorStop(1,'rgba(255,209,102,.04)');
+    ctx.fillStyle=sand;ctx.fillRect(0,innerHeight*.88,innerWidth,innerHeight*.12);
+
+    // bubbles
+    for(const b of bubbles){b.update();b.draw()}
+
+    t+=.02;
     requestAnimationFrame(frame);
   }
   frame();
@@ -444,9 +445,9 @@ document.querySelectorAll('.tab').forEach(t=>{
 // ===================== CANVAS COORDINATE HELPER =====================
 function canvasPos(canvas,e){
   const rect=canvas.getBoundingClientRect();
-  const logW=rect.width, logH=rect.height;
-  const canvasLogW=canvas.width/DPR, canvasLogH=canvas.height/DPR;
-  const sx=canvasLogW/logW, sy=canvasLogH/logH;
+  const logW=rect.width,logH=rect.height;
+  const canvasLogW=canvas.width/DPR,canvasLogH=canvas.height/DPR;
+  const sx=canvasLogW/logW,sy=canvasLogH/logH;
   let cx,cy;
   if(e.touches&&e.touches.length>0){cx=e.touches[0].clientX;cy=e.touches[0].clientY}
   else if(e.changedTouches&&e.changedTouches.length>0){cx=e.changedTouches[0].clientX;cy=e.changedTouches[0].clientY}
@@ -463,7 +464,7 @@ let learnAnimAngle=0;
 
 function resizeLearnCanvas(){
   const parent=lCanvas.parentElement;
-  const w=Math.min(parent.clientWidth-0,640);
+  const w=Math.min(parent.clientWidth,640);
   const h=Math.round(w*0.82);
   lCanvas.width=w*DPR;lCanvas.height=h*DPR;
   lCanvas.style.aspectRatio=`${w}/${h}`;
@@ -488,79 +489,85 @@ function drawLearn(){
   const rDisplay=+lSlider.value;
   lCtx.clearRect(0,0,w,h);
 
-  // grid
+  // ocean-style grid (subtle wave lines)
   const gridStep=Math.round(w/18);
+  lCtx.globalAlpha=.15;
   for(let i=0;i<w;i+=gridStep){
     lCtx.beginPath();lCtx.moveTo(i,0);lCtx.lineTo(i,h);
-    lCtx.strokeStyle=Math.abs(i-Math.round(cx/gridStep)*gridStep)<2?'rgba(88,166,255,.12)':'rgba(48,54,61,.25)';
-    lCtx.lineWidth=Math.abs(i-Math.round(cx/gridStep)*gridStep)<2?1.5:0.5;lCtx.stroke();
+    lCtx.strokeStyle='#5ec4d4';lCtx.lineWidth=.5;lCtx.stroke();
   }
   for(let i=0;i<h;i+=gridStep){
-    lCtx.beginPath();lCtx.moveTo(0,i);lCtx.lineTo(w,i);
-    lCtx.strokeStyle=Math.abs(i-Math.round(cy/gridStep)*gridStep)<2?'rgba(88,166,255,.12)':'rgba(48,54,61,.25)';
-    lCtx.lineWidth=Math.abs(i-Math.round(cy/gridStep)*gridStep)<2?1.5:0.5;lCtx.stroke();
+    lCtx.beginPath();
+    for(let x=0;x<w;x+=4){
+      const y=i+Math.sin(x*.03+learnAnimAngle)*2;
+      x===0?lCtx.moveTo(x,y):lCtx.lineTo(x,y);
+    }
+    lCtx.strokeStyle='#5ec4d4';lCtx.lineWidth=.5;lCtx.stroke();
   }
+  lCtx.globalAlpha=1;
 
-  // area glow
+  // area glow — sandy gold
   if(showParts.area){
     const grd=lCtx.createRadialGradient(cx,cy,0,cx,cy,r);
-    grd.addColorStop(0,'rgba(163,113,247,.18)');
-    grd.addColorStop(.7,'rgba(163,113,247,.08)');
-    grd.addColorStop(1,'rgba(163,113,247,.02)');
+    grd.addColorStop(0,'rgba(255,209,102,.2)');
+    grd.addColorStop(.7,'rgba(255,209,102,.08)');
+    grd.addColorStop(1,'rgba(255,209,102,.02)');
     lCtx.beginPath();lCtx.arc(cx,cy,r,0,TAU);
     lCtx.fillStyle=grd;lCtx.fill();
   }
 
-  // circumference animated dash
+  // circumference — animated wave dash
   if(showParts.circumference){
     lCtx.beginPath();lCtx.arc(cx,cy,r,0,TAU);
-    lCtx.strokeStyle='#3fb950';lCtx.lineWidth=3;
+    lCtx.strokeStyle='#06d6a0';lCtx.lineWidth=3;
     lCtx.setLineDash([6,4]);lCtx.lineDashOffset=-learnAnimAngle*2;
     lCtx.stroke();lCtx.setLineDash([]);
   }
 
-  // diameter
+  // diameter — ocean blue
   if(showParts.diameter){
     lCtx.save();
     lCtx.translate(cx,cy);lCtx.rotate(learnAnimAngle*.3);
     lCtx.beginPath();lCtx.moveTo(-r,0);lCtx.lineTo(r,0);
-    lCtx.strokeStyle='#58a6ff';lCtx.lineWidth=2;lCtx.globalAlpha=.8;
+    lCtx.strokeStyle='#5ec4d4';lCtx.lineWidth=2;lCtx.globalAlpha=.8;
     lCtx.setLineDash([10,5]);lCtx.stroke();lCtx.setLineDash([]);
-    lCtx.beginPath();lCtx.arc(-r,0,4,0,TAU);lCtx.fillStyle='#58a6ff';lCtx.fill();
-    lCtx.beginPath();lCtx.arc(r,0,4,0,TAU);lCtx.fillStyle='#58a6ff';lCtx.fill();
+    lCtx.beginPath();lCtx.arc(-r,0,5,0,TAU);lCtx.fillStyle='#5ec4d4';lCtx.fill();
+    lCtx.beginPath();lCtx.arc(r,0,5,0,TAU);lCtx.fillStyle='#5ec4d4';lCtx.fill();
     lCtx.restore();
   }
 
-  // radius animated
+  // radius — sunset coral, animated
   if(showParts.radius){
     const angle=-PI/2+Math.sin(learnAnimAngle*.5)*.5;
     const rx=cx+Math.cos(angle)*r,ry=cy+Math.sin(angle)*r;
     lCtx.beginPath();lCtx.moveTo(cx,cy);lCtx.lineTo(rx,ry);
-    lCtx.strokeStyle='#ff7b72';lCtx.lineWidth=3;lCtx.stroke();
-    lCtx.beginPath();lCtx.arc(rx,ry,6,0,TAU);
-    lCtx.fillStyle='#ff7b72';lCtx.shadowColor='#ff7b72';lCtx.shadowBlur=15;lCtx.fill();
+    lCtx.strokeStyle='#f7936f';lCtx.lineWidth=3;lCtx.stroke();
+    lCtx.beginPath();lCtx.arc(rx,ry,7,0,TAU);
+    lCtx.fillStyle='#f7936f';lCtx.shadowColor='#f7936f';lCtx.shadowBlur=16;lCtx.fill();
     lCtx.shadowBlur=0;
     const lx=(cx+rx)/2,ly=(cy+ry)/2;
     lCtx.font=`bold ${Math.max(11,w*0.024)}px JetBrains Mono, monospace`;
-    lCtx.fillStyle='#ff7b72';lCtx.fillText('r = '+rDisplay,lx+10,ly-5);
+    lCtx.fillStyle='#f7936f';lCtx.fillText('r = '+rDisplay,lx+10,ly-5);
   }
 
-  // center dot
-  lCtx.beginPath();lCtx.arc(cx,cy,4,0,TAU);lCtx.fillStyle='#e6edf3';lCtx.fill();
-  lCtx.beginPath();lCtx.arc(cx,cy,8,0,TAU);
-  lCtx.strokeStyle='rgba(230,237,243,.3)';lCtx.lineWidth=1;lCtx.stroke();
+  // center — sun dot
+  lCtx.beginPath();lCtx.arc(cx,cy,5,0,TAU);
+  lCtx.fillStyle='#ffd166';lCtx.shadowColor='#ffd166';lCtx.shadowBlur=12;lCtx.fill();
+  lCtx.shadowBlur=0;
+  lCtx.beginPath();lCtx.arc(cx,cy,9,0,TAU);
+  lCtx.strokeStyle='rgba(255,209,102,.3)';lCtx.lineWidth=1;lCtx.stroke();
 
-  // floating labels
+  // labels
   const fontSize=Math.max(11,w*0.022);
   lCtx.font=`bold ${fontSize}px JetBrains Mono, monospace`;
   if(showParts.diameter){
-    lCtx.fillStyle='#58a6ff';lCtx.fillText('d = '+(rDisplay*2),cx+r*.3,cy+22);
+    lCtx.fillStyle='#5ec4d4';lCtx.fillText('d = '+(rDisplay*2),cx+r*.3,cy+22);
   }
   if(showParts.circumference){
-    lCtx.fillStyle='#3fb950';lCtx.fillText('C = '+(TAU*rDisplay).toFixed(1),cx+r*.45,cy-r-12);
+    lCtx.fillStyle='#06d6a0';lCtx.fillText('C = '+(TAU*rDisplay).toFixed(1),cx+r*.45,cy-r-12);
   }
   if(showParts.area){
-    lCtx.fillStyle='#a371f7';lCtx.fillText('A = '+(PI*rDisplay*rDisplay).toFixed(1),cx-r*.4,cy+r*.4);
+    lCtx.fillStyle='#ffd166';lCtx.fillText('A = '+(PI*rDisplay*rDisplay).toFixed(1),cx-r*.4,cy+r*.4);
   }
 
   updateStat('lR',rDisplay);
@@ -616,18 +623,18 @@ resizePiCanvas();
     const lineStart=cx+circR+25;
 
     piCtx.beginPath();piCtx.arc(cx,cy,circR,0,TAU);
-    piCtx.strokeStyle='#3fb950';piCtx.lineWidth=2.5;piCtx.stroke();
-    piCtx.beginPath();piCtx.arc(cx,cy,2,0,TAU);piCtx.fillStyle='#e6edf3';piCtx.fill();
+    piCtx.strokeStyle='#06d6a0';piCtx.lineWidth=2.5;piCtx.stroke();
+    piCtx.beginPath();piCtx.arc(cx,cy,3,0,TAU);piCtx.fillStyle='#ffd166';piCtx.fill();
 
     const angle=t%TAU;
     const px=cx+Math.cos(angle-PI/2)*circR;
     const py=cy+Math.sin(angle-PI/2)*circR;
 
     piCtx.beginPath();piCtx.arc(cx,cy,circR,-PI/2,-PI/2+angle);
-    piCtx.strokeStyle='#ff7b72';piCtx.lineWidth=4;piCtx.stroke();
+    piCtx.strokeStyle='#f7936f';piCtx.lineWidth=4;piCtx.stroke();
 
     piCtx.beginPath();piCtx.arc(px,py,Math.max(4,circR*.14),0,TAU);
-    piCtx.fillStyle='#ff7b72';piCtx.shadowColor='#ff7b72';piCtx.shadowBlur=10;piCtx.fill();piCtx.shadowBlur=0;
+    piCtx.fillStyle='#f7936f';piCtx.shadowColor='#f7936f';piCtx.shadowBlur=10;piCtx.fill();piCtx.shadowBlur=0;
 
     const lineLen=(angle/TAU)*(TAU*circR);
     const maxLen=w-lineStart-15;
@@ -635,19 +642,19 @@ resizePiCanvas();
     const fullLen=Math.min(TAU*circR,maxLen);
 
     piCtx.beginPath();piCtx.moveTo(lineStart,cy);piCtx.lineTo(lineStart+fullLen,cy);
-    piCtx.strokeStyle='rgba(63,185,80,.2)';piCtx.lineWidth=3;piCtx.stroke();
+    piCtx.strokeStyle='rgba(6,214,160,.2)';piCtx.lineWidth=3;piCtx.stroke();
 
     piCtx.beginPath();piCtx.moveTo(lineStart,cy);piCtx.lineTo(lineStart+drawLen,cy);
-    piCtx.strokeStyle='#ff7b72';piCtx.lineWidth=4;piCtx.stroke();
+    piCtx.strokeStyle='#f7936f';piCtx.lineWidth=4;piCtx.stroke();
 
     piCtx.beginPath();piCtx.arc(lineStart+drawLen,cy,4,0,TAU);
-    piCtx.fillStyle='#ff7b72';piCtx.fill();
+    piCtx.fillStyle='#f7936f';piCtx.fill();
 
     const fs=Math.max(10,w*0.022);
     piCtx.font=`bold ${fs}px JetBrains Mono, monospace`;
-    piCtx.fillStyle='#3fb950';
+    piCtx.fillStyle='#06d6a0';
     piCtx.fillText('\u03C0 \u00D7 d = '+(TAU*circR).toFixed(1)+'px',lineStart,cy-14);
-    piCtx.fillStyle='#484f58';
+    piCtx.fillStyle='#5a8a9e';
     piCtx.fillText((angle/TAU*100).toFixed(0)+'% unrolled',lineStart+fullLen/2-40,cy+20);
 
     t+=.03;
@@ -658,7 +665,7 @@ resizePiCanvas();
 })();
 
 // ===================== PLAYGROUND =====================
-let circles=[{x:0,y:0,r:100,color:'#58a6ff'}];
+let circles=[{x:0,y:0,r:100,color:'#5ec4d4'}];
 let activeCircle=0;
 let playMode='free';
 let dragging=null;
@@ -677,7 +684,6 @@ function resizePlayCanvas(){
   playCtx=playCanvas.getContext('2d');
   playCtx.setTransform(DPR,0,0,DPR,0,0);
   playW=w;playH=h;
-  // reposition circles if they're at default 0,0
   if(circles[0].x===0&&circles[0].y===0){
     circles[0].x=w/2;circles[0].y=h/2;
   }
@@ -685,7 +691,6 @@ function resizePlayCanvas(){
 }
 resizePlayCanvas();
 
-// set hint text based on device
 document.querySelector('.canvas-hint').textContent=
   IS_TOUCH?'Drag to move \u2022 Drag edge to resize \u2022 Pinch to zoom'
            :'Drag to move \u2022 Drag edge to resize \u2022 Scroll to zoom';
@@ -696,7 +701,7 @@ document.querySelectorAll('.mode-btn').forEach(btn=>{
     btn.classList.add('active');
     playMode=btn.dataset.mode;
     if(playMode==='compare'&&circles.length<2){
-      circles.push({x:playW*0.65,y:playH/2,r:60,color:'#a371f7'});
+      circles.push({x:playW*0.65,y:playH/2,r:60,color:'#ffd166'});
     }
     if(playMode==='trace')tracePoints=[];
     drawPlayground();
@@ -709,21 +714,24 @@ function drawPlayground(){
   const w=playW,h=playH;
   ctx.clearRect(0,0,w,h);
 
+  // wavy grid
   const gridStep=Math.round(w/20);
+  ctx.globalAlpha=.12;
   for(let i=0;i<w;i+=gridStep){
     ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,h);
-    ctx.strokeStyle='rgba(48,54,61,.2)';ctx.lineWidth=.5;ctx.stroke();
+    ctx.strokeStyle='#5ec4d4';ctx.lineWidth=.5;ctx.stroke();
   }
   for(let i=0;i<h;i+=gridStep){
     ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(w,i);
-    ctx.strokeStyle='rgba(48,54,61,.2)';ctx.lineWidth=.5;ctx.stroke();
+    ctx.strokeStyle='#5ec4d4';ctx.lineWidth=.5;ctx.stroke();
   }
+  ctx.globalAlpha=1;
 
-  // trace
+  // trace (wake trail)
   if(playMode==='trace'&&tracePoints.length>1){
     ctx.beginPath();ctx.moveTo(tracePoints[0].x,tracePoints[0].y);
     for(let i=1;i<tracePoints.length;i++)ctx.lineTo(tracePoints[i].x,tracePoints[i].y);
-    ctx.strokeStyle='rgba(255,123,114,.4)';ctx.lineWidth=2;ctx.stroke();
+    ctx.strokeStyle='rgba(255,209,102,.4)';ctx.lineWidth=2;ctx.stroke();
   }
 
   const drawList=playMode==='compare'?circles:[circles[activeCircle]];
@@ -732,30 +740,30 @@ function drawPlayground(){
     const isActive=circ===circles[activeCircle];
 
     const grd=ctx.createRadialGradient(x,y,0,x,y,r);
-    grd.addColorStop(0,color+'25');grd.addColorStop(1,color+'05');
+    grd.addColorStop(0,color+'30');grd.addColorStop(1,color+'08');
     ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fillStyle=grd;ctx.fill();
 
     ctx.beginPath();ctx.arc(x,y,r,0,TAU);
     ctx.strokeStyle=color;ctx.lineWidth=isActive?3:2;
-    ctx.shadowColor=color;ctx.shadowBlur=isActive?15:0;ctx.stroke();ctx.shadowBlur=0;
+    ctx.shadowColor=color;ctx.shadowBlur=isActive?18:0;ctx.stroke();ctx.shadowBlur=0;
 
     ctx.beginPath();ctx.moveTo(x-r,y);ctx.lineTo(x+r,y);
     ctx.strokeStyle=color+'66';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);ctx.stroke();ctx.setLineDash([]);
 
     ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-r);
-    ctx.strokeStyle='#ff7b72';ctx.lineWidth=2;ctx.stroke();
+    ctx.strokeStyle='#f7936f';ctx.lineWidth=2;ctx.stroke();
 
-    ctx.beginPath();ctx.arc(x,y,4,0,TAU);ctx.fillStyle='#fff';ctx.fill();
+    ctx.beginPath();ctx.arc(x,y,5,0,TAU);ctx.fillStyle='#ffd166';
+    ctx.shadowColor='#ffd166';ctx.shadowBlur=8;ctx.fill();ctx.shadowBlur=0;
 
-    // resize handle — bigger on touch for fat fingers
     const handleR=IS_TOUCH?12:8;
     ctx.beginPath();ctx.arc(x+r,y,handleR,0,TAU);
     ctx.fillStyle=color;ctx.strokeStyle='#fff';ctx.lineWidth=2;
-    ctx.shadowColor=color;ctx.shadowBlur=10;ctx.fill();ctx.stroke();ctx.shadowBlur=0;
+    ctx.shadowColor=color;ctx.shadowBlur=12;ctx.fill();ctx.stroke();ctx.shadowBlur=0;
 
     const fs=Math.max(11,w*0.02);
     ctx.font=`bold ${fs}px JetBrains Mono, monospace`;
-    ctx.fillStyle='#ff7b72';ctx.fillText('r='+r.toFixed(0),x+6,y-r/2-2);
+    ctx.fillStyle='#f7936f';ctx.fillText('r='+r.toFixed(0),x+6,y-r/2-2);
     ctx.fillStyle=color;ctx.fillText('d='+(r*2).toFixed(0),x-r/2,y+16);
 
     if(playMode==='compare'){
@@ -770,7 +778,7 @@ function drawPlayground(){
     const areaRatio=((c1.r*c1.r)/(c2.r*c2.r)).toFixed(2);
     const fs=Math.max(11,w*0.02);
     ctx.font=`bold ${fs}px JetBrains Mono, monospace`;
-    ctx.fillStyle='#e6edf3';
+    ctx.fillStyle='#d4eaf7';
     ctx.fillText(`Radius ratio: ${ratio}x   Area ratio: ${areaRatio}x`,12,22);
   }
 
@@ -785,23 +793,19 @@ function drawPlayground(){
   const c=playCanvas;
   function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
 
-  // pinch tracking
   let pinchStart=null;
   let pinchStartR=null;
 
   function onDown(e){
     e.preventDefault();
-    // handle pinch start (two fingers)
     if(e.touches&&e.touches.length===2){
       const t1={x:e.touches[0].clientX,y:e.touches[0].clientY};
       const t2={x:e.touches[1].clientX,y:e.touches[1].clientY};
       pinchStart=Math.hypot(t1.x-t2.x,t1.y-t2.y);
       pinchStartR=circles[activeCircle].r;
-      dragging='pinch';
-      return;
+      dragging='pinch';return;
     }
     const p=canvasPos(c,e);
-    // bigger hit area on touch
     const hitSlop=IS_TOUCH?25:18;
     const drawList=playMode==='compare'?circles:[circles[activeCircle]];
     for(let i=drawList.length-1;i>=0;i--){
@@ -821,13 +825,11 @@ function drawPlayground(){
   function onMove(e){
     if(!dragging)return;
     e.preventDefault();
-    // handle pinch move
     if(dragging==='pinch'&&e.touches&&e.touches.length===2){
       const t1={x:e.touches[0].clientX,y:e.touches[0].clientY};
       const t2={x:e.touches[1].clientX,y:e.touches[1].clientY};
       const newDist=Math.hypot(t1.x-t2.x,t1.y-t2.y);
-      const scale=newDist/pinchStart;
-      circles[activeCircle].r=Math.max(15,Math.min(280,pinchStartR*scale));
+      circles[activeCircle].r=Math.max(15,Math.min(280,pinchStartR*(newDist/pinchStart)));
       drawPlayground();return;
     }
     if(e.touches&&e.touches.length!==1)return;
@@ -860,7 +862,7 @@ function drawPlayground(){
   },{passive:false});
 })();
 
-// ===================== RESIZE HANDLER =====================
+// ===================== RESIZE =====================
 let resizeTimer;
 window.addEventListener('resize',()=>{
   clearTimeout(resizeTimer);
@@ -894,31 +896,31 @@ function genQuestion(){
 
   switch(type){
     case 0:
-      q=`A circle has radius <strong class="highlight">${r}</strong>. What is its diameter?`;
+      q=`A wave ring has radius <strong class="highlight">${r}</strong>. What's the diameter?`;
       correct=d;visual={r,show:'radius'};
       choices=[d,d+rnd(1,5),d-rnd(1,Math.max(1,r)),rnd(1,60)];break;
     case 1:
-      q=`A circle has diameter <strong class="blue">${d}</strong>. What is its radius?`;
+      q=`A tide pool has diameter <strong class="blue">${d}</strong>. What's the radius?`;
       correct=r;visual={r,show:'diameter'};
       choices=[r,r+rnd(1,4),r*2,rnd(1,30)];break;
     case 2:
-      q=`Radius = <strong class="highlight">${r}</strong>. What is the circumference?`;
+      q=`Radius = <strong class="highlight">${r}</strong>. What's the circumference?`;
       correct=C;visual={r,show:'circumference'};
       choices=[C,+(PI*r*r).toFixed(2),+(PI*r).toFixed(2),+(TAU*(r+rnd(1,3))).toFixed(2)];break;
     case 3:
-      q=`Diameter = <strong class="blue">${d}</strong>. What is the circumference?`;
+      q=`A buoy ring has diameter <strong class="blue">${d}</strong>. What's the circumference?`;
       correct=+(PI*d).toFixed(2);visual={r,show:'diameter'};
       choices=[+(PI*d).toFixed(2),+(TAU*d).toFixed(2),+(PI*d*d).toFixed(2),+(PI*(d+rnd(1,4))).toFixed(2)];break;
     case 4:
-      q=`Radius = <strong class="highlight">${r}</strong>. What is the area?`;
+      q=`Radius = <strong class="highlight">${r}</strong>. What's the area of the lagoon?`;
       correct=A;visual={r,show:'area'};
       choices=[A,+(TAU*r).toFixed(2),+(PI*r).toFixed(2),+(PI*(r+rnd(1,3))**2).toFixed(2)];break;
     case 5:
-      q=`Circumference = <strong class="green">${C}</strong>. What is the radius?`;
+      q=`Circumference = <strong class="green">${C}</strong>. What's the radius?`;
       correct=r;visual={r,show:'circumference'};
       choices=[r,+(C/PI).toFixed(2),r+rnd(1,3),rnd(1,30)];break;
     case 6:
-      q=`Area = <strong class="purple">${A}</strong>. What is the radius?`;
+      q=`Area = <strong class="purple">${A}</strong>. What's the radius?`;
       correct=r;visual={r,show:'area'};
       choices=[r,+(A/PI).toFixed(2),r+rnd(1,3),rnd(1,30)];break;
     case 7:
@@ -931,7 +933,7 @@ function genQuestion(){
       choices=['A = \u03C0r\u00B2','A = 2\u03C0r','A = \u03C0d','A = 2r\u00B2'];break;
     case 9:
       const r2=rnd(3,20);
-      q=`Circle A has r=${r}, Circle B has r=${r2}. How many times larger is the bigger area?`;
+      q=`Reef A has r=${r}, Reef B has r=${r2}. How many times larger is the bigger area?`;
       const big=Math.max(r,r2),small=Math.min(r,r2);
       const ratio=+((big*big)/(small*small)).toFixed(2);
       correct=ratio;
@@ -970,37 +972,40 @@ function drawQuizVisual(v){
   ctx.clearRect(0,0,w,h);
 
   const grd=ctx.createRadialGradient(cx,cy,0,cx,cy,scale);
-  grd.addColorStop(0,'rgba(88,166,255,.12)');grd.addColorStop(1,'rgba(88,166,255,.02)');
+  grd.addColorStop(0,'rgba(94,196,212,.15)');grd.addColorStop(1,'rgba(94,196,212,.03)');
   ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);ctx.fillStyle=grd;ctx.fill();
   ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);
-  ctx.strokeStyle='#58a6ff';ctx.lineWidth=2.5;ctx.stroke();
+  ctx.strokeStyle='#5ec4d4';ctx.lineWidth=2.5;ctx.stroke();
 
   if(v.show==='radius'||v.show==='area'){
     ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+scale,cy);
-    ctx.strokeStyle='#ff7b72';ctx.lineWidth=2.5;ctx.stroke();
-    ctx.beginPath();ctx.arc(cx+scale,cy,4,0,TAU);ctx.fillStyle='#ff7b72';ctx.fill();
-    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#ff7b72';
+    ctx.strokeStyle='#f7936f';ctx.lineWidth=2.5;ctx.stroke();
+    ctx.beginPath();ctx.arc(cx+scale,cy,4,0,TAU);ctx.fillStyle='#f7936f';ctx.fill();
+    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#f7936f';
     ctx.fillText('r = '+v.r,cx+scale/2-10,cy-10);
   }
   if(v.show==='diameter'){
     ctx.beginPath();ctx.moveTo(cx-scale,cy);ctx.lineTo(cx+scale,cy);
-    ctx.strokeStyle='#58a6ff';ctx.lineWidth=2.5;ctx.stroke();
-    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#58a6ff';
+    ctx.strokeStyle='#5ec4d4';ctx.lineWidth=2.5;ctx.stroke();
+    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#5ec4d4';
     ctx.fillText('d = '+v.r*2,cx-15,cy-10);
   }
   if(v.show==='circumference'){
     ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);
-    ctx.strokeStyle='#3fb950';ctx.lineWidth=4;ctx.stroke();
+    ctx.strokeStyle='#06d6a0';ctx.lineWidth=4;ctx.stroke();
   }
   if(v.show==='area'){
     ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);
-    ctx.fillStyle='rgba(163,113,247,.15)';ctx.fill();
+    ctx.fillStyle='rgba(255,209,102,.15)';ctx.fill();
   }
-  ctx.beginPath();ctx.arc(cx,cy,3,0,TAU);ctx.fillStyle='#fff';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,3,0,TAU);ctx.fillStyle='#ffd166';ctx.fill();
 }
 
+const surfPraise=['Radical!','Cowabunga!','Gnarly!','Tubular!','Stoked!','Hang ten!','Shaka!'];
+const surfBummer=['Wipeout!','Bail!','Caught in the foam!'];
+
 function spawnConfetti(x,y){
-  const colors=['#3fb950','#58a6ff','#a371f7','#ff7b72','#f0883e','#ffd33d'];
+  const colors=['#06d6a0','#5ec4d4','#ffd166','#f7936f','#ef476f','#fff'];
   for(let i=0;i<20;i++){
     const el=document.createElement('div');
     el.style.cssText=`position:fixed;left:${x}px;top:${y}px;width:${rnd(4,8)}px;height:${rnd(4,8)}px;
@@ -1019,15 +1024,15 @@ function renderQuiz(){
   const area=document.getElementById('quizArea');
   if(quizQ>=quizTotal){
     const pct=Math.round(quizScore/quizTotal*100);
-    const msg=pct>=90?'Outstanding!':pct>=70?'Great work!':pct>=50?'Good effort! Keep practicing.':'Review the Learn tab and try again!';
-    const grade=pct>=90?'A+':pct>=80?'A':pct>=70?'B':pct>=60?'C':'Keep trying';
+    const msg=pct>=90?'Total shredder! You crushed it!':pct>=70?'Nice ride, Kayla! Keep it up!':pct>=50?'Good paddle out! Try catching more waves.':'Head back to the Learn tab and ride again!';
+    const grade=pct>=90?'Pro Surfer':pct>=80?'Wave Rider':pct>=70?'Beach Cruiser':pct>=60?'Paddler':'Grommet';
     area.innerHTML=`<div class="glass" style="text-align:center;padding:2.5rem">
-      <div style="font-size:3rem;font-weight:800;font-family:JetBrains Mono;
-        background:linear-gradient(135deg,#58a6ff,#a371f7);-webkit-background-clip:text;
+      <div style="font-size:3rem;font-weight:700;font-family:JetBrains Mono;
+        background:linear-gradient(135deg,#ffd166,#f7936f);-webkit-background-clip:text;
         background-clip:text;-webkit-text-fill-color:transparent">${pct}%</div>
-      <div style="color:#6e7681;margin:.5rem 0;font-size:1.1rem;font-weight:600">${grade}</div>
-      <p style="color:#8b949e;margin:.75rem 0">${msg}</p>
-      <p style="color:#484f58;font-size:.85rem">${quizScore} of ${quizTotal} correct</p>
+      <div style="color:#5ec4d4;margin:.5rem 0;font-size:1.1rem;font-weight:700">${grade}</div>
+      <p style="color:#8bb8cc;margin:.75rem 0">${msg}</p>
+      <p style="color:#5a8a9e;font-size:.85rem">${quizScore} of ${quizTotal} waves caught</p>
     </div>`;
     document.getElementById('quizVisual').style.display='none';
     if(pct>=70){
@@ -1053,13 +1058,15 @@ function renderQuiz(){
       if(el.dataset.val===correct){
         el.classList.add('correct');
         quizScore++;streakData[quizQ]='correct';
-        fb.className='feedback show right';fb.textContent='Correct!';
+        fb.className='feedback show right';
+        fb.textContent=surfPraise[rnd(0,surfPraise.length-1)];
         const rect=el.getBoundingClientRect();
         spawnConfetti(rect.left+rect.width/2,rect.top);
       }else{
         el.classList.add('wrong');streakData[quizQ]='wrong';
         area.querySelector(`.choice[data-val="${CSS.escape(correct)}"]`)?.classList.add('correct');
-        fb.className='feedback show wrong-fb';fb.textContent=`Answer: ${correct}`;
+        fb.className='feedback show wrong-fb';
+        fb.textContent=surfBummer[rnd(0,surfBummer.length-1)]+` Answer: ${correct}`;
       }
       renderStreak();
       document.getElementById('score').textContent=quizScore;
