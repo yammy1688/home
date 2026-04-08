@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>yammy1688</title>
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+  :root{
+    --bg:#0a0a0f;
+    --card:#12121a;
+    --accent:#7c5cfc;
+    --accent2:#ff6bc1;
+    --text:#e2e2e8;
+    --muted:#6b6b80;
+  }
+
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* animated gradient bg */
+  .bg-glow{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 600px 600px at 20% 20%,rgba(124,92,252,.15),transparent),
+      radial-gradient(ellipse 500px 500px at 80% 60%,rgba(255,107,193,.1),transparent),
+      radial-gradient(ellipse 400px 400px at 50% 90%,rgba(56,189,248,.08),transparent);
+    animation:glowShift 12s ease-in-out infinite alternate;
+  }
+  @keyframes glowShift{
+    0%{filter:hue-rotate(0deg)}
+    100%{filter:hue-rotate(30deg)}
+  }
+
+  /* floating particles */
+  .particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .particle{
+    position:absolute;
+    width:var(--size);height:var(--size);
+    border-radius:50%;
+    background:var(--color);
+    opacity:0;
+    animation:float var(--dur) var(--delay) ease-in-out infinite;
+  }
+  @keyframes float{
+    0%{transform:translateY(100vh) scale(0);opacity:0}
+    10%{opacity:.6}
+    90%{opacity:.6}
+    100%{transform:translateY(-10vh) scale(1);opacity:0}
+  }
+
+  .wrapper{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+
+  /* hero */
+  .hero{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    min-height:70vh;text-align:center;gap:1.5rem;
+  }
+
+  .avatar{
+    width:120px;height:120px;border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:grid;place-items:center;
+    font-size:3rem;font-weight:700;color:#fff;
+    box-shadow:0 0 60px rgba(124,92,252,.35);
+    animation:pulse 4s ease-in-out infinite;
+    user-select:none;
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 40px rgba(124,92,252,.3)}
+    50%{box-shadow:0 0 80px rgba(124,92,252,.5)}
+  }
+
+  .hero h1{
+    font-size:clamp(2.5rem,6vw,4rem);font-weight:800;
+    letter-spacing:-.03em;line-height:1.1;
+    background:linear-gradient(135deg,#fff 0%,var(--accent) 50%,var(--accent2) 100%);
+    background-size:200% 200%;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    animation:gradientText 6s ease-in-out infinite alternate;
+  }
+  @keyframes gradientText{
+    0%{background-position:0% 50%}
+    100%{background-position:100% 50%}
+  }
+
+  .hero .tagline{
+    font-size:1.15rem;color:var(--muted);max-width:480px;line-height:1.6;
+  }
+
+  /* cards */
+  .cards{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:1.5rem;margin-top:2rem;
+  }
+
+  .card{
+    background:var(--card);border:1px solid rgba(255,255,255,.06);
+    border-radius:1rem;padding:2rem;
+    transition:all .35s cubic-bezier(.4,0,.2,1);
+    position:relative;overflow:hidden;
+    text-decoration:none;color:var(--text);
+    display:flex;flex-direction:column;gap:.75rem;
+  }
+  .card::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(124,92,252,.08),rgba(255,107,193,.06));
+    opacity:0;transition:opacity .35s;
+  }
+  .card:hover{
+    transform:translateY(-6px);
+    border-color:rgba(124,92,252,.3);
+    box-shadow:0 20px 60px rgba(124,92,252,.15);
+  }
+  .card:hover::before{opacity:1}
+
+  .card-icon{
+    font-size:2.5rem;
+    width:56px;height:56px;
+    display:grid;place-items:center;
+    border-radius:.75rem;
+    background:rgba(124,92,252,.12);
+    position:relative;z-index:1;
+  }
+
+  .card h2{font-size:1.25rem;font-weight:700;position:relative;z-index:1}
+  .card p{font-size:.9rem;color:var(--muted);line-height:1.5;position:relative;z-index:1}
+
+  .card .arrow{
+    margin-top:auto;font-size:.85rem;font-weight:600;
+    color:var(--accent);display:flex;align-items:center;gap:.4rem;
+    position:relative;z-index:1;
+    transition:gap .3s;
+  }
+  .card:hover .arrow{gap:.7rem}
+
+  /* footer */
+  footer{
+    text-align:center;padding:4rem 0 2rem;
+    color:var(--muted);font-size:.8rem;
+  }
+  footer a{color:var(--accent);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+
+  /* scroll reveal */
+  .reveal{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.4,0,.2,1)}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<div class="particles" id="particles"></div>
+
+<div class="wrapper">
+  <section class="hero">
+    <div class="avatar">Y</div>
+    <h1>yammy1688</h1>
+    <p class="tagline">Welcome to my corner of the internet. Building cool stuff, one project at a time.</p>
+  </section>
+
+  <section class="cards">
+    <a href="/math-game/" class="card reveal">
+      <div class="card-icon">&#x1F9EE;</div>
+      <h2>Math Games</h2>
+      <p>Interactive math challenges &mdash; from fun circle geometry for kids to advanced 8th-grade problems. Level up your skills!</p>
+      <span class="arrow">Play now &rarr;</span>
+    </a>
+
+    <div class="card reveal">
+      <div class="card-icon">&#x1F680;</div>
+      <h2>Projects</h2>
+      <p>More projects coming soon. Stay tuned for experiments, tools, and creative builds.</p>
+      <span class="arrow" style="color:var(--muted)">Coming soon</span>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-icon">&#x1F4AC;</div>
+      <h2>About</h2>
+      <p>Curious, creative, and always learning. This site is a playground for ideas.</p>
+      <span class="arrow" style="color:var(--muted)">Coming soon</span>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 yammy1688</p>
+  </footer>
+</div>
+
+<script>
+  // particles
+  const container=document.getElementById('particles');
+  const colors=['rgba(124,92,252,.5)','rgba(255,107,193,.4)','rgba(56,189,248,.4)'];
+  for(let i=0;i<30;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.setProperty('--size',Math.random()*4+2+'px');
+    p.style.setProperty('--color',colors[Math.floor(Math.random()*colors.length)]);
+    p.style.setProperty('--dur',Math.random()*10+8+'s');
+    p.style.setProperty('--delay',Math.random()*10+'s');
+    p.style.left=Math.random()*100+'%';
+    container.appendChild(p);
+  }
+
+  // scroll reveal
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+  },{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+
+</body>
+</html>
