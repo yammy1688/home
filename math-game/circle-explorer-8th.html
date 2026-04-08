@@ -256,8 +256,8 @@ header .wave-emoji{font-size:1.3rem;display:inline-block;animation:pixelBounce 1
 .info[data-viz]{cursor:pointer}
 .info[data-viz] .formula{position:relative;padding-right:2.2rem}
 .info[data-viz] .formula::after{
-  content:'[ tap ]';position:absolute;right:.4rem;top:50%;transform:translateY(-50%);
-  font-family:'Press Start 2P',monospace;font-size:.35rem;color:#ff6b9d;opacity:.6;
+  content:'\u25B6';position:absolute;right:.5rem;top:50%;transform:translateY(-50%);
+  font-size:.7rem;color:#ff6b9d;opacity:.7;
 }
 @media(hover:hover){.info[data-viz]:hover{border-color:#ff6b9d;box-shadow:4px 4px 0 #1a1028,0 0 20px rgba(255,107,157,.15)}}
 
@@ -318,6 +318,49 @@ input[type=range]::-webkit-slider-thumb{
   .streak-dot{width:18px;height:18px;font-size:.55rem}
   .tab{padding:.5rem 1rem;font-size:.8rem}
 }
+
+/* STEP CLICK POPUP STYLES */
+.step-item{cursor:pointer;transition:all .2s;position:relative}
+.step-item:hover{background:rgba(255,107,157,.1);border-radius:4px}
+.step-item::after{content:'👆 click';font-size:.6rem;color:#ff6b9d;margin-left:auto;opacity:.6;position:absolute;right:8px;top:50%;transform:translateY(-50%)}
+.step-modal{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(26,16,40,.95);
+  display:none;align-items:center;justify-content:center;
+  padding:1rem;
+}
+.step-modal.active{display:flex}
+.step-modal-content{
+  background:#2d1f42;border:3px solid #4a3660;
+  max-width:600px;width:100%;max-height:90vh;
+  overflow-y:auto;padding:1.5rem;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  animation:modalPop .3s ease;
+}
+@keyframes modalPop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.step-modal-header{
+  display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;
+  border-bottom:2px solid #4a3660;padding-bottom:.75rem;
+}
+.step-modal-num{
+  width:32px;height:32px;background:#ff6b9d;color:#1a1028;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Press Start 2P',monospace;font-size:.6rem;
+}
+.step-modal-title{font-size:1rem;font-weight:700;color:#ffe47a}
+.step-modal-canvas{
+  width:100%;height:280px;border:2px solid #4a3660;
+  background:#1a1028;margin:1rem 0;
+}
+.step-modal-explanation{color:#b8a9cc;font-size:.9rem;line-height:1.7;margin:1rem 0}
+.step-modal-explanation strong{color:#7ecbf5}
+.step-modal-close{
+  background:#ff6b9d;color:#1a1028;border:none;
+  padding:.6rem 1.2rem;font-family:'Press Start 2P',monospace;font-size:.5rem;
+  cursor:pointer;margin-top:1rem;
+}
+.step-modal-close:hover{background:#ff8fab}
+
 </style>
 </head>
 <body>
@@ -334,6 +377,7 @@ input[type=range]::-webkit-slider-thumb{
   <div class="tabs">
     <button class="tab active" data-tab="learn">&#x1F30A; Learn 學習</button>
     <button class="tab" data-tab="playground">&#x1F3D6;&#xFE0F; Play 操場</button>
+    <button class="tab" data-tab="secret">&#x1F30D; Secret Advanced &#x9032;&#x968E;</button>
     <button class="tab" data-tab="quiz">&#x1F420; Quiz 測驗</button>
   </div>
 
@@ -453,6 +497,279 @@ input[type=range]::-webkit-slider-thumb{
     </div>
   </div>
 
+  <!-- SECRET ADVANCED PANEL -->
+  <div class="panel" id="secret">
+    <div class="glass" style="text-align:center;margin-bottom:1.5rem">
+      <h2 style="font-family:'Press Start 2P',monospace;font-size:1rem;color:#c084fc;margin-bottom:.5rem">&#x1F30D; Secret Advanced Area</h2>
+      <p style="color:#b8a9cc;font-size:.85rem">Advanced Circle Applications / 圓的進階應用</p>
+      <p style="color:#7ecbf5;font-size:.8rem;margin-top:.5rem">Learn to solve irregular shapes using circle concepts!</p>
+    </div>
+
+    <!-- Pattern Recognition Section -->
+    <div class="advanced-walkthrough">
+      <div class="advanced-title">&#x1F3AF; Pattern Recognition Guide / 模式識別指南</div>
+      <div class="pattern-grid">
+        <div class="pattern-card">
+          <h4>&#x1F955; Subtraction Method</h4>
+          <p>When a shape has pieces removed (like quarter-circles from a square), calculate the whole shape first, then subtract the removed parts.<br><span style="color:#6a9bb0">當形狀有缺失部分時，先算整體再減去缺失。</span></p>
+        </div>
+        <div class="pattern-card">
+          <h4>&#x1F9F2; Addition Method</h4>
+          <p>When a shape is made of multiple parts (like combined semicircles), calculate each piece separately, then add them together.<br><span style="color:#6a9bb0">當形狀由多個部分組成時，分別計算再加總。</span></p>
+        </div>
+        <div class="pattern-card">
+          <h4>&#x1F504; Fraction Trick</h4>
+          <p>For sectors, always find the fraction of the circle first: &theta;/360°. Then multiply by full circle area or circumference.<br><span style="color:#6a9bb0">扇形先找圓的比例：&theta;/360°，再乘整圓面積或周長。</span></p>
+        </div>
+        <div class="pattern-card">
+          <h4>&#x1F6A6; Perimeter vs Area</h4>
+          <p>Perimeter is the sum of all boundary lines. Area is the space inside. For sectors, perimeter = 2r + arc!<br><span style="color:#6a9bb0">周界是所有邊界線的總和。面積是內部空間。扇形周界 = 2r + 弧長！</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem 1: Sector -->
+    <div class="shape-problem" data-problem="1">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F955;</div>
+        <div>
+          <div class="shape-title">Problem 1: Sector with Central Angle / 圓心角扇形</div>
+          <div class="shape-type">SUBTRACTION TYPE / 減法類型</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="canvas1" width="400" height="250"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Identify given information</strong> / 確認已知條件<br>
+            Radius r = 90 cm, Central angle &theta; = 120°
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Find the fraction of the circle</strong> / 找出圓的比例<br>
+            <div class="step-formula">Fraction = &theta;/360° = 120°/360° = 1/3</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Calculate Arc Length</strong> / 計算弧長<br>
+            <div class="step-formula">Arc = (1/3) × 2&pi;r = (1/3) × 2&pi; × 90 = <span class="green">60&pi; ≈ 188.5 cm</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Calculate Sector Perimeter</strong> / 計算扇形周界<br>
+            <div class="step-formula">Perimeter = 2r + Arc = 180 + 60&pi; = <span class="green">60&pi; + 180 ≈ 368.5 cm</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Calculate Sector Area</strong> / 計算扇形面積<br>
+            <div class="step-formula">Area = (1/3) × &pi;r² = (1/3) × &pi; × 8100 = <span class="purple">2700&pi; ≈ 8,478 cm²</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip / 專業提示</div>
+        <div class="tip-content">
+          For sector perimeter, remember to include BOTH radii! Many students forget the straight edges. / 計算扇形周界時，記得包含<strong>兩條半徑</strong>！很多學生會忘記直邊。
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem 2: Square with Quarter-Circles -->
+    <div class="shape-problem" data-problem="2">
+      <div class="shape-header">
+        <div class="shape-icon">&#x25FB;</div>
+        <div>
+          <div class="shape-title">Problem 2: Square minus Quarter-Circles / 正方形減去四分之一圓</div>
+          <div class="shape-type">SUBTRACTION METHOD / 減去法</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="canvas2" width="400" height="250"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Visualize the shape</strong> / 想像形狀<br>
+            Square with side 30 cm. Four quarter-circles at corners (r=15). The center star is shaded.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Key insight</strong> / 關鍵洞察<br>
+            4 quarter-circles = 1 complete circle! Each has r = 15 (half the side).
+            <div class="step-formula">4 × (1/4) = 1 full circle</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Calculate Shaded Area</strong> / 計算陰影面積<br>
+            <div class="step-formula">Area = Square - Circle = 30² - &pi;(15)² = 900 - 225&pi; = <span class="purple">900 - 225&pi; ≈ 193.5 cm²</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Calculate Perimeter</strong> / 計算周界<br>
+            The perimeter is just the 4 arcs (they form one circle's circumference)!
+            <div class="step-formula">Perimeter = 4 × (1/4 × 2&pi;r) = 2&pi;(15) = <span class="green">30&pi; ≈ 94.2 cm</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pattern Alert / 模式警報</div>
+        <div class="tip-content">
+          When you see 4 quarter-circles at corners of a square, they always make exactly 1 full circle! / 當你看到正方形的四個角落有四個四分之一圓時，它們總是組成<strong>恰好一個完整的圓</strong>！
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem 3: Quarter-Circle minus Semicircle -->
+    <div class="shape-problem" data-problem="3">
+      <div class="shape-header">
+        <div class="shape-icon">&#x25D6;</div>
+        <div>
+          <div class="shape-title">Problem 3: Nested Curves / 嵌套曲線</div>
+          <div class="shape-type">SUBTRACTION WITH DIFFERENT RADII / 不同半徑的減法</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="canvas3" width="400" height="250"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Understand the structure</strong> / 理解結構<br>
+            Square 20×20. Large quarter-circle (r=20). Small semicircle on edge (d=20, so r=10).
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Calculate Quarter-Circle Area</strong> / 計算四分之一圓面積<br>
+            <div class="step-formula">A₁ = (1/4) × &pi; × 20² = (1/4) × 400&pi; = <span class="blue">100&pi; cm²</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Calculate Semicircle Area</strong> / 計算半圓面積<br>
+            <div class="step-formula">A₂ = (1/2) × &pi; × 10² = (1/2) × 100&pi; = <span class="blue">50&pi; cm²</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Find Shaded Area</strong> / 求陰影面積<br>
+            <div class="step-formula">Area = A₁ - A₂ = 100&pi; - 50&pi; = <span class="purple">50&pi; ≈ 157 cm²</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Calculate Perimeter</strong> / 計算周界<br>
+            Quarter-circle arc + Semicircle arc (the straight edges cancel out!)
+            <div class="step-formula">Arc₁ = (1/4) × 2&pi; × 20 = 10&pi;<br>Arc₂ = (1/2) × 2&pi; × 10 = 10&pi;<br>Perimeter = 10&pi; + 10&pi; = <span class="green">20&pi; ≈ 62.8 cm</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Edge Cancel Trick / 邊緣抵消技巧</div>
+        <div class="tip-content">
+          Notice the straight edge of the semicircle sits ON the straight edge of the quarter-circle — they don't count toward the perimeter! / 注意半圓的直邊坐落在四分之一圓的直邊上——它們不算在周界內！
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem 4: Composite Semicircles -->
+    <div class="shape-problem" data-problem="4">
+      <div class="shape-header">
+        <div class="shape-icon">&#x25CE;</div>
+        <div>
+          <div class="shape-title">Problem 4: Composite Semicircles / 複合半圓</div>
+          <div class="shape-type">ADDITION METHOD / 加法方法</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="canvas4" width="400" height="250"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Analyze the composite</strong> / 分析組合結構<br>
+            Large semicircle (d=24, r=12) facing down. Two small semicircles (d=16, r=8 and d=8, r=4) facing up.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Check: Do diameters add up?</strong> / 檢查：直徑相加？<br>
+            16 + 8 = 24 ✓ The small diameters equal the large one. This confirms they fit perfectly!
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Calculate Perimeter (all arcs)</strong> / 計算周界（所有弧）<br>
+            <div class="step-formula">
+              Large arc = &pi; × 12 = 12&pi;<br>
+              Left arc = &pi; × 8 = 8&pi;<br>
+              Right arc = &pi; × 4 = 4&pi;<br>
+              Total = <span class="green">12&pi; + 8&pi; + 4&pi; = 24&pi; ≈ 75.4 cm</span>
+            </div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Calculate Total Area</strong> / 計算總面積<br>
+            <div class="step-formula">
+              Area = ½&pi;(12²) + ½&pi;(8²) + ½&pi;(4²)<br>
+              = ½&pi;(144 + 64 + 16)<br>
+              = ½&pi; × 224 = <span class="purple">112&pi; ≈ 352 cm²</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; The Magic Pattern / 神奇模式</div>
+        <div class="tip-content">
+          When semicircles sit on a straight line with touching diameters, the perimeter is simply &pi; × (sum of radii). Here: &pi;(12+8+4) = 24&pi;! / 當半圓的直徑在直線上相連時，周界就是 &pi; × (半徑總和)。
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Reference Card -->
+    <div class="glass" style="margin-top:2rem">
+      <h3 style="font-family:'Press Start 2P',monospace;font-size:.8rem;color:#ffe47a;margin-bottom:1rem">&#x1F4CB; Quick Formula Reference / 公式速查</h3>
+      <div class="info-grid" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="formula" style="margin:.3rem">
+          <strong style="color:#f7936f">Full Circle:</strong><br>
+          C = 2&pi;r = &pi;d<br>
+          A = &pi;r²
+        </div>
+        <div class="formula" style="margin:.3rem">
+          <strong style="color:#f4a261">Sector (&theta;°):</strong><br>
+          Arc = (&theta;/360) × 2&pi;r<br>
+          Area = (&theta;/360) × &pi;r²<br>
+          Perimeter = 2r + Arc
+        </div>
+        <div class="formula" style="margin:.3rem">
+          <strong style="color:#118ab2">Special Cases:</strong><br>
+          Semicircle: A = &pi;r²/2<br>
+          Quarter: A = &pi;r²/4<br>
+          Arc% = &theta;/360
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- QUIZ PANEL -->
   <div class="panel" id="quiz">
     <div class="glass quiz-header">
@@ -1738,6 +2055,379 @@ document.getElementById('newQuiz').addEventListener('click',()=>{
   initStreak();renderQuiz();
 });
 initStreak();renderQuiz();
+</script>
+
+<!-- STEP EXPLANATION MODAL -->
+<div class="step-modal" id="stepModal">
+  <div class="step-modal-content">
+    <div class="step-modal-header">
+      <div class="step-modal-num" id="modalStepNum">1</div>
+      <div class="step-modal-title" id="modalStepTitle">Step Title</div>
+    </div>
+    <canvas class="step-modal-canvas" id="stepModalCanvas" width="500" height="280"></canvas>
+    <div class="step-modal-explanation" id="modalExplanation">
+      Explanation text goes here...
+    </div>
+    <button class="step-modal-close" onclick="closeStepModal()">✓ Got it! / 明白了！</button>
+  </div>
+</div>
+
+</body>
+
+// STEP CLICK POPUP FUNCTIONALITY
+const stepExplanations = {
+  // Problem 1: Sector steps
+  'p1s1':{
+    title:'Identify Given Information / 確認已知條件',
+    text:'The problem gives us two pieces of information: the <strong>radius</strong> (distance from center to edge) is 90 cm, and the <strong>central angle</strong> (the "slice" of the pizza) is 120°. Think of it like a pizza slice that takes up 120 degrees out of the full 360° circle.',
+    draw:(ctx)=>{
+      const cx=250,cy=140,r=80;
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='rgba(244,162,97,.3)';
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,-Math.PI/6,Math.PI/6);ctx.closePath();
+      ctx.fill();ctx.strokeStyle='#f4a261';ctx.lineWidth=3;ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(-Math.PI/6),cy+r*Math.sin(-Math.PI/6));ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(Math.PI/6),cy+r*Math.sin(Math.PI/6));ctx.stroke();
+      ctx.font='bold 14px JetBrains Mono,monospace';
+      ctx.fillStyle='#e8dff5';ctx.fillText('r = 90',cx+20,cy-10);
+      ctx.fillStyle='#f7936f';ctx.fillText('θ = 120°',cx-40,cy+50);
+      ctx.fillStyle='#ff6b9d';ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fill();
+    }
+  },
+  'p1s2':{
+    title:'Find the Fraction / 找出比例',
+    text:'A full circle is 360°. Our sector is 120°. So the fraction is <strong>120/360 = 1/3</strong>. This means our sector is exactly one-third of the whole circle!',
+    draw:(ctx)=>{
+      const cx=250,cy=140,r=80;
+      for(let i=0;i<3;i++){
+        const start=-Math.PI/2+i*(Math.PI*2/3);
+        const end=start+Math.PI*2/3;
+        ctx.fillStyle=i===0?'rgba(244,162,97,.5)':'rgba(74,54,96,.3)';
+        ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();
+        ctx.fill();ctx.strokeStyle=i===0?'#f4a261':'#4a3660';ctx.lineWidth=i===0?3:1;ctx.stroke();
+      }
+      ctx.fillStyle='#ff6b9d';ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 16px JetBrains Mono,monospace';
+      ctx.fillStyle='#ffe47a';ctx.fillText('1/3 of circle',cx-50,cy+r+30);
+      ctx.fillStyle='#7ecbf5';ctx.fillText('120°',cx-20,cy-50);
+    }
+  },
+  'p1s3':{
+    title:'Calculate Arc Length / 計算弧長',
+    text:'The arc is the curved edge of the sector. Arc length = (fraction) × circumference. Since the full circumference is 2πr = 180π, and our fraction is 1/3, the arc is <strong>60π ≈ 188.5 cm</strong>.',
+    draw:(ctx)=>{
+      const cx=250,cy=140,r=90;
+      ctx.fillStyle='rgba(244,162,97,.2)';
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,-Math.PI/6,Math.PI/6);ctx.closePath();
+      ctx.fill();ctx.strokeStyle='#f4a261';ctx.lineWidth=2;ctx.stroke();
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(-Math.PI/6),cy+r*Math.sin(-Math.PI/6));ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(Math.PI/6),cy+r*Math.sin(Math.PI/6));ctx.stroke();
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=5;
+      ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/6,Math.PI/6);ctx.stroke();
+      ctx.fillStyle='#ff6b9d';
+      const arcX=cx+r*Math.cos(0),arcY=cy+r*Math.sin(0);
+      ctx.beginPath();ctx.moveTo(arcX+15,arcY);ctx.lineTo(arcX+5,arcY-5);ctx.lineTo(arcX+5,arcY+5);ctx.fill();
+      ctx.font='bold 16px JetBrains Mono,monospace';
+      ctx.fillStyle='#ff6b9d';ctx.fillText('Arc = 60π',arcX+25,arcY);
+    }
+  },
+  'p1s4':{
+    title:'Sector Perimeter / 扇形周界',
+    text:'Perimeter = all outside edges. For a sector, this includes: the two straight radii (r + r = 180 cm) PLUS the curved arc (60π). So total perimeter = <strong>180 + 60π ≈ 368.5 cm</strong>.',
+    draw:(ctx)=>{
+      const cx=250,cy=140,r=90;
+      ctx.fillStyle='rgba(244,162,97,.2)';
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,-Math.PI/6,Math.PI/6);ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle='#7ff5c3';ctx.lineWidth=5;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(-Math.PI/6),cy+r*Math.sin(-Math.PI/6));
+      ctx.arc(cx,cy,r,-Math.PI/6,Math.PI/6);
+      ctx.lineTo(cx,cy);ctx.stroke();
+      ctx.font='bold 14px JetBrains Mono,monospace';
+      ctx.fillStyle='#7ecbf5';ctx.fillText('r = 90',cx+r*Math.cos(-Math.PI/6)+10,cy+r*Math.sin(-Math.PI/6)-10);
+      ctx.fillStyle='#7ecbf5';ctx.fillText('r = 90',cx+r*Math.cos(Math.PI/6)+10,cy+r*Math.sin(Math.PI/6)+20);
+      ctx.fillStyle='#7ff5c3';ctx.fillText('Arc',cx+r+15,cy);
+      ctx.fillStyle='#ffe47a';ctx.font='bold 18px JetBrains Mono,monospace';
+      ctx.fillText('Perimeter = 2r + Arc',120,260);
+    }
+  },
+  'p1s5':{
+    title:'Sector Area / 扇形面積',
+    text:'Area = (fraction) × full circle area. Full circle area = πr² = π × 8100 = 8100π. At 1/3 fraction: <strong>2700π ≈ 8,478 cm²</strong>. Think: one slice of pizza!',
+    draw:(ctx)=>{
+      const cx=250,cy=140,r=85;
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='rgba(255,209,102,.4)';
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,-Math.PI/6,Math.PI/6);ctx.closePath();
+      ctx.fill();ctx.strokeStyle='#ffd166';ctx.lineWidth=3;ctx.stroke();
+      ctx.strokeStyle='#ffd166';ctx.lineWidth=1;
+      for(let i=20;i<r;i+=15){
+        ctx.beginPath();ctx.moveTo(cx+i,cy-20);ctx.lineTo(cx+i,cy+20);ctx.stroke();
+      }
+      ctx.font='bold 18px JetBrains Mono,monospace';
+      ctx.fillStyle='#ffd166';ctx.fillText('Area = 2700π',cx-60,cy+r+35);
+      ctx.fillStyle='#b8a9cc';ctx.font='14px JetBrains Mono,monospace';
+      ctx.fillText('≈ 8,478 cm²',cx-50,cy+r+55);
+    }
+  },
+  'p2s1':{
+    title:'Visualize the Shape / 想像形狀',
+    text:'Imagine a square. At each corner, there\'s a quarter-circle removed. The remaining center shape looks like a star or flower! The quarter-circles meet at the center.',
+    draw:(ctx)=>{
+      const x=150,y=40,s=180;
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=2;
+      ctx.strokeRect(x,y,s,s);
+      ctx.fillStyle='rgba(126,203,245,.2)';
+      ctx.beginPath();ctx.moveTo(x,y);ctx.arc(x,y,s/2,0,Math.PI/2);ctx.fill();ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x+s,y);ctx.arc(x+s,y,s/2,Math.PI/2,Math.PI);ctx.fill();ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x+s,y+s);ctx.arc(x+s,y+s,s/2,Math.PI,Math.PI*1.5);ctx.fill();ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x,y+s);ctx.arc(x,y+s,s/2,Math.PI*1.5,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.fillStyle='rgba(255,107,157,.3)';
+      ctx.beginPath();ctx.moveTo(x+s/2,y);ctx.lineTo(x,y+s/2);ctx.lineTo(x+s/2,y+s);
+      ctx.lineTo(x+s,y+s/2);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(x+s/2,y);ctx.lineTo(x,y+s/2);ctx.lineTo(x+s/2,y+s);
+      ctx.lineTo(x+s,y+s/2);ctx.closePath();ctx.stroke();
+      ctx.font='bold 16px JetBrains Mono,monospace';
+      ctx.fillStyle='#ff6b9d';ctx.fillText('Shaded Area',x+50,y+s+30);
+    }
+  },
+  'p2s2':{
+    title:'Key Insight / 關鍵洞察',
+    text:'4 quarter-circles = 1 complete circle! This is the "aha!" moment. Instead of calculating 4 separate quarter-circles, just calculate one full circle with r=15.',
+    draw:(ctx)=>{
+      const cx=250,cy=140,r=70;
+      const colors=['#7ecbf5','#7ff5c3','#ffd166','#ff6b9d'];
+      for(let i=0;i<4;i++){
+        const start=i*Math.PI/2,end=(i+1)*Math.PI/2;
+        ctx.fillStyle=colors[i]+'40';ctx.strokeStyle=colors[i];ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();
+        ctx.fill();ctx.stroke();
+      }
+      ctx.fillStyle='#e8dff5';
+      ctx.beginPath();ctx.arc(cx,cy,6,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 18px JetBrains Mono,monospace';
+      ctx.fillStyle='#ffe47a';ctx.fillText('4 quarters = 1 full circle!',cx-110,cy+r+35);
+    }
+  },
+  'p2s3':{
+    title:'Calculate Shaded Area / 計算陰影面積',
+    text:'Use the <strong>Subtraction Method</strong>: Start with the full square area (30² = 900), then subtract the 4 quarter-circles (which equal 1 full circle: π×15² = 225π). Result: 900 - 225π ≈ 193.5 cm²',
+    draw:(ctx)=>{
+      const x=80,y=40,s=160;
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=3;
+      ctx.strokeRect(x,y,s,s);
+      ctx.fillStyle='rgba(126,203,245,.3)';
+      ctx.beginPath();ctx.arc(x+s/2,y+s/2,s/3,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#7ecbf5';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(x+s/2,y+s/2,s/3,0,Math.PI*2);ctx.stroke();
+      ctx.font='bold 30px JetBrains Mono,monospace';
+      ctx.fillStyle='#ff6b9d';ctx.fillText('−',x+s+30,y+s/2+10);
+      ctx.fillStyle='#ffe47a';ctx.font='bold 18px JetBrains Mono,monospace';
+      ctx.fillText('Square − Circle',x+20,y+s+40);
+    }
+  },
+  'p2s4':{
+    title:'Calculate Perimeter / 計算周界',
+    text:'The perimeter is just the arcs of the 4 quarter-circles combined. Since 4 quarters = 1 full circle, the perimeter is simply the circumference of one circle with r=15: 2π×15 = <strong>30π ≈ 94.2 cm</strong>.',
+    draw:(ctx)=>{
+      const cx=250,cy=140,r=80;
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+      ctx.strokeStyle='#7ff5c3';ctx.lineWidth=6;
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='#7ff5c3';
+      const ax=cx+r*Math.cos(-Math.PI/2),ay=cy+r*Math.sin(-Math.PI/2);
+      ctx.beginPath();ctx.moveTo(ax,ay-15);ctx.lineTo(ax-5,ay-5);ctx.lineTo(ax+5,ay-5);ctx.fill();
+      ctx.font='bold 20px JetBrains Mono,monospace';
+      ctx.fillStyle='#7ff5c3';ctx.fillText('Perimeter = 30π ≈ 94.2 cm',cx-130,cy+r+35);
+    }
+  },
+  'p3s1':{
+    title:'Identify the Structure / 確認結構',
+    text:'We have a big quarter-circle (like a quarter pizza) with a semicircle carved out from its flat edge. The shaded region is the space between them.',
+    draw:(ctx)=>{
+      const x=100,y=60,s=140;
+      ctx.fillStyle='rgba(255,209,102,.15)';
+      ctx.beginPath();ctx.moveTo(x+s,y+s);ctx.arc(x+s,y+s,s,-Math.PI,-Math.PI/2);ctx.closePath();
+      ctx.fill();ctx.strokeStyle='#ffd166';ctx.lineWidth=2;ctx.stroke();
+      ctx.fillStyle='rgba(244,162,97,.2)';
+      ctx.beginPath();ctx.moveTo(x+s/2,y+s);ctx.arc(x+s/2,y+s,s/2,Math.PI,0,true);ctx.fill();
+      ctx.strokeStyle='#f4a261';ctx.lineWidth=2;ctx.stroke();
+      ctx.fillStyle='rgba(127,245,195,.35)';
+      ctx.beginPath();ctx.moveTo(x+s,y+s);ctx.arc(x+s,y+s,s,-Math.PI,-Math.PI/2);
+      ctx.lineTo(x+s/2,y+s);ctx.arc(x+s/2,y+s,s/2,0,Math.PI,true);ctx.closePath();
+      ctx.fill();
+      ctx.font='bold 16px JetBrains Mono,monospace';
+      ctx.fillStyle='#7ff5c3';ctx.fillText('Shaded Region',x+30,y+30);
+    }
+  },
+  'p3s2':{
+    title:'Subtraction Method / 減去法',
+    text:'Area = (Big Quarter-Circle) − (Small Semicircle). The quarter-circle has r=20. The semicircle sits on a diameter of 20, so its radius is 10.',
+    draw:(ctx)=>{
+      const cx=250,cy=140;
+      ctx.font='bold 20px JetBrains Mono,monospace';
+      ctx.fillStyle='#ffd166';ctx.fillText('Quarter Circle',cx-180,cy-20);
+      ctx.fillStyle='#b8a9cc';ctx.fillText('−',cx-60,cy-15);
+      ctx.fillStyle='#f4a261';ctx.fillText('Semicircle',cx-30,cy-20);
+      ctx.fillStyle='#b8a9cc';ctx.fillText('=',cx+80,cy-15);
+      ctx.fillStyle='#7ff5c3';ctx.fillText('Shaded',cx+100,cy-20);
+      ctx.fillStyle='rgba(255,209,102,.3)';ctx.strokeStyle='#ffd166';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(cx-80,cy+50,50,-Math.PI,-Math.PI/2);ctx.lineTo(cx-80,cy+50);ctx.closePath();
+      ctx.fill();ctx.stroke();
+      ctx.fillStyle='rgba(244,162,97,.4)';ctx.strokeStyle='#f4a261';
+      ctx.beginPath();ctx.arc(cx+80,cy+50,25,Math.PI,0,true);ctx.fill();ctx.stroke();
+      ctx.font='14px JetBrains Mono,monospace';
+      ctx.fillStyle='#ffd166';ctx.fillText('r=20',cx-110,cy+60);
+      ctx.fillStyle='#f4a261';ctx.fillText('r=10',cx+65,cy+30);
+    }
+  },
+  'p3s3':{
+    title:'Calculate Shaded Area / 計算陰影面積',
+    text:'Big: ¼×π×20² = 100π. Small: ½×π×10² = 50π. Shaded = 100π − 50π = <strong>50π ≈ 157 cm²</strong>.',
+    draw:(ctx)=>{
+      const cx=250,cy=140,r=80;
+      ctx.fillStyle='rgba(127,245,195,.3)';
+      ctx.beginPath();ctx.arc(cx,cy-30,r,-Math.PI/4,Math.PI/4);ctx.arc(cx+60,cy+10,40,Math.PI*0.75,Math.PI*1.25,true);ctx.closePath();
+      ctx.fill();ctx.strokeStyle='#7ff5c3';ctx.lineWidth=3;ctx.stroke();
+      ctx.font='bold 24px JetBrains Mono,monospace';
+      ctx.fillStyle='#7ff5c3';ctx.fillText('50π ≈ 157',cx-70,cy+60);
+    }
+  },
+  'p3s4':{
+    title:'Calculate Perimeter / 計算周界',
+    text:'Perimeter = outer arc (¼ of big circle) + inner arc (½ of small circle). Arc₁ = 10π, Arc₂ = 10π. Total = <strong>20π ≈ 62.8 cm</strong>.',
+    draw:(ctx)=>{
+      const cx=250,cy=140,r=80;
+      ctx.strokeStyle='#7ff5c3';ctx.lineWidth=5;
+      ctx.beginPath();ctx.arc(cx,cy-30,r,-Math.PI/4,Math.PI/4);ctx.stroke();
+      ctx.strokeStyle='#f4a261';ctx.lineWidth=5;
+      ctx.beginPath();ctx.arc(cx+60,cy+10,40,Math.PI*0.75,Math.PI*1.25,true);ctx.stroke();
+      ctx.font='bold 16px JetBrains Mono,monospace';
+      ctx.fillStyle='#7ff5c3';ctx.fillText('10π',cx-100,cy-20);
+      ctx.fillStyle='#f4a261';ctx.fillText('10π',cx+50,cy+20);
+      ctx.fillStyle='#ffe47a';ctx.font='bold 20px JetBrains Mono,monospace';
+      ctx.fillText('Total: 20π ≈ 62.8',cx-90,cy+r+20);
+    }
+  },
+  'p4s1':{
+    title:'Identify Semicircles / 確認半圓',
+    text:'This shape is made of 3 semicircles: one big one facing down (diameter 24), and two small ones facing up (diameters 16 and 8). Note: 16 + 8 = 24!',
+    draw:(ctx)=>{
+      const cx=250,cy=140;
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(cx-100,cy);ctx.lineTo(cx+100,cy);ctx.stroke();
+      ctx.fillStyle='rgba(255,209,102,.2)';
+      ctx.beginPath();ctx.arc(cx,cy,70,0,Math.PI);ctx.fill();
+      ctx.strokeStyle='#ffd166';ctx.lineWidth=3;ctx.stroke();
+      ctx.fillStyle='rgba(126,203,245,.2)';
+      ctx.beginPath();ctx.arc(cx-45,cy,47,Math.PI,0);ctx.fill();
+      ctx.strokeStyle='#7ecbf5';ctx.lineWidth=2;ctx.stroke();
+      ctx.fillStyle='rgba(127,245,195,.2)';
+      ctx.beginPath();ctx.arc(cx+47,cy,23,Math.PI,0);ctx.fill();
+      ctx.strokeStyle='#7ff5c3';ctx.lineWidth=2;ctx.stroke();
+      ctx.font='bold 14px JetBrains Mono,monospace';
+      ctx.fillStyle='#ffd166';ctx.fillText('d=24',cx-15,cy+85);
+      ctx.fillStyle='#7ecbf5';ctx.fillText('d=16',cx-80,cy-20);
+      ctx.fillStyle='#7ff5c3';ctx.fillText('d=8',cx+40,cy-20);
+    }
+  },
+  'p4s2':{
+    title:'Addition Method / 加法',
+    text:'Since 16 + 8 = 24, this is a special case! The area simplifies to: Area = ½×π×(12² − 8² − 4²) = ½×π×(144−64−16) = <strong>32π ≈ 100.5 cm²</strong>.',
+    draw:(ctx)=>{
+      const cx=250,cy=140,r=60;
+      ctx.fillStyle='rgba(255,209,102,.3)';
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#ffd166';ctx.stroke();
+      ctx.fillStyle='rgba(255,0,0,.2)';
+      ctx.beginPath();ctx.arc(cx-30,cy,40,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(cx+30,cy,20,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(127,245,195,.4)';
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI);ctx.fill();
+      ctx.strokeStyle='#7ff5c3';ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI);ctx.stroke();
+      ctx.font='bold 18px JetBrains Mono,monospace';
+      ctx.fillStyle='#7ff5c3';ctx.fillText('Area = 32π ≈ 100.5',cx-85,cy+r+25);
+    }
+  },
+  'p4s3':{
+    title:'Calculate Perimeter / 計算周界',
+    text:'Perimeter = sum of all 3 semicircle arcs. Arc = π×r. Total = π×12 + π×8 + π×4 = <strong>24π ≈ 75.4 cm</strong>.',
+    draw:(ctx)=>{
+      const cx=250,cy=140;
+      ctx.strokeStyle='#ffd166';ctx.lineWidth=6;
+      ctx.beginPath();ctx.arc(cx,cy,70,0,Math.PI);ctx.stroke();
+      ctx.strokeStyle='#7ecbf5';ctx.lineWidth=4;
+      ctx.beginPath();ctx.arc(cx-45,cy,47,Math.PI,0);ctx.stroke();
+      ctx.strokeStyle='#7ff5c3';ctx.lineWidth=4;
+      ctx.beginPath();ctx.arc(cx+47,cy,23,Math.PI,0);ctx.stroke();
+      ctx.font='bold 18px JetBrains Mono,monospace';
+      ctx.fillStyle='#ffe47a';ctx.fillText('12π + 8π + 4π = 24π',cx-100,cy+100);
+    }
+  },
+  'p4s4':{
+    title:'Final Result / 最終結果',
+    text:'Shaded Area ≈ <strong>100.5 cm²</strong> (using the 32π formula). Perimeter ≈ <strong>75.4 cm</strong>. This shape is called an "arbelos" or shoemaker\'s knife!',
+    draw:(ctx)=>{
+      const cx=250,cy=140;
+      ctx.fillStyle='rgba(127,245,195,.3)';
+      ctx.beginPath();ctx.arc(cx,cy,70,0,Math.PI);ctx.lineTo(cx-100,cy);
+      ctx.arc(cx-45,cy,47,Math.PI,0);ctx.lineTo(cx+47,cy);
+      ctx.arc(cx+47,cy,23,Math.PI,0);ctx.lineTo(cx+100,cy);
+      ctx.fill();ctx.strokeStyle='#7ff5c3';ctx.lineWidth=3;ctx.stroke();
+      ctx.font='bold 20px JetBrains Mono,monospace';
+      ctx.fillStyle='#ffe47a';ctx.fillText('Arbelos!',cx-50,cy-50);
+      ctx.fillStyle='#7ecbf5';ctx.font='14px JetBrains Mono,monospace';
+      ctx.fillText('(Shoemaker\'s Knife)',cx-70,cy-30);
+    }
+  }
+};
+
+document.querySelectorAll('.step-item').forEach((step)=>{
+  const problem = step.closest('.shape-problem');
+  if(!problem) return;
+  const probNum = problem.dataset.problem;
+  const steps = problem.querySelectorAll('.step-item');
+  const stepNum = Array.from(steps).indexOf(step) + 1;
+  const key = `p${probNum}s${stepNum}`;
+  if(stepExplanations[key]){
+    step.dataset.stepKey = key;
+    step.addEventListener('click',()=>showStepModal(key));
+  }
+});
+
+function showStepModal(key){
+  const data = stepExplanations[key];
+  if(!data) return;
+  document.getElementById('modalStepNum').textContent = key.match(/s(\d)/)[1];
+  document.getElementById('modalStepTitle').textContent = data.title;
+  document.getElementById('modalExplanation').innerHTML = data.text;
+  const canvas = document.getElementById('stepModalCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,500,280);
+  ctx.strokeStyle='#2d1f42';ctx.lineWidth=1;
+  for(let x=0;x<500;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,280);ctx.stroke();}
+  for(let y=0;y<280;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(500,y);ctx.stroke();}
+  if(data.draw) data.draw(ctx);
+  document.getElementById('stepModal').classList.add('active');
+}
+
+function closeStepModal(){
+  document.getElementById('stepModal').classList.remove('active');
+}
+
+document.getElementById('stepModal').addEventListener('click',(e)=>{
+  if(e.target.id === 'stepModal') closeStepModal();
+});
+
+document.addEventListener('keydown',(e)=>{
+  if(e.key === 'Escape') closeStepModal();
+});
+
 </script>
 </body>
 </html>
