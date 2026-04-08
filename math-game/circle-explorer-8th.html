@@ -76,6 +76,29 @@ header .wave-emoji{font-size:1.5rem;display:inline-block;animation:waveHand 2s e
 /* playground canvas needs full touch control */
 #playCanvas{touch-action:none}
 
+/* learn layout: canvas + side legend */
+.learn-layout{display:flex;gap:1rem;align-items:flex-start}
+.learn-layout canvas{flex:1;min-width:0}
+.learn-legend{
+  display:flex;flex-direction:column;gap:.35rem;min-width:160px;max-width:200px;
+  padding-top:.5rem;flex-shrink:0;
+}
+.ll{
+  display:flex;align-items:baseline;gap:.4rem;
+  font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:600;
+  color:#d4eaf7;background:rgba(4,30,46,.5);border:1px solid #0e3a5244;
+  padding:.3rem .6rem;border-radius:.5rem;white-space:nowrap;
+}
+.ll-label{font-family:'Quicksand',sans-serif;font-size:.72rem;font-weight:700;min-width:65px}
+.ll-val{font-weight:700}
+
+@media(max-width:600px){
+  .learn-layout{flex-direction:column}
+  .learn-legend{flex-direction:row;flex-wrap:wrap;max-width:100%;min-width:0;gap:.25rem .4rem}
+  .ll{font-size:.72rem;padding:.2rem .45rem}
+  .ll-label{min-width:auto}
+}
+
 /* toggle row */
 .toggle-row{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
 .toggle-btn{
@@ -103,17 +126,6 @@ header .wave-emoji{font-size:1.5rem;display:inline-block;animation:waveHand 2s e
 .toggle-btn[data-part=chord]{color:#83c5be;border-color:#83c5be44}
 .toggle-btn[data-part=chord].on{background:#83c5be20;border-color:#83c5be}
 
-/* live stats (compact inline) */
-.live-stats{
-  display:flex;flex-wrap:wrap;gap:.3rem .6rem;margin-top:.75rem;
-  justify-content:center;
-}
-.ls{
-  font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;
-  color:#d4eaf7;background:rgba(4,30,46,.5);border:1px solid #0e3a5288;
-  padding:.2rem .5rem;border-radius:.4rem;white-space:nowrap;
-}
-.ls b{font-weight:700;margin-right:.15rem}
 
 /* playground stats (keep grid style) */
 .stats.four{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:1.25rem 0}
@@ -248,19 +260,20 @@ header .wave-emoji{font-size:1.5rem;display:inline-block;animation:waveHand 2s e
 }
 @media(hover:hover){.info[data-viz]:hover{border-color:rgba(94,196,212,.4);box-shadow:0 8px 30px rgba(6,214,160,.12)}}
 
-/* viz modal */
+/* viz modal — floating card over page */
 .viz-overlay{
-  position:fixed;inset:0;z-index:200;background:rgba(4,30,46,.85);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  position:fixed;inset:0;z-index:200;background:rgba(4,30,46,.25);
   display:none;align-items:center;justify-content:center;padding:1.5rem;
 }
 .viz-overlay.open{display:flex}
 .viz-box{
-  background:linear-gradient(135deg,rgba(10,50,72,.95),rgba(4,30,46,.98));
-  border:1px solid rgba(94,196,212,.2);border-radius:1.5rem;
+  background:linear-gradient(135deg,rgba(10,50,72,.97),rgba(4,30,46,.99));
+  border:1px solid rgba(94,196,212,.3);border-radius:1.5rem;
   padding:1.5rem;max-width:500px;width:100%;position:relative;
-  animation:fadeUp .4s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(94,196,212,.1);
+  animation:vizPop .35s cubic-bezier(.4,0,.2,1);
 }
+@keyframes vizPop{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .viz-box canvas{width:100%;border-radius:1rem;margin-bottom:.75rem}
 .viz-title{font-size:1.1rem;font-weight:700;margin-bottom:.25rem}
 .viz-formula{font-family:'JetBrains Mono',monospace;font-size:1rem;color:#ffd166;margin-bottom:.75rem}
@@ -325,7 +338,20 @@ input[type=range]::-webkit-slider-thumb{
   <!-- LEARN PANEL -->
   <div class="panel active" id="learn">
     <div class="glass canvas-wrap">
-      <canvas id="learnCanvas"></canvas>
+      <div class="learn-layout">
+        <canvas id="learnCanvas"></canvas>
+        <div class="learn-legend" id="learnStats">
+          <div class="ll"><span class="ll-label" style="color:#f7936f">Radius 半徑</span> <span class="ll-val" id="lR">110</span></div>
+          <div class="ll"><span class="ll-label" style="color:#5ec4d4">Diameter 直徑</span> <span class="ll-val" id="lD">220</span></div>
+          <div class="ll"><span class="ll-label" style="color:#06d6a0">Circum. 周長</span> <span class="ll-val" id="lC">691.15</span></div>
+          <div class="ll"><span class="ll-label" style="color:#ffd166">Area 面積</span> <span class="ll-val" id="lA">38013.27</span></div>
+          <div class="ll"><span class="ll-label" style="color:#ef476f">Angle 角度</span> <span class="ll-val" id="lAngle">90°</span></div>
+          <div class="ll"><span class="ll-label" style="color:#e9c46a">Arc 弧長</span> <span class="ll-val" id="lArc">172.79</span></div>
+          <div class="ll"><span class="ll-label" style="color:#f4a261">Sector 扇形</span> <span class="ll-val" id="lSecA">9503.32</span></div>
+          <div class="ll"><span class="ll-label" style="color:#118ab2">Sec.P 周界</span> <span class="ll-val" id="lSecP">392.79</span></div>
+          <div class="ll"><span class="ll-label" style="color:#83c5be">Chord 弦</span> <span class="ll-val" id="lChord">155.56</span></div>
+        </div>
+      </div>
       <div class="toggle-row">
         <button class="toggle-btn on" data-part="radius">&#x1F3C4; Radius 半徑</button>
         <button class="toggle-btn on" data-part="diameter">&#x1F30A; Diameter 直徑</button>
@@ -345,17 +371,6 @@ input[type=range]::-webkit-slider-thumb{
         <label>Angle 角度</label>
         <input type="range" id="learnAngle" min="0" max="360" value="90">
         <span id="angleDisplay" style="color:#ef476f;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.9rem;min-width:40px">90°</span>
-      </div>
-      <div class="live-stats" id="learnStats">
-        <span class="ls" id="lsR"><b style="color:#f7936f">r</b>=<span id="lR">110</span></span>
-        <span class="ls" id="lsD"><b style="color:#5ec4d4">d</b>=<span id="lD">220</span></span>
-        <span class="ls" id="lsC"><b style="color:#06d6a0">C</b>=<span id="lC">691.15</span></span>
-        <span class="ls" id="lsA"><b style="color:#ffd166">A</b>=<span id="lA">38013.27</span></span>
-        <span class="ls" id="lsAngle"><b style="color:#ef476f">θ</b>=<span id="lAngle">90°</span></span>
-        <span class="ls" id="lsArc"><b style="color:#e9c46a">arc</b>=<span id="lArc">172.79</span></span>
-        <span class="ls" id="lsSecA"><b style="color:#f4a261">sec</b>=<span id="lSecA">9503.32</span></span>
-        <span class="ls" id="lsSecP"><b style="color:#118ab2">P</b>=<span id="lSecP">392.79</span></span>
-        <span class="ls" id="lsChord"><b style="color:#83c5be">ch</b>=<span id="lChord">155.56</span></span>
       </div>
     </div>
 
