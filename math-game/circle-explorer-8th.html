@@ -256,7 +256,7 @@ header .wave-emoji{font-size:1.3rem;display:inline-block;animation:pixelBounce 1
 .info[data-viz]{cursor:pointer}
 .info[data-viz] .formula{position:relative;padding-right:2.2rem}
 .info[data-viz] .formula::after{
-  content:'\u25B6';position:absolute;right:.5rem;top:50%;transform:translateY(-50%);
+  content:'\25B6';position:absolute;right:.5rem;top:50%;transform:translateY(-50%);
   font-size:.7rem;color:#ff6b9d;opacity:.7;
 }
 @media(hover:hover){.info[data-viz]:hover{border-color:#ff6b9d;box-shadow:4px 4px 0 #1a1028,0 0 20px rgba(255,107,157,.15)}}
@@ -530,18 +530,17 @@ input[type=range]::-webkit-slider-thumb{
   <div class="panel" id="playground">
     <div class="glass canvas-wrap">
       <canvas id="playCanvas"></canvas>
-      <div class="mode-row">
-        <button class="mode-btn active" data-mode="free">&#x1F3C4; Free Surf 自由衝浪</button>
-        <button class="mode-btn" data-mode="compare">&#x1F41A; Compare 對比</button>
-        <button class="mode-btn" data-mode="trace">&#x1F30A; Trace Wake 軌跡</button>
-      </div>
       <p class="canvas-hint" style="color:#5a8a9e;font-size:.8rem;margin-top:.5rem"></p>
     </div>
     <div class="stats four" id="playStats">
-      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius 半徑 (r)</div><div class="stat-value radius" id="pR">100</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter 直徑 (d)</div><div class="stat-value diameter" id="pD">200</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference 周長</div><div class="stat-value circumference" id="pC">628.32</div></div>
-      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area 面積</div><div class="stat-value area" id="pA">31415.93</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius 半徑 (r)</div><div class="stat-value radius" id="pR">—</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter 直徑 (d)</div><div class="stat-value diameter" id="pD">—</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference 周長</div><div class="stat-value circumference" id="pC">—</div></div>
+      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area 面積</div><div class="stat-value area" id="pA">—</div></div>
+    </div>
+    <div class="glass" id="overlapInfo" style="display:none">
+      <h3 style="font-family:'Press Start 2P',monospace;font-size:.5rem;color:#c084fc;margin-bottom:.6rem">&#x1F300; Overlap Info 重疊資訊</h3>
+      <div id="overlapDetails" style="font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#b8a9cc;line-height:1.8"></div>
     </div>
   </div>
 
@@ -1262,15 +1261,40 @@ aSlider.addEventListener('input',drawLearn);
 
 
 // ===================== PLAYGROUND =====================
-let circles=[{x:0,y:0,r:100,color:'#5ec4d4'}];
+let circles=[
+  {x:0,y:0,r:90,color:'#5ec4d4',label:'A'},
+  {x:0,y:0,r:70,color:'#ffd166',label:'B'},
+  {x:0,y:0,r:55,color:'#ff9ecd',label:'C'}
+];
 let activeCircle=0;
-let playMode='free';
 let dragging=null;
 let dragOff={x:0,y:0};
-let tracePoints=[];
 let playW=640,playH=500;
+let circlesInited=false;
 const playCanvas=document.getElementById('playCanvas');
 let playCtx;
+
+function circleOverlapArea(c1,c2){
+  const d=Math.hypot(c1.x-c2.x,c1.y-c2.y);
+  if(d>=c1.r+c2.r)return 0;
+  if(d+c2.r<=c1.r)return PI*c2.r*c2.r;
+  if(d+c1.r<=c2.r)return PI*c1.r*c1.r;
+  const r1=c1.r,r2=c2.r;
+  const a1=Math.acos((d*d+r1*r1-r2*r2)/(2*d*r1));
+  const a2=Math.acos((d*d+r2*r2-r1*r1)/(2*d*r2));
+  return r1*r1*a1+r2*r2*a2-0.5*Math.sqrt((-d+r1+r2)*(d+r1-r2)*(d-r1+r2)*(d+r1+r2));
+}
+
+function circleOverlapPerimeter(c1,c2){
+  const d=Math.hypot(c1.x-c2.x,c1.y-c2.y);
+  if(d>=c1.r+c2.r)return 0;
+  if(d+c2.r<=c1.r)return TAU*c2.r;
+  if(d+c1.r<=c2.r)return TAU*c1.r;
+  const r1=c1.r,r2=c2.r;
+  const a1=Math.acos((d*d+r1*r1-r2*r2)/(2*d*r1));
+  const a2=Math.acos((d*d+r2*r2-r1*r1)/(2*d*r2));
+  return 2*r1*a1+2*r2*a2;
+}
 
 function resizePlayCanvas(){
   const parent=playCanvas.parentElement;
@@ -1281,29 +1305,19 @@ function resizePlayCanvas(){
   playCtx=playCanvas.getContext('2d');
   playCtx.setTransform(DPR,0,0,DPR,0,0);
   playW=w;playH=h;
-  if(circles[0].x===0&&circles[0].y===0){
-    circles[0].x=w/2;circles[0].y=h/2;
+  if(!circlesInited){
+    circles[0].x=w*0.38;circles[0].y=h*0.44;
+    circles[1].x=w*0.6;circles[1].y=h*0.4;
+    circles[2].x=w*0.48;circles[2].y=h*0.64;
+    circlesInited=true;
   }
   drawPlayground();
 }
 resizePlayCanvas();
 
 document.querySelector('.canvas-hint').textContent=
-  IS_TOUCH?'Drag to move \u2022 Drag edge to resize \u2022 Pinch to zoom'
+  IS_TOUCH?'Drag to move \u2022 Drag edge to resize \u2022 Tap to select'
            :'Drag to move \u2022 Drag edge to resize \u2022 Scroll to zoom';
-
-document.querySelectorAll('.mode-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('active'));
-    btn.classList.add('active');
-    playMode=btn.dataset.mode;
-    if(playMode==='compare'&&circles.length<2){
-      circles.push({x:playW*0.65,y:playH/2,r:60,color:'#ffd166'});
-    }
-    if(playMode==='trace')tracePoints=[];
-    drawPlayground();
-  });
-});
 
 function drawPlayground(){
   if(!playCtx)return;
@@ -1311,87 +1325,127 @@ function drawPlayground(){
   const w=playW,h=playH;
   ctx.clearRect(0,0,w,h);
 
-  // wavy grid
+  // grid
   const gridStep=Math.round(w/20);
   ctx.globalAlpha=.12;
-  for(let i=0;i<w;i+=gridStep){
-    ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,h);
-    ctx.strokeStyle='#5ec4d4';ctx.lineWidth=.5;ctx.stroke();
-  }
-  for(let i=0;i<h;i+=gridStep){
-    ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(w,i);
-    ctx.strokeStyle='#5ec4d4';ctx.lineWidth=.5;ctx.stroke();
-  }
+  for(let i=0;i<w;i+=gridStep){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,h);ctx.strokeStyle='#5ec4d4';ctx.lineWidth=.5;ctx.stroke()}
+  for(let i=0;i<h;i+=gridStep){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(w,i);ctx.strokeStyle='#5ec4d4';ctx.lineWidth=.5;ctx.stroke()}
   ctx.globalAlpha=1;
 
-  // trace (wake trail)
-  if(playMode==='trace'&&tracePoints.length>1){
-    ctx.beginPath();ctx.moveTo(tracePoints[0].x,tracePoints[0].y);
-    for(let i=1;i<tracePoints.length;i++)ctx.lineTo(tracePoints[i].x,tracePoints[i].y);
-    ctx.strokeStyle='rgba(255,209,102,.4)';ctx.lineWidth=2;ctx.stroke();
-  }
-
-  const drawList=playMode==='compare'?circles:[circles[activeCircle]];
-  drawList.forEach((circ)=>{
+  // draw each circle
+  circles.forEach((circ,idx)=>{
     const{x,y,r,color}=circ;
-    const isActive=circ===circles[activeCircle];
-
+    const isActive=idx===activeCircle;
     const grd=ctx.createRadialGradient(x,y,0,x,y,r);
-    grd.addColorStop(0,color+'30');grd.addColorStop(1,color+'08');
+    grd.addColorStop(0,color+'25');grd.addColorStop(1,color+'08');
     ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fillStyle=grd;ctx.fill();
-
     ctx.beginPath();ctx.arc(x,y,r,0,TAU);
     ctx.strokeStyle=color;ctx.lineWidth=isActive?3:2;
     ctx.shadowColor=color;ctx.shadowBlur=isActive?18:0;ctx.stroke();ctx.shadowBlur=0;
-
-    ctx.beginPath();ctx.moveTo(x-r,y);ctx.lineTo(x+r,y);
-    ctx.strokeStyle=color+'66';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);ctx.stroke();ctx.setLineDash([]);
-
-    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-r);
-    ctx.strokeStyle='#f7936f';ctx.lineWidth=2;ctx.stroke();
-
-    ctx.beginPath();ctx.arc(x,y,5,0,TAU);ctx.fillStyle='#ffd166';
-    ctx.shadowColor='#ffd166';ctx.shadowBlur=8;ctx.fill();ctx.shadowBlur=0;
-
+    // radius line
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+r,y);
+    ctx.strokeStyle=color+'88';ctx.lineWidth=1.5;ctx.setLineDash([5,3]);ctx.stroke();ctx.setLineDash([]);
+    // center dot
+    ctx.beginPath();ctx.arc(x,y,isActive?6:4,0,TAU);ctx.fillStyle=color;
+    ctx.shadowColor=color;ctx.shadowBlur=isActive?10:0;ctx.fill();ctx.shadowBlur=0;
+    // resize handle
     const handleR=IS_TOUCH?12:8;
     ctx.beginPath();ctx.arc(x+r,y,handleR,0,TAU);
     ctx.fillStyle=color;ctx.strokeStyle='#fff';ctx.lineWidth=2;
-    ctx.shadowColor=color;ctx.shadowBlur=12;ctx.fill();ctx.stroke();ctx.shadowBlur=0;
-
+    ctx.shadowColor=color;ctx.shadowBlur=10;ctx.fill();ctx.stroke();ctx.shadowBlur=0;
+    // label
     const fs=Math.max(11,w*0.02);
     ctx.font=`bold ${fs}px JetBrains Mono, monospace`;
-    ctx.fillStyle='#f7936f';ctx.fillText('r='+r.toFixed(0),x+6,y-r/2-2);
-    ctx.fillStyle=color;ctx.fillText('d='+(r*2).toFixed(0),x-r/2,y+16);
-
-    if(playMode==='compare'){
-      ctx.fillStyle=color;
-      ctx.fillText('A='+(PI*r*r).toFixed(0),x-25,y+r/2+5);
-    }
+    ctx.fillStyle=color;ctx.fillText(circ.label,x-4,y-r-8);
+    ctx.fillStyle=color+'cc';ctx.fillText('r='+r.toFixed(0),x+8,y-6);
   });
 
-  if(playMode==='compare'&&circles.length>=2){
-    const c1=circles[0],c2=circles[1];
-    const ratio=(c1.r/c2.r).toFixed(2);
-    const areaRatio=((c1.r*c1.r)/(c2.r*c2.r)).toFixed(2);
-    const fs=Math.max(11,w*0.02);
-    ctx.font=`bold ${fs}px JetBrains Mono, monospace`;
-    ctx.fillStyle='#d4eaf7';
-    ctx.fillText(`Radius ratio: ${ratio}x   Area ratio: ${areaRatio}x`,12,22);
+  // draw overlap regions
+  const overlaps=[];
+  for(let i=0;i<circles.length;i++){
+    for(let j=i+1;j<circles.length;j++){
+      const c1=circles[i],c2=circles[j];
+      const d=Math.hypot(c1.x-c2.x,c1.y-c2.y);
+      if(d>=c1.r+c2.r)continue;
+      const area=circleOverlapArea(c1,c2);
+      const perim=circleOverlapPerimeter(c1,c2);
+      overlaps.push({i,j,area,perim,c1,c2});
+      // draw lens highlight
+      ctx.save();
+      ctx.beginPath();ctx.arc(c1.x,c1.y,c1.r,0,TAU);ctx.clip();
+      ctx.beginPath();ctx.arc(c2.x,c2.y,c2.r,0,TAU);
+      ctx.fillStyle='rgba(255,255,255,.12)';ctx.fill();
+      ctx.restore();
+      // draw lens border
+      if(d+c2.r>c1.r&&d+c1.r>c2.r){
+        const a=(c1.r*c1.r-c2.r*c2.r+d*d)/(2*d);
+        const hh=Math.sqrt(Math.max(0,c1.r*c1.r-a*a));
+        const dx=(c2.x-c1.x)/d,dy=(c2.y-c1.y)/d;
+        const mx=c1.x+a*dx,my=c1.y+a*dy;
+        const p1x=mx+hh*dy,p1y=my-hh*dx;
+        const p2x=mx-hh*dy,p2y=my+hh*dx;
+        // arc on c1
+        const a1s=Math.atan2(p1y-c1.y,p1x-c1.x),a1e=Math.atan2(p2y-c1.y,p2x-c1.x);
+        const a2s=Math.atan2(p1y-c2.y,p1x-c2.x),a2e=Math.atan2(p2y-c2.y,p2x-c2.x);
+        ctx.beginPath();ctx.arc(c1.x,c1.y,c1.r,a1s,a1e);ctx.arc(c2.x,c2.y,c2.r,a2e,a2s);
+        ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=2;ctx.setLineDash([4,3]);ctx.stroke();ctx.setLineDash([]);
+      }
+      // label overlap area at midpoint
+      const mx=(c1.x+c2.x)/2,my=(c1.y+c2.y)/2;
+      const fs=Math.max(9,w*0.016);
+      ctx.font=`bold ${fs}px JetBrains Mono, monospace`;
+      ctx.fillStyle='rgba(255,255,255,.7)';
+      ctx.fillText(area.toFixed(1),mx-15,my+4);
+    }
   }
 
+  // update selected circle stats
   const ac=circles[activeCircle];
   updateStat('pR',ac.r.toFixed(1));
   updateStat('pD',(ac.r*2).toFixed(1));
   updateStat('pC',(TAU*ac.r).toFixed(2));
   updateStat('pA',(PI*ac.r*ac.r).toFixed(2));
+
+  // update overlap info panel
+  const infoEl=document.getElementById('overlapInfo');
+  const detEl=document.getElementById('overlapDetails');
+  if(overlaps.length>0){
+    infoEl.style.display='block';
+    let html='';
+    overlaps.forEach(o=>{
+      const pctOf1=(o.area/(PI*o.c1.r*o.c1.r)*100).toFixed(1);
+      const pctOf2=(o.area/(PI*o.c2.r*o.c2.r)*100).toFixed(1);
+      html+=`<div style="margin-bottom:.5rem;padding:.4rem .6rem;border-left:3px solid #c084fc;background:#1a102840">`;
+      html+=`<span style="color:#e8dff5;font-weight:700">${o.c1.label} \u2229 ${o.c2.label}:</span> `;
+      html+=`Area 面積 = <span style="color:#7ff5c3;font-weight:700">${o.area.toFixed(2)}</span>`;
+      html+=` &nbsp;|&nbsp; Perimeter 周界 = <span style="color:#7ecbf5;font-weight:700">${o.perim.toFixed(2)}</span>`;
+      html+=`<br><span style="color:#b8a9cc;font-size:.75rem">${pctOf1}% of ${o.c1.label} \u2022 ${pctOf2}% of ${o.c2.label}</span>`;
+      html+=`</div>`;
+    });
+    // total union area (inclusion-exclusion for 3 circles)
+    const totalIndiv=circles.reduce((s,c)=>s+PI*c.r*c.r,0);
+    let unionArea=totalIndiv;
+    overlaps.forEach(o=>{unionArea-=o.area});
+    // add back triple overlap if all 3 pairs overlap
+    if(overlaps.length===3){
+      // approximate triple overlap via inclusion-exclusion (pixel counting would be exact but expensive)
+      // for 3 circles: union = A+B+C - AB - AC - BC + ABC
+      // We computed union = total - overlaps, so we need to add back ABC
+      // Use a rough estimate: triple ≈ max(0, AB + AC + BC - min pair areas)
+      // For educational purposes, just note it
+      html+=`<div style="color:#b8a9cc;font-size:.75rem;margin-top:.3rem">* Triple overlap exists; union is approximate</div>`;
+    }
+    html+=`<div style="margin-top:.5rem;color:#ffe47a;font-weight:700">Union Area \u222A \u2248 ${unionArea.toFixed(2)}</div>`;
+    detEl.innerHTML=html;
+  }else{
+    infoEl.style.display='none';
+  }
 }
 
 (function setupPlayground(){
   const c=playCanvas;
   function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
-
-  let pinchStart=null;
-  let pinchStartR=null;
+  let pinchStart=null,pinchStartR=null;
 
   function onDown(e){
     e.preventDefault();
@@ -1404,43 +1458,30 @@ function drawPlayground(){
     }
     const p=canvasPos(c,e);
     const hitSlop=IS_TOUCH?25:18;
-    const drawList=playMode==='compare'?circles:[circles[activeCircle]];
-    for(let i=drawList.length-1;i>=0;i--){
-      const circ=drawList[i];
-      const edgeDist=Math.abs(dist(p,circ)-circ.r);
-      if(edgeDist<hitSlop){
-        activeCircle=circles.indexOf(circ);
-        dragging='resize';drawPlayground();return;
+    for(let i=circles.length-1;i>=0;i--){
+      const circ=circles[i];
+      if(Math.abs(dist(p,circ)-circ.r)<hitSlop){
+        activeCircle=i;dragging='resize';drawPlayground();return;
       }
       if(dist(p,circ)<circ.r){
-        activeCircle=circles.indexOf(circ);
-        dragging='move';dragOff={x:p.x-circ.x,y:p.y-circ.y};
+        activeCircle=i;dragging='move';dragOff={x:p.x-circ.x,y:p.y-circ.y};
         drawPlayground();return;
       }
     }
   }
   function onMove(e){
-    if(!dragging)return;
-    e.preventDefault();
+    if(!dragging)return;e.preventDefault();
     if(dragging==='pinch'&&e.touches&&e.touches.length===2){
       const t1={x:e.touches[0].clientX,y:e.touches[0].clientY};
       const t2={x:e.touches[1].clientX,y:e.touches[1].clientY};
-      const newDist=Math.hypot(t1.x-t2.x,t1.y-t2.y);
-      circles[activeCircle].r=Math.max(15,Math.min(280,pinchStartR*(newDist/pinchStart)));
+      circles[activeCircle].r=Math.max(15,Math.min(280,pinchStartR*(Math.hypot(t1.x-t2.x,t1.y-t2.y)/pinchStart)));
       drawPlayground();return;
     }
     if(e.touches&&e.touches.length!==1)return;
     const p=canvasPos(c,e);
     const circ=circles[activeCircle];
-    if(dragging==='move'){
-      circ.x=p.x-dragOff.x;circ.y=p.y-dragOff.y;
-      if(playMode==='trace'){
-        tracePoints.push({x:circ.x,y:circ.y});
-        if(tracePoints.length>2000)tracePoints=tracePoints.slice(-1000);
-      }
-    }else if(dragging==='resize'){
-      circ.r=Math.max(15,Math.min(280,dist(p,circ)));
-    }
+    if(dragging==='move'){circ.x=p.x-dragOff.x;circ.y=p.y-dragOff.y}
+    else if(dragging==='resize'){circ.r=Math.max(15,Math.min(280,dist(p,circ)))}
     drawPlayground();
   }
   function onUp(){dragging=null;pinchStart=null;pinchStartR=null}
@@ -1450,8 +1491,7 @@ function drawPlayground(){
   c.addEventListener('mouseup',onUp);c.addEventListener('mouseleave',onUp);
   c.addEventListener('touchstart',onDown,{passive:false});
   c.addEventListener('touchmove',onMove,{passive:false});
-  c.addEventListener('touchend',onUp);
-  c.addEventListener('touchcancel',onUp);
+  c.addEventListener('touchend',onUp);c.addEventListener('touchcancel',onUp);
   c.addEventListener('wheel',e=>{
     e.preventDefault();
     circles[activeCircle].r=Math.max(15,Math.min(280,circles[activeCircle].r-e.deltaY*.4));
