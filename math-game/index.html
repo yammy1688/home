@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Games - yammy1688</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  background:#0d1117;color:#c9d1d9;min-height:100vh;
+}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 50% 50% at 25% 25%,rgba(88,166,255,.07),transparent),
+             radial-gradient(ellipse 40% 40% at 75% 70%,rgba(163,113,247,.06),transparent);
+}
+.wrap{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:2rem 1.5rem}
+.back{display:inline-block;margin-bottom:1rem;color:#58a6ff;text-decoration:none;font-size:.9rem}
+.back:hover{text-decoration:underline}
+
+header{text-align:center;padding:2rem 0}
+header h1{font-size:2.2rem;font-weight:700;
+  background:linear-gradient(90deg,#58a6ff,#a371f7,#ff7b72);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+header p{color:#8b949e;margin-top:.5rem}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.25rem;margin-top:1.5rem}
+
+a.card{
+  display:flex;flex-direction:column;gap:.6rem;
+  background:#161b22;border:1px solid #30363d;border-radius:1rem;
+  padding:1.5rem;text-decoration:none;color:#c9d1d9;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+}
+a.card:hover{border-color:#58a6ff;transform:translateY(-4px);box-shadow:0 12px 40px rgba(88,166,255,.12)}
+.card-icon{font-size:2rem}
+.card h2{font-size:1.1rem;font-weight:600;color:#e6edf3}
+.card p{font-size:.85rem;color:#8b949e;line-height:1.5}
+.card .tag{
+  display:inline-block;margin-top:auto;padding:.2rem .6rem;
+  border-radius:2rem;font-size:.7rem;font-weight:600;
+  background:rgba(88,166,255,.12);color:#58a6ff;width:fit-content;
+}
+.tag.kids{background:rgba(63,185,80,.12);color:#3fb950}
+.tag.advanced{background:rgba(163,113,247,.12);color:#a371f7}
+
+footer{text-align:center;padding:3rem 0 1rem;color:#484f58;font-size:.8rem}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="wrap">
+  <a href="/" class="back">&larr; Home</a>
+  <header>
+    <h1>Math Games</h1>
+    <p>Interactive circle geometry &mdash; pick your level and start exploring</p>
+  </header>
+
+  <div class="grid">
+    <a href="circle-explorer-8th.html" class="card">
+      <div class="card-icon">&#x1F50D;</div>
+      <h2>Circle Explorer</h2>
+      <p>Interactive learn, playground &amp; quiz covering radius, diameter, circumference, and area.</p>
+      <span class="tag">8th Grade</span>
+    </a>
+
+    <a href="circle-interactive.html" class="card">
+      <div class="card-icon">&#x1F36A;</div>
+      <h2>Interactive Circle Fun</h2>
+      <p>Drag-and-play circle tutorial with canvas interactions. Great intro!</p>
+      <span class="tag kids">Kids</span>
+    </a>
+
+    <a href="circle-practice.html" class="card">
+      <div class="card-icon">&#x270F;&#xFE0F;</div>
+      <h2>Circle Practice</h2>
+      <p>Practice problems to sharpen your circle geometry skills.</p>
+      <span class="tag">8th Grade</span>
+    </a>
+
+    <a href="circle-8thgrade.html" class="card">
+      <div class="card-icon">&#x1F4D0;</div>
+      <h2>Circle Geometry Explorer</h2>
+      <p>Deep dive into circle geometry with detailed explanations and visuals.</p>
+      <span class="tag">8th Grade</span>
+    </a>
+
+    <a href="circle-fun-kids.html" class="card">
+      <div class="card-icon">&#x1F680;</div>
+      <h2>Space Circle Adventure</h2>
+      <p>Space-themed circle learning with D3.js visualizations. Fun &amp; colorful!</p>
+      <span class="tag kids">Kids</span>
+    </a>
+
+    <a href="circle-advanced.html" class="card">
+      <div class="card-icon">&#x1F9EA;</div>
+      <h2>Circle Geometry Studio</h2>
+      <p>Advanced studio with animated backgrounds and in-depth tools.</p>
+      <span class="tag advanced">Advanced</span>
+    </a>
+  </div>
+
+  <footer>&copy; 2026 yammy1688</footer>
+</div>
+</body>
+</html>

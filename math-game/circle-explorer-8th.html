@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circle Explorer - 8th Grade</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  background:#0d1117;color:#c9d1d9;
+  min-height:100vh;overflow-x:hidden;
+}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 50% 50% at 30% 30%,rgba(88,166,255,.08),transparent),
+             radial-gradient(ellipse 40% 40% at 70% 70%,rgba(163,113,247,.07),transparent);
+}
+
+.wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:1.5rem}
+
+header{text-align:center;padding:2rem 0 1rem}
+header h1{font-size:2rem;font-weight:700;
+  background:linear-gradient(90deg,#58a6ff,#a371f7);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+header p{color:#8b949e;margin-top:.4rem;font-size:1rem}
+.back{display:inline-block;margin-bottom:1rem;color:#58a6ff;text-decoration:none;font-size:.9rem}
+.back:hover{text-decoration:underline}
+
+/* tabs */
+.tabs{display:flex;gap:.5rem;margin:1.5rem 0;flex-wrap:wrap}
+.tab{
+  padding:.55rem 1.2rem;border-radius:2rem;border:1px solid #30363d;
+  background:#161b22;color:#8b949e;cursor:pointer;font-size:.85rem;
+  transition:all .25s;
+}
+.tab:hover{border-color:#58a6ff;color:#58a6ff}
+.tab.active{background:#58a6ff;color:#fff;border-color:#58a6ff}
+
+/* panels */
+.panel{display:none;animation:fadeUp .4s ease}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* canvas area */
+.canvas-wrap{
+  background:#161b22;border:1px solid #30363d;border-radius:1rem;
+  padding:1.5rem;margin-bottom:1.5rem;text-align:center;
+}
+canvas{border-radius:.75rem;cursor:crosshair;max-width:100%;touch-action:none}
+
+/* info cards */
+.info{
+  background:#161b22;border:1px solid #30363d;border-radius:1rem;
+  padding:1.5rem;margin-bottom:1rem;
+}
+.info h3{color:#58a6ff;font-size:1.1rem;margin-bottom:.75rem}
+.info p{line-height:1.7;color:#8b949e;margin-bottom:.5rem}
+
+.formula{
+  background:#0d1117;border-left:3px solid #a371f7;
+  padding:.8rem 1rem;margin:.75rem 0;border-radius:0 .5rem .5rem 0;
+  font-family:'Fira Code','Courier New',monospace;font-size:1.05rem;color:#e6edf3;
+}
+
+.highlight{color:#ff7b72;font-weight:600}
+.blue{color:#58a6ff}
+.purple{color:#a371f7}
+.green{color:#3fb950}
+
+/* live stats */
+.stats{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:1rem;margin:1rem 0;
+}
+.stat{
+  background:#0d1117;border:1px solid #30363d;border-radius:.75rem;
+  padding:1rem;text-align:center;transition:border-color .3s;
+}
+.stat:hover{border-color:#58a6ff}
+.stat-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:#8b949e}
+.stat-value{font-size:1.6rem;font-weight:700;margin-top:.3rem}
+.stat-value.radius{color:#ff7b72}
+.stat-value.diameter{color:#58a6ff}
+.stat-value.circumference{color:#3fb950}
+.stat-value.area{color:#a371f7}
+
+/* slider */
+.slider-row{display:flex;align-items:center;gap:1rem;margin:1rem 0;flex-wrap:wrap}
+.slider-row label{font-size:.9rem;color:#8b949e;min-width:60px}
+input[type=range]{
+  flex:1;min-width:200px;accent-color:#58a6ff;height:6px;
+  -webkit-appearance:none;background:#30363d;border-radius:3px;outline:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:#58a6ff;cursor:pointer;box-shadow:0 0 8px rgba(88,166,255,.4);
+}
+
+/* quiz */
+.quiz-area{margin-top:1.5rem}
+.question{
+  background:#161b22;border:1px solid #30363d;border-radius:1rem;
+  padding:1.5rem;margin-bottom:1rem;
+}
+.question h4{color:#e6edf3;font-size:1rem;margin-bottom:1rem}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.choice{
+  padding:.7rem 1rem;border-radius:.5rem;border:1px solid #30363d;
+  background:#0d1117;color:#c9d1d9;cursor:pointer;text-align:center;
+  transition:all .2s;font-size:.9rem;
+}
+.choice:hover{border-color:#58a6ff;background:#161b22}
+.choice.correct{background:#0f2d1a;border-color:#3fb950;color:#3fb950}
+.choice.wrong{background:#2d0f0f;border-color:#ff7b72;color:#ff7b72}
+.choice.disabled{pointer-events:none;opacity:.6}
+
+.score-bar{
+  display:flex;align-items:center;gap:1rem;margin-bottom:1rem;
+  padding:1rem;background:#161b22;border:1px solid #30363d;border-radius:.75rem;
+}
+.score-bar span{font-size:.9rem;color:#8b949e}
+.score-bar .pts{font-weight:700;color:#58a6ff;font-size:1.1rem}
+.btn{
+  padding:.6rem 1.4rem;border-radius:.5rem;border:none;
+  background:#58a6ff;color:#fff;cursor:pointer;font-size:.85rem;font-weight:600;
+  transition:background .2s;
+}
+.btn:hover{background:#79c0ff}
+
+.feedback{
+  padding:.75rem 1rem;border-radius:.5rem;margin-top:.75rem;
+  font-size:.9rem;line-height:1.5;display:none;
+}
+.feedback.show{display:block}
+.feedback.right{background:#0f2d1a;border:1px solid #3fb950;color:#3fb950}
+.feedback.wrong-fb{background:#2d0f0f;border:1px solid #ff7b72;color:#ff7b72}
+
+/* responsive */
+@media(max-width:600px){
+  .choices{grid-template-columns:1fr}
+  header h1{font-size:1.5rem}
+  .stats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="wrap">
+  <a href="./" class="back">&larr; Back to Math Games</a>
+  <header>
+    <h1>Circle Explorer</h1>
+    <p>Drag, resize, and master circles &mdash; 8th grade level</p>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="learn">Learn</div>
+    <div class="tab" data-tab="playground">Playground</div>
+    <div class="tab" data-tab="quiz">Quiz</div>
+  </div>
+
+  <!-- LEARN PANEL -->
+  <div class="panel active" id="learn">
+    <div class="canvas-wrap">
+      <canvas id="learnCanvas" width="500" height="500"></canvas>
+      <div class="slider-row">
+        <label>Radius</label>
+        <input type="range" id="learnRadius" min="30" max="200" value="120">
+      </div>
+    </div>
+
+    <div class="stats" id="learnStats">
+      <div class="stat"><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="lR">120</div></div>
+      <div class="stat"><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="lD">240</div></div>
+      <div class="stat"><div class="stat-label">Circumference (C)</div><div class="stat-value circumference" id="lC">753.98</div></div>
+      <div class="stat"><div class="stat-label">Area (A)</div><div class="stat-value area" id="lA">45238.93</div></div>
+    </div>
+
+    <div class="info">
+      <h3>Radius</h3>
+      <p>The <span class="highlight">radius</span> is the distance from the <strong>center</strong> of the circle to any point on its edge. Every radius of the same circle is the same length.</p>
+      <div class="formula">r = d &divide; 2</div>
+    </div>
+
+    <div class="info">
+      <h3>Diameter</h3>
+      <p>The <span class="blue">diameter</span> is a straight line passing through the center, connecting two points on the circle. It's always <strong>twice the radius</strong>.</p>
+      <div class="formula">d = 2r</div>
+    </div>
+
+    <div class="info">
+      <h3>Circumference</h3>
+      <p>The <span class="green">circumference</span> is the distance <em>around</em> the circle &mdash; like wrapping a string around it and measuring. It uses the special number <strong>&pi; &approx; 3.14159</strong>.</p>
+      <div class="formula">C = 2&pi;r &nbsp; or &nbsp; C = &pi;d</div>
+    </div>
+
+    <div class="info">
+      <h3>Area</h3>
+      <p>The <span class="purple">area</span> is the space <em>inside</em> the circle. Think of it as how much paint you'd need to fill it in.</p>
+      <div class="formula">A = &pi;r&sup2;</div>
+    </div>
+
+    <div class="info">
+      <h3>How are they connected?</h3>
+      <p>Everything starts with the <span class="highlight">radius</span>. Double it to get <span class="blue">diameter</span>. Multiply by 2&pi; for <span class="green">circumference</span>. Square it and multiply by &pi; for <span class="purple">area</span>. Move the slider above and watch all the values change together!</p>
+    </div>
+  </div>
+
+  <!-- PLAYGROUND PANEL -->
+  <div class="panel" id="playground">
+    <div class="canvas-wrap">
+      <canvas id="playCanvas" width="600" height="500"></canvas>
+      <p style="color:#8b949e;font-size:.85rem;margin-top:.75rem">Click &amp; drag to move the circle. Drag the edge to resize. Scroll to zoom.</p>
+    </div>
+    <div class="stats" id="playStats">
+      <div class="stat"><div class="stat-label">Radius (r)</div><div class="stat-value radius" id="pR">100</div></div>
+      <div class="stat"><div class="stat-label">Diameter (d)</div><div class="stat-value diameter" id="pD">200</div></div>
+      <div class="stat"><div class="stat-label">Circumference (C)</div><div class="stat-value circumference" id="pC">628.32</div></div>
+      <div class="stat"><div class="stat-label">Area (A)</div><div class="stat-value area" id="pA">31415.93</div></div>
+    </div>
+    <div class="info">
+      <h3>Experiment!</h3>
+      <p>Drag the circle around the canvas. Grab its <span class="highlight">edge</span> to change the radius. Watch how circumference and area change. Notice: when you <strong>double</strong> the radius, the circumference doubles but the area <strong>quadruples</strong>!</p>
+    </div>
+  </div>
+
+  <!-- QUIZ PANEL -->
+  <div class="panel" id="quiz">
+    <div class="score-bar">
+      <span>Score:</span> <span class="pts" id="score">0</span>
+      <span style="margin-left:auto" id="qProgress">Question 1 / 10</span>
+      <button class="btn" id="newQuiz">New Quiz</button>
+    </div>
+    <div class="quiz-area" id="quizArea"></div>
+  </div>
+</div>
+
+<script>
+// --- TABS ---
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    if(t.dataset.tab==='playground') initPlayground();
+  });
+});
+
+// --- LEARN CANVAS ---
+const lCanvas=document.getElementById('learnCanvas');
+const lCtx=lCanvas.getContext('2d');
+const lSlider=document.getElementById('learnRadius');
+
+function drawLearn(){
+  const w=lCanvas.width,h=lCanvas.height,cx=w/2,cy=h/2;
+  const r=+lSlider.value;
+  lCtx.clearRect(0,0,w,h);
+
+  // grid
+  lCtx.strokeStyle='rgba(48,54,61,.5)';lCtx.lineWidth=1;
+  for(let i=0;i<w;i+=40){lCtx.beginPath();lCtx.moveTo(i,0);lCtx.lineTo(i,h);lCtx.stroke()}
+  for(let i=0;i<h;i+=40){lCtx.beginPath();lCtx.moveTo(0,i);lCtx.lineTo(w,i);lCtx.stroke()}
+
+  // filled circle (area)
+  lCtx.beginPath();lCtx.arc(cx,cy,r,0,Math.PI*2);
+  lCtx.fillStyle='rgba(163,113,247,.1)';lCtx.fill();
+
+  // circumference
+  lCtx.beginPath();lCtx.arc(cx,cy,r,0,Math.PI*2);
+  lCtx.strokeStyle='#3fb950';lCtx.lineWidth=3;lCtx.stroke();
+
+  // diameter line
+  lCtx.beginPath();lCtx.moveTo(cx-r,cy);lCtx.lineTo(cx+r,cy);
+  lCtx.strokeStyle='#58a6ff';lCtx.lineWidth=2;lCtx.setLineDash([8,4]);lCtx.stroke();lCtx.setLineDash([]);
+
+  // radius line
+  lCtx.beginPath();lCtx.moveTo(cx,cy);lCtx.lineTo(cx,cy-r);
+  lCtx.strokeStyle='#ff7b72';lCtx.lineWidth=2.5;lCtx.stroke();
+
+  // center dot
+  lCtx.beginPath();lCtx.arc(cx,cy,5,0,Math.PI*2);
+  lCtx.fillStyle='#e6edf3';lCtx.fill();
+
+  // labels
+  lCtx.font='bold 14px Segoe UI, sans-serif';
+  lCtx.fillStyle='#ff7b72';lCtx.fillText('r = '+r,cx+8,cy-r/2);
+  lCtx.fillStyle='#58a6ff';lCtx.fillText('d = '+r*2,cx-r/2-10,cy+20);
+  lCtx.fillStyle='#3fb950';lCtx.fillText('C = '+(2*Math.PI*r).toFixed(1),cx+r*0.5,cy-r-10);
+  lCtx.fillStyle='#a371f7';lCtx.fillText('A = '+(Math.PI*r*r).toFixed(1),cx-45,cy+r/3);
+
+  // update stat cards
+  document.getElementById('lR').textContent=r;
+  document.getElementById('lD').textContent=r*2;
+  document.getElementById('lC').textContent=(2*Math.PI*r).toFixed(2);
+  document.getElementById('lA').textContent=(Math.PI*r*r).toFixed(2);
+}
+lSlider.addEventListener('input',drawLearn);
+drawLearn();
+
+// --- PLAYGROUND ---
+let pCircle={x:300,y:250,r:100};
+let dragging=null; // 'move' | 'resize'
+let dragOff={x:0,y:0};
+
+function initPlayground(){
+  const c=document.getElementById('playCanvas');
+  drawPlayground();
+}
+
+function drawPlayground(){
+  const c=document.getElementById('playCanvas');
+  const ctx=c.getContext('2d');
+  const w=c.width,h=c.height;
+  const {x,y,r}=pCircle;
+  ctx.clearRect(0,0,w,h);
+
+  // grid
+  ctx.strokeStyle='rgba(48,54,61,.4)';ctx.lineWidth=1;
+  for(let i=0;i<w;i+=40){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,h);ctx.stroke()}
+  for(let i=0;i<h;i+=40){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(w,i);ctx.stroke()}
+
+  // area fill
+  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.fillStyle='rgba(163,113,247,.12)';ctx.fill();
+
+  // circumference
+  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.strokeStyle='#3fb950';ctx.lineWidth=3;ctx.stroke();
+
+  // diameter
+  ctx.beginPath();ctx.moveTo(x-r,y);ctx.lineTo(x+r,y);
+  ctx.strokeStyle='#58a6ff';ctx.lineWidth=2;ctx.setLineDash([8,4]);ctx.stroke();ctx.setLineDash([]);
+
+  // radius
+  ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-r);
+  ctx.strokeStyle='#ff7b72';ctx.lineWidth=2.5;ctx.stroke();
+
+  // center
+  ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);
+  ctx.fillStyle='#e6edf3';ctx.fill();
+
+  // edge handle
+  ctx.beginPath();ctx.arc(x+r,y,7,0,Math.PI*2);
+  ctx.fillStyle='#58a6ff';ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.fill();ctx.stroke();
+
+  // labels
+  ctx.font='bold 13px Segoe UI, sans-serif';
+  ctx.fillStyle='#ff7b72';ctx.fillText('r='+r.toFixed(0),x+6,y-r/2);
+  ctx.fillStyle='#58a6ff';ctx.fillText('d='+(r*2).toFixed(0),x-r/2-8,y+18);
+
+  document.getElementById('pR').textContent=r.toFixed(1);
+  document.getElementById('pD').textContent=(r*2).toFixed(1);
+  document.getElementById('pC').textContent=(2*Math.PI*r).toFixed(2);
+  document.getElementById('pA').textContent=(Math.PI*r*r).toFixed(2);
+}
+
+(function setupPlayground(){
+  const c=document.getElementById('playCanvas');
+
+  function getPos(e){
+    const rect=c.getBoundingClientRect();
+    const scaleX=c.width/rect.width;
+    const scaleY=c.height/rect.height;
+    const clientX=e.touches?e.touches[0].clientX:e.clientX;
+    const clientY=e.touches?e.touches[0].clientY:e.clientY;
+    return{x:(clientX-rect.left)*scaleX,y:(clientY-rect.top)*scaleY};
+  }
+  function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+
+  function onDown(e){
+    e.preventDefault();
+    const p=getPos(e);
+    const edgeDist=Math.abs(dist(p,pCircle)-pCircle.r);
+    if(edgeDist<15){
+      dragging='resize';
+    }else if(dist(p,pCircle)<pCircle.r){
+      dragging='move';
+      dragOff={x:p.x-pCircle.x,y:p.y-pCircle.y};
+    }
+  }
+  function onMove(e){
+    if(!dragging)return;
+    e.preventDefault();
+    const p=getPos(e);
+    if(dragging==='move'){
+      pCircle.x=p.x-dragOff.x;
+      pCircle.y=p.y-dragOff.y;
+    }else{
+      pCircle.r=Math.max(20,Math.min(240,dist(p,pCircle)));
+    }
+    drawPlayground();
+  }
+  function onUp(){dragging=null}
+
+  c.addEventListener('mousedown',onDown);
+  c.addEventListener('mousemove',onMove);
+  c.addEventListener('mouseup',onUp);
+  c.addEventListener('mouseleave',onUp);
+  c.addEventListener('touchstart',onDown,{passive:false});
+  c.addEventListener('touchmove',onMove,{passive:false});
+  c.addEventListener('touchend',onUp);
+
+  c.addEventListener('wheel',e=>{
+    e.preventDefault();
+    pCircle.r=Math.max(20,Math.min(240,pCircle.r-e.deltaY*0.3));
+    drawPlayground();
+  },{passive:false});
+
+  drawPlayground();
+})();
+
+// --- QUIZ ---
+const PI=Math.PI;
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function genQuestion(){
+  const type=rnd(0,7);
+  let q,correct,choices;
+  const r=rnd(2,30);
+  const d=r*2;
+  const C=+(2*PI*r).toFixed(2);
+  const A=+(PI*r*r).toFixed(2);
+
+  switch(type){
+    case 0:
+      q=`A circle has radius <strong>${r}</strong>. What is its diameter?`;
+      correct=d;
+      choices=[d, d+rnd(1,5), d-rnd(1,Math.max(1,r)), rnd(1,60)];
+      break;
+    case 1:
+      q=`A circle has diameter <strong>${d}</strong>. What is its radius?`;
+      correct=r;
+      choices=[r, r+rnd(1,4), r*2, rnd(1,30)];
+      break;
+    case 2:
+      q=`A circle has radius <strong>${r}</strong>. What is its circumference? (round to nearest hundredth)`;
+      correct=C;
+      choices=[C, +(PI*r*r).toFixed(2), +(PI*d).toFixed(2)===C?+(2*PI*(r+1)).toFixed(2):+(PI*r).toFixed(2), +(2*PI*(r+rnd(1,3))).toFixed(2)];
+      break;
+    case 3:
+      q=`A circle has diameter <strong>${d}</strong>. What is its circumference?`;
+      correct=+(PI*d).toFixed(2);
+      choices=[+(PI*d).toFixed(2), +(2*PI*d).toFixed(2), +(PI*d*d).toFixed(2), +(PI*(d+rnd(1,4))).toFixed(2)];
+      break;
+    case 4:
+      q=`A circle has radius <strong>${r}</strong>. What is its area?`;
+      correct=A;
+      choices=[A, +(2*PI*r).toFixed(2), +(PI*r).toFixed(2), +(PI*(r+rnd(1,3))*(r+rnd(1,3))).toFixed(2)];
+      break;
+    case 5:
+      q=`The circumference of a circle is <strong>${C}</strong>. What is the radius?`;
+      correct=r;
+      choices=[r, +(C/PI).toFixed(2), r+rnd(1,3), rnd(1,30)];
+      break;
+    case 6:
+      q=`Which formula gives the circumference of a circle?`;
+      correct='C = 2\u03C0r';
+      choices=['C = 2\u03C0r','C = \u03C0r\u00B2','C = 2r','C = \u03C0d\u00B2'];
+      break;
+    case 7:
+      q=`Which formula gives the area of a circle?`;
+      correct='A = \u03C0r\u00B2';
+      choices=['A = \u03C0r\u00B2','A = 2\u03C0r','A = \u03C0d','A = 2r\u00B2'];
+      break;
+  }
+  // deduplicate and ensure 4 unique choices
+  const set=new Set(choices.map(String));
+  set.add(String(correct));
+  while(set.size<4)set.add(String(rnd(1,100)));
+  const final=shuffle([...set].slice(0,4));
+  return{q,correct:String(correct),choices:final};
+}
+
+let quizScore=0, quizQ=0, quizTotal=10;
+
+function renderQuiz(){
+  const area=document.getElementById('quizArea');
+  if(quizQ>=quizTotal){
+    area.innerHTML=`<div class="question"><h4>Quiz Complete!</h4><p style="color:#8b949e;margin-top:.5rem">You scored <strong style="color:#58a6ff">${quizScore}</strong> out of <strong>${quizTotal}</strong>. ${quizScore>=8?'Amazing!':quizScore>=5?'Good job! Keep practicing.':'Keep studying the Learn tab and try again!'}</p></div>`;
+    return;
+  }
+  const {q,correct,choices}=genQuestion();
+  document.getElementById('qProgress').textContent=`Question ${quizQ+1} / ${quizTotal}`;
+
+  let html=`<div class="question"><h4>${q}</h4><div class="choices">`;
+  choices.forEach(ch=>{
+    html+=`<div class="choice" data-val="${ch}">${ch}</div>`;
+  });
+  html+=`</div><div class="feedback" id="fb"></div></div>`;
+  area.innerHTML=html;
+
+  area.querySelectorAll('.choice').forEach(el=>{
+    el.addEventListener('click',()=>{
+      if(el.classList.contains('disabled'))return;
+      area.querySelectorAll('.choice').forEach(c=>c.classList.add('disabled'));
+      const fb=document.getElementById('fb');
+      if(el.dataset.val===correct){
+        el.classList.add('correct');
+        quizScore++;
+        fb.className='feedback show right';
+        fb.textContent='Correct!';
+      }else{
+        el.classList.add('wrong');
+        area.querySelector(`.choice[data-val="${CSS.escape(correct)}"]`)?.classList.add('correct');
+        fb.className='feedback show wrong-fb';
+        fb.textContent=`The answer is ${correct}.`;
+      }
+      document.getElementById('score').textContent=quizScore;
+      quizQ++;
+      setTimeout(renderQuiz,1400);
+    });
+  });
+}
+
+document.getElementById('newQuiz').addEventListener('click',()=>{
+  quizScore=0;quizQ=0;
+  document.getElementById('score').textContent=0;
+  renderQuiz();
+});
+renderQuiz();
+</script>
+</body>
+</html>
