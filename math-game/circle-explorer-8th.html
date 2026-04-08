@@ -319,8 +319,56 @@ input[type=range]::-webkit-slider-thumb{
   .tab{padding:.5rem 1rem;font-size:.8rem}
 }
 
+/* SECRET ADVANCED PANEL STYLES */
+.advanced-walkthrough{margin-bottom:1.5rem}
+.advanced-title{
+  font-family:'Press Start 2P',monospace;font-size:.7rem;color:#c084fc;
+  margin-bottom:.75rem;text-align:center;
+}
+.pattern-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.pattern-card{
+  background:#2d1f42;border:2px solid #4a3660;padding:1rem;
+  box-shadow:2px 2px 0 #1a1028;
+}
+.pattern-card h4{font-size:.85rem;color:#ffe47a;margin-bottom:.4rem}
+.pattern-card p{font-size:.8rem;color:#b8a9cc;line-height:1.6}
+@media(max-width:600px){.pattern-grid{grid-template-columns:1fr}}
+
+.shape-problem{
+  background:#2d1f42;border:3px solid #4a3660;
+  padding:1.5rem;margin-bottom:1.25rem;
+  box-shadow:4px 4px 0 #1a1028;
+}
+.shape-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.shape-icon{font-size:1.8rem}
+.shape-title{font-family:'Press Start 2P',monospace;font-size:.55rem;color:#ffb3d9;line-height:1.6}
+.shape-type{font-size:.7rem;color:#c084fc;font-weight:700;margin-top:.2rem}
+.shape-canvas{
+  width:100%;height:auto;border:2px solid #4a3660;
+  background:#1a1028;margin-bottom:1rem;
+}
+.solution-steps{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}
+.step-num{
+  width:28px;height:28px;min-width:28px;background:#ff6b9d;color:#1a1028;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Press Start 2P',monospace;font-size:.5rem;font-weight:700;
+}
+.step-content{font-size:.85rem;color:#e8dff5;line-height:1.6}
+.step-content strong{color:#7ecbf5}
+.step-formula{
+  background:#1a1028;border-left:3px solid #ffe47a;
+  padding:.4rem .7rem;margin:.4rem 0;
+  font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#e8dff5;
+}
+.tip-box{
+  background:#1a1028;border:2px solid #c084fc;padding:1rem;margin-top:.5rem;
+  box-shadow:2px 2px 0 #1a1028;
+}
+.tip-title{font-family:'Press Start 2P',monospace;font-size:.5rem;color:#c084fc;margin-bottom:.4rem}
+.tip-content{font-size:.82rem;color:#b8a9cc;line-height:1.6}
+
 /* STEP CLICK POPUP STYLES */
-.step-item{cursor:pointer;transition:all .2s;position:relative}
+.step-item{cursor:pointer;transition:all .2s;position:relative;display:flex;align-items:flex-start;gap:.6rem;padding:.5rem}
 .step-item:hover{background:rgba(255,107,157,.1);border-radius:4px}
 .step-item::after{content:'👆 click';font-size:.6rem;color:#ff6b9d;margin-left:auto;opacity:.6;position:absolute;right:8px;top:50%;transform:translateY(-50%)}
 .step-modal{
@@ -2072,7 +2120,112 @@ initStreak();renderQuiz();
   </div>
 </div>
 
-</body>
+<script>
+// DRAW SHAPE PROBLEM CANVASES
+(function(){
+  function drawProblem1(){
+    const c=document.getElementById('canvas1');if(!c)return;
+    const ctx=c.getContext('2d');
+    const cx=200,cy=130,r=90;
+    ctx.fillStyle='#1a1028';ctx.fillRect(0,0,400,250);
+    // full circle outline
+    ctx.strokeStyle='#4a366066';ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+    // sector fill
+    ctx.fillStyle='rgba(244,162,97,.3)';
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+2*Math.PI/3);ctx.closePath();
+    ctx.fill();ctx.strokeStyle='#f4a261';ctx.lineWidth=2.5;ctx.stroke();
+    // arc highlight
+    ctx.strokeStyle='#ff6b9d';ctx.lineWidth=4;
+    ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+2*Math.PI/3);ctx.stroke();
+    // radii
+    ctx.strokeStyle='#7ecbf5';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-r);ctx.stroke();
+    const ex=cx+Math.cos(-Math.PI/2+2*Math.PI/3)*r,ey=cy+Math.sin(-Math.PI/2+2*Math.PI/3)*r;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(ex,ey);ctx.stroke();
+    // center dot
+    ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+    // labels
+    ctx.font='bold 14px JetBrains Mono,monospace';
+    ctx.fillStyle='#7ecbf5';ctx.fillText('r = 90',cx+8,cy-r/2);
+    ctx.fillStyle='#f7936f';ctx.fillText('θ = 120°',cx-55,cy-15);
+    ctx.fillStyle='#ff6b9d';ctx.fillText('Arc',cx+r*0.3,cy-r-10);
+  }
+
+  function drawProblem2(){
+    const c=document.getElementById('canvas2');if(!c)return;
+    const ctx=c.getContext('2d');
+    const x=110,y=25,s=160,hr=s/2;
+    ctx.fillStyle='#1a1028';ctx.fillRect(0,0,400,250);
+    // square
+    ctx.strokeStyle='#4a3660';ctx.lineWidth=2;ctx.strokeRect(x,y,s,s);
+    // quarter circles at corners
+    ctx.fillStyle='rgba(126,203,245,.25)';ctx.strokeStyle='#7ecbf5';ctx.lineWidth=1.5;
+    [[x,y,0,Math.PI/2],[x+s,y,Math.PI/2,Math.PI],[x+s,y+s,Math.PI,Math.PI*1.5],[x,y+s,Math.PI*1.5,Math.PI*2]].forEach(([cx2,cy2,s1,s2])=>{
+      ctx.beginPath();ctx.moveTo(cx2,cy2);ctx.arc(cx2,cy2,hr,s1,s2);ctx.closePath();ctx.fill();ctx.stroke();
+    });
+    // shaded center
+    ctx.fillStyle='rgba(255,107,157,.2)';ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(x+hr,y);ctx.arc(x,y,hr,0,Math.PI/2);
+    ctx.arc(x+s,y,hr,Math.PI/2,Math.PI);ctx.arc(x+s,y+s,hr,Math.PI,Math.PI*1.5);
+    ctx.arc(x,y+s,hr,Math.PI*1.5,Math.PI*2);ctx.closePath();ctx.fill();ctx.stroke();
+    // labels
+    ctx.font='bold 13px JetBrains Mono,monospace';
+    ctx.fillStyle='#e8dff5';ctx.fillText('30 cm',x+s/2-25,y+s+22);
+    ctx.fillStyle='#7ecbf5';ctx.fillText('r=15',x+5,y+25);
+    ctx.fillStyle='#ff6b9d';ctx.fillText('Shaded',x+s/2-22,y+s/2+5);
+  }
+
+  function drawProblem3(){
+    const c=document.getElementById('canvas3');if(!c)return;
+    const ctx=c.getContext('2d');
+    const ox=220,oy=200,s=140;
+    ctx.fillStyle='#1a1028';ctx.fillRect(0,0,400,250);
+    // quarter circle
+    ctx.fillStyle='rgba(255,209,102,.15)';ctx.strokeStyle='#ffd166';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(ox,oy);ctx.arc(ox,oy,s,-Math.PI,-Math.PI/2);ctx.closePath();ctx.fill();ctx.stroke();
+    // semicircle
+    ctx.fillStyle='rgba(244,162,97,.25)';ctx.strokeStyle='#f4a261';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(ox-s/2,oy,s/2,-Math.PI,0,true);ctx.closePath();ctx.fill();ctx.stroke();
+    // shaded region highlight
+    ctx.fillStyle='rgba(127,245,195,.2)';ctx.strokeStyle='#7ff5c3';ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.arc(ox,oy,s,-Math.PI,-Math.PI/2);
+    ctx.lineTo(ox-s/2,oy);ctx.arc(ox-s/2,oy,s/2,0,-Math.PI,true);ctx.closePath();ctx.fill();ctx.stroke();
+    // labels
+    ctx.font='bold 13px JetBrains Mono,monospace';
+    ctx.fillStyle='#ffd166';ctx.fillText('R=20',ox-s-35,oy-s/2);
+    ctx.fillStyle='#f4a261';ctx.fillText('r=10',ox-s/2-15,oy-s/2-15);
+    ctx.fillStyle='#7ff5c3';ctx.fillText('Shaded',ox-s+10,oy-25);
+  }
+
+  function drawProblem4(){
+    const c=document.getElementById('canvas4');if(!c)return;
+    const ctx=c.getContext('2d');
+    const cx=200,cy=130;
+    ctx.fillStyle='#1a1028';ctx.fillRect(0,0,400,250);
+    // large semicircle (d=24 scaled up, r=12 → visual r=96)
+    const R=96,r1=64,r2=32;
+    ctx.fillStyle='rgba(126,203,245,.15)';ctx.strokeStyle='#7ecbf5';ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI);ctx.closePath();ctx.fill();ctx.stroke();
+    // left small semicircle (d=16, r=8 → visual r1=64)
+    ctx.fillStyle='rgba(255,179,217,.15)';ctx.strokeStyle='#ffb3d9';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(cx-r2,cy,r1,Math.PI,0,true);ctx.closePath();ctx.fill();ctx.stroke();
+    // right small semicircle (d=8, r=4 → visual r2=32)
+    ctx.fillStyle='rgba(127,245,195,.15)';ctx.strokeStyle='#7ff5c3';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(cx+r1,cy,r2,Math.PI,0,true);ctx.closePath();ctx.fill();ctx.stroke();
+    // baseline
+    ctx.strokeStyle='#4a366088';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(cx-R,cy);ctx.lineTo(cx+R,cy);ctx.stroke();
+    // labels
+    ctx.font='bold 12px JetBrains Mono,monospace';
+    ctx.fillStyle='#7ecbf5';ctx.fillText('r=12',cx-15,cy+R*0.6);
+    ctx.fillStyle='#ffb3d9';ctx.fillText('r=8',cx-r2-15,cy-r1*0.5);
+    ctx.fillStyle='#7ff5c3';ctx.fillText('r=4',cx+r1-5,cy-r2*0.5);
+    ctx.fillStyle='#e8dff5';ctx.fillText('d=24',cx-15,cy+18);
+  }
+
+  drawProblem1();drawProblem2();drawProblem3();drawProblem4();
+})();
 
 // STEP CLICK POPUP FUNCTIONALITY
 const stepExplanations = {
