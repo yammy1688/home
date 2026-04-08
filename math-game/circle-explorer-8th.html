@@ -249,16 +249,16 @@ input[type=range]::-webkit-slider-thumb{
 <canvas id="bgCanvas"></canvas>
 
 <div class="wrap">
-  <a href="index.html" class="back">&larr; Back to Math Games / \u8FD4\u56DE\u6570\u5B66\u6E38\u620F</a>
+  <a href="index.html" class="back">&larr; Back to Math Games / 返回数学游戏</a>
   <header>
     <h1><span class="wave-emoji">&#x1F3C4;</span> Kayla's Circle Explorer</h1>
-    <p class="subtitle">Ride the wave of circle geometry! / \u4E58\u98CE\u7834\u6D6A\uFF0C\u63A2\u7D22\u5706\u7684\u5965\u79D8\uFF01</p>
+    <p class="subtitle">Ride the wave of circle geometry! / 乘风破浪，探索圆的奥秘！</p>
   </header>
 
   <div class="tabs">
-    <button class="tab active" data-tab="learn">&#x1F30A; Learn \u5B66\u4E60</button>
-    <button class="tab" data-tab="playground">&#x1F3D6;&#xFE0F; Play \u64CD\u573A</button>
-    <button class="tab" data-tab="quiz">&#x1F420; Quiz \u6D4B\u9A8C</button>
+    <button class="tab active" data-tab="learn">&#x1F30A; Learn 学习</button>
+    <button class="tab" data-tab="playground">&#x1F3D6;&#xFE0F; Play 操场</button>
+    <button class="tab" data-tab="quiz">&#x1F420; Quiz 测验</button>
   </div>
 
   <!-- LEARN PANEL -->
@@ -266,53 +266,53 @@ input[type=range]::-webkit-slider-thumb{
     <div class="glass canvas-wrap">
       <canvas id="learnCanvas"></canvas>
       <div class="toggle-row">
-        <button class="toggle-btn on" data-part="radius">&#x1F3C4; Radius \u534A\u5F84</button>
-        <button class="toggle-btn on" data-part="diameter">&#x1F30A; Diameter \u76F4\u5F84</button>
-        <button class="toggle-btn on" data-part="circumference">&#x1F41A; Circumference \u5468\u957F</button>
-        <button class="toggle-btn on" data-part="area">&#x2600;&#xFE0F; Area \u9762\u79EF</button>
+        <button class="toggle-btn on" data-part="radius">&#x1F3C4; Radius 半径</button>
+        <button class="toggle-btn on" data-part="diameter">&#x1F30A; Diameter 直径</button>
+        <button class="toggle-btn on" data-part="circumference">&#x1F41A; Circumference 周长</button>
+        <button class="toggle-btn on" data-part="area">&#x2600;&#xFE0F; Area 面积</button>
       </div>
       <div class="slider-row">
-        <label>Radius \u534A\u5F84</label>
+        <label>Radius 半径</label>
         <input type="range" id="learnRadius" min="25" max="190" value="110">
       </div>
     </div>
 
     <div class="stats" id="learnStats">
-      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius \u534A\u5F84 (r)</div><div class="stat-value radius" id="lR">110</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter \u76F4\u5F84 (d)</div><div class="stat-value diameter" id="lD">220</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference \u5468\u957F</div><div class="stat-value circumference" id="lC">691.15</div></div>
-      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area \u9762\u79EF</div><div class="stat-value area" id="lA">38013.27</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius 半径 (r)</div><div class="stat-value radius" id="lR">110</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter 直径 (d)</div><div class="stat-value diameter" id="lD">220</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference 周长</div><div class="stat-value circumference" id="lC">691.15</div></div>
+      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area 面积</div><div class="stat-value area" id="lA">38013.27</div></div>
     </div>
 
     <div class="glass pi-demo">
-      <h3 style="color:#06d6a0;margin-bottom:.75rem;font-size:1rem">&#x1F30A; Unrolling the Wave / \u5C55\u5F00\u6D77\u6D6A</h3>
-      <p style="color:#7bafc4;font-size:.85rem;margin-bottom:.75rem">Watch the circumference unroll like a wave stretching along the shore &mdash; it equals exactly &pi; &times; diameter<br>\u770B\u5468\u957F\u50CF\u6D77\u6D6A\u4E00\u6837\u5C55\u5F00\u2014\u2014\u5B83\u6070\u597D\u7B49\u4E8E &pi; &times; \u76F4\u5F84</p>
+      <h3 style="color:#06d6a0;margin-bottom:.75rem;font-size:1rem">&#x1F30A; Unrolling the Wave / 展开海浪</h3>
+      <p style="color:#7bafc4;font-size:.85rem;margin-bottom:.75rem">Watch the circumference unroll like a wave stretching along the shore &mdash; it equals exactly &pi; &times; diameter<br>看周长像海浪一样展开——它恰好等于 &pi; &times; 直径</p>
       <canvas id="piCanvas"></canvas>
     </div>
 
     <div class="info-grid">
       <div class="glass info">
         <div class="icon-bg">&#x1F3C4;</div>
-        <h3><span class="dot" style="background:#f7936f"></span> Radius \u534A\u5F84</h3>
-        <p>The distance from the <strong>center</strong> to the edge &mdash; like paddling from the middle of a tide pool to the rim. Every radius is the same length.<br><span style="color:#6a9bb0">\u4ECE<strong>\u5706\u5FC3</strong>\u5230\u8FB9\u7F18\u7684\u8DDD\u79BB\u2014\u2014\u5C31\u50CF\u4ECE\u6F6E\u6C60\u4E2D\u5FC3\u5212\u5230\u8FB9\u7F18\u3002\u540C\u4E00\u4E2A\u5706\u7684\u6BCF\u6761\u534A\u5F84\u90FD\u4E00\u6837\u957F\u3002</span></p>
+        <h3><span class="dot" style="background:#f7936f"></span> Radius 半径</h3>
+        <p>The distance from the <strong>center</strong> to the edge &mdash; like paddling from the middle of a tide pool to the rim. Every radius is the same length.<br><span style="color:#6a9bb0">从<strong>圆心</strong>到边缘的距离——就像从潮池中心划到边缘。同一个圆的每条半径都一样长。</span></p>
         <div class="formula">r = d &divide; 2</div>
       </div>
       <div class="glass info">
         <div class="icon-bg">&#x1F30A;</div>
-        <h3><span class="dot" style="background:#5ec4d4"></span> Diameter \u76F4\u5F84</h3>
-        <p>A line straight across through the center &mdash; like swimming from one side of a circular reef to the other. Always <strong>twice</strong> the radius.<br><span style="color:#6a9bb0">\u7A7F\u8FC7\u5706\u5FC3\u7684\u4E00\u6761\u76F4\u7EBF\u2014\u2014\u5C31\u50CF\u4ECE\u73CA\u745A\u7901\u7684\u4E00\u8FB9\u6E38\u5230\u53E6\u4E00\u8FB9\u3002\u6C38\u8FDC\u662F\u534A\u5F84\u7684<strong>\u4E24\u500D</strong>\u3002</span></p>
+        <h3><span class="dot" style="background:#5ec4d4"></span> Diameter 直径</h3>
+        <p>A line straight across through the center &mdash; like swimming from one side of a circular reef to the other. Always <strong>twice</strong> the radius.<br><span style="color:#6a9bb0">穿过圆心的一条直线——就像从珊瑚礁的一边游到另一边。永远是半径的<strong>两倍</strong>。</span></p>
         <div class="formula">d = 2r</div>
       </div>
       <div class="glass info">
         <div class="icon-bg">&#x1F41A;</div>
-        <h3><span class="dot" style="background:#06d6a0"></span> Circumference \u5468\u957F</h3>
-        <p>The total distance <em>around</em> the circle &mdash; like surfing the entire perimeter of a wave ring. Uses the magical number <strong>&pi; &asymp; 3.14159</strong>.<br><span style="color:#6a9bb0">\u5706\u7684<em>\u4E00\u5468</em>\u7684\u603B\u8DDD\u79BB\u2014\u2014\u5C31\u50CF\u6CBF\u7740\u6D6A\u82B1\u5708\u51B2\u6D6A\u4E00\u6574\u5708\u3002\u7528\u5230\u795E\u5947\u7684\u6570\u5B57 <strong>&pi; &asymp; 3.14159</strong>\u3002</span></p>
+        <h3><span class="dot" style="background:#06d6a0"></span> Circumference 周长</h3>
+        <p>The total distance <em>around</em> the circle &mdash; like surfing the entire perimeter of a wave ring. Uses the magical number <strong>&pi; &asymp; 3.14159</strong>.<br><span style="color:#6a9bb0">圆的<em>一周</em>的总距离——就像沿着浪花圈冲浪一整圈。用到神奇的数字 <strong>&pi; &asymp; 3.14159</strong>。</span></p>
         <div class="formula">C = 2&pi;r = &pi;d</div>
       </div>
       <div class="glass info">
         <div class="icon-bg">&#x2600;&#xFE0F;</div>
-        <h3><span class="dot" style="background:#ffd166"></span> Area \u9762\u79EF</h3>
-        <p>The space <em>inside</em> &mdash; like the sandy floor of a circular lagoon. Double the radius and the area <strong>quadruples</strong>!<br><span style="color:#6a9bb0">\u5706<em>\u5185\u90E8</em>\u7684\u7A7A\u95F4\u2014\u2014\u5C31\u50CF\u5706\u5F62\u6F5F\u6E56\u7684\u6C99\u5E95\u3002\u534A\u5F84\u53D8\u4E3A\u4E24\u500D\uFF0C\u9762\u79EF\u5C31\u53D8\u4E3A<strong>\u56DB\u500D</strong>\uFF01</span></p>
+        <h3><span class="dot" style="background:#ffd166"></span> Area 面积</h3>
+        <p>The space <em>inside</em> &mdash; like the sandy floor of a circular lagoon. Double the radius and the area <strong>quadruples</strong>!<br><span style="color:#6a9bb0">圆<em>内部</em>的空间——就像圆形潟湖的沙底。半径变为两倍，面积就变为<strong>四倍</strong>！</span></p>
         <div class="formula">A = &pi;r&sup2;</div>
       </div>
     </div>
@@ -323,17 +323,17 @@ input[type=range]::-webkit-slider-thumb{
     <div class="glass canvas-wrap">
       <canvas id="playCanvas"></canvas>
       <div class="mode-row">
-        <button class="mode-btn active" data-mode="free">&#x1F3C4; Free Surf \u81EA\u7531\u51B2\u6D6A</button>
-        <button class="mode-btn" data-mode="compare">&#x1F41A; Compare \u5BF9\u6BD4</button>
-        <button class="mode-btn" data-mode="trace">&#x1F30A; Trace Wake \u8F68\u8FF9</button>
+        <button class="mode-btn active" data-mode="free">&#x1F3C4; Free Surf 自由冲浪</button>
+        <button class="mode-btn" data-mode="compare">&#x1F41A; Compare 对比</button>
+        <button class="mode-btn" data-mode="trace">&#x1F30A; Trace Wake 轨迹</button>
       </div>
       <p class="canvas-hint" style="color:#5a8a9e;font-size:.8rem;margin-top:.5rem"></p>
     </div>
     <div class="stats" id="playStats">
-      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius \u534A\u5F84 (r)</div><div class="stat-value radius" id="pR">100</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter \u76F4\u5F84 (d)</div><div class="stat-value diameter" id="pD">200</div></div>
-      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference \u5468\u957F</div><div class="stat-value circumference" id="pC">628.32</div></div>
-      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area \u9762\u79EF</div><div class="stat-value area" id="pA">31415.93</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F3C4;</div><div class="stat-label">Radius 半径 (r)</div><div class="stat-value radius" id="pR">100</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F30A;</div><div class="stat-label">Diameter 直径 (d)</div><div class="stat-value diameter" id="pD">200</div></div>
+      <div class="stat"><div class="stat-icon">&#x1F41A;</div><div class="stat-label">Circumference 周长</div><div class="stat-value circumference" id="pC">628.32</div></div>
+      <div class="stat"><div class="stat-icon">&#x2600;&#xFE0F;</div><div class="stat-label">Area 面积</div><div class="stat-value area" id="pA">31415.93</div></div>
     </div>
   </div>
 
@@ -342,7 +342,7 @@ input[type=range]::-webkit-slider-thumb{
     <div class="glass quiz-header">
       <div class="score-display"><span class="num" id="score">0</span><span class="label">/ 10</span></div>
       <div class="streak" id="streak"></div>
-      <button class="btn" id="newQuiz" style="margin-left:auto">&#x1F3C4; New Wave \u65B0\u6D6A</button>
+      <button class="btn" id="newQuiz" style="margin-left:auto">&#x1F3C4; New Wave 新浪</button>
     </div>
     <div class="glass quiz-canvas-area" id="quizVisual" style="display:none">
       <canvas id="quizCanvas"></canvas>
