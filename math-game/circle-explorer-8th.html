@@ -1064,134 +1064,113 @@ function setupQuizCanvas(){
   return ctx;
 }
 
-function genQuestion(){
-  const type=rnd(0,17);
-  let q,correct,choices,visual=null,explain='';
-  const r=rnd(3,25);
-  const d=r*2;
-  const C=+(TAU*r).toFixed(2);
-  const A=+(PI*r*r).toFixed(2);
+// Question bank: builds from an array of generator functions for massive variety
+const QB=[];
+// helper: bilingual question builder
+function bq(en,zh){return en+'<br><span style="color:#7bafc4">'+zh+'</span>'}
+function bx(en,zh){return en+'<br><span class="zh">'+zh+'</span>'}
 
-  switch(type){
-    case 0:
-      q=`A wave ring has radius <strong class="highlight">${r}</strong>. What's the diameter?<br><span style="color:#7bafc4">\u6D6A\u82B1\u5708\u7684\u534A\u5F84\u662F <strong>${r}</strong>\u3002\u76F4\u5F84\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=d;visual={r,show:'radius'};
-      explain=`Diameter = 2 \u00D7 radius = 2 \u00D7 ${r} = ${d}<br><span class="zh">\u76F4\u5F84 = 2 \u00D7 \u534A\u5F84 = 2 \u00D7 ${r} = ${d}</span>`;
-      choices=[d,d+rnd(1,5),d-rnd(1,Math.max(1,r)),rnd(1,60)];break;
-    case 1:
-      q=`A tide pool has diameter <strong class="blue">${d}</strong>. What's the radius?<br><span style="color:#7bafc4">\u6F6E\u6C60\u7684\u76F4\u5F84\u662F <strong>${d}</strong>\u3002\u534A\u5F84\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=r;visual={r,show:'diameter'};
-      explain=`Radius = diameter \u00F7 2 = ${d} \u00F7 2 = ${r}<br><span class="zh">\u534A\u5F84 = \u76F4\u5F84 \u00F7 2 = ${d} \u00F7 2 = ${r}</span>`;
-      choices=[r,r+rnd(1,4),r*2,rnd(1,30)];break;
-    case 2:
-      q=`Radius = <strong class="highlight">${r}</strong>. What's the circumference?<br><span style="color:#7bafc4">\u534A\u5F84 = <strong>${r}</strong>\u3002\u5468\u957F\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=C;visual={r,show:'circumference'};
-      explain=`C = 2\u03C0r = 2 \u00D7 \u03C0 \u00D7 ${r} = ${C}<br><span class="zh">\u5468\u957F = 2\u03C0r = 2 \u00D7 \u03C0 \u00D7 ${r} = ${C}</span>`;
-      choices=[C,+(PI*r*r).toFixed(2),+(PI*r).toFixed(2),+(TAU*(r+rnd(1,3))).toFixed(2)];break;
-    case 3:
-      q=`A buoy ring has diameter <strong class="blue">${d}</strong>. What's the circumference?<br><span style="color:#7bafc4">\u6D6E\u6807\u5708\u7684\u76F4\u5F84\u662F <strong>${d}</strong>\u3002\u5468\u957F\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=+(PI*d).toFixed(2);visual={r,show:'diameter'};
-      explain=`C = \u03C0d = \u03C0 \u00D7 ${d} = ${(PI*d).toFixed(2)}<br><span class="zh">\u5468\u957F = \u03C0d = \u03C0 \u00D7 ${d} = ${(PI*d).toFixed(2)}</span>`;
-      choices=[+(PI*d).toFixed(2),+(TAU*d).toFixed(2),+(PI*d*d).toFixed(2),+(PI*(d+rnd(1,4))).toFixed(2)];break;
-    case 4:
-      q=`Radius = <strong class="highlight">${r}</strong>. What's the area?<br><span style="color:#7bafc4">\u534A\u5F84 = <strong>${r}</strong>\u3002\u9762\u79EF\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=A;visual={r,show:'area'};
-      explain=`A = \u03C0r\u00B2 = \u03C0 \u00D7 ${r}\u00B2 = \u03C0 \u00D7 ${r*r} = ${A}<br><span class="zh">\u9762\u79EF = \u03C0r\u00B2 = \u03C0 \u00D7 ${r}\u00B2 = \u03C0 \u00D7 ${r*r} = ${A}</span>`;
-      choices=[A,+(TAU*r).toFixed(2),+(PI*r).toFixed(2),+(PI*(r+rnd(1,3))**2).toFixed(2)];break;
-    case 5:
-      q=`Circumference = <strong class="green">${C}</strong>. What's the radius?<br><span style="color:#7bafc4">\u5468\u957F = <strong>${C}</strong>\u3002\u534A\u5F84\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=r;visual={r,show:'circumference'};
-      explain=`r = C \u00F7 (2\u03C0) = ${C} \u00F7 ${(TAU).toFixed(4)} = ${r}<br><span class="zh">\u534A\u5F84 = \u5468\u957F \u00F7 (2\u03C0) = ${C} \u00F7 ${(TAU).toFixed(4)} = ${r}</span>`;
-      choices=[r,+(C/PI).toFixed(2),r+rnd(1,3),rnd(1,30)];break;
-    case 6:
-      q=`Area = <strong class="purple">${A}</strong>. What's the radius?<br><span style="color:#7bafc4">\u9762\u79EF = <strong>${A}</strong>\u3002\u534A\u5F84\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=r;visual={r,show:'area'};
-      explain=`r = \u221A(A \u00F7 \u03C0) = \u221A(${A} \u00F7 \u03C0) = \u221A${(A/PI).toFixed(2)} = ${r}<br><span class="zh">\u534A\u5F84 = \u221A(\u9762\u79EF \u00F7 \u03C0) = \u221A(${A} \u00F7 \u03C0) = ${r}</span>`;
-      choices=[r,+(A/PI).toFixed(2),r+rnd(1,3),rnd(1,30)];break;
-    case 7:
-      q=`Which formula gives the <span class="green">circumference</span>?<br><span style="color:#7bafc4">\u54EA\u4E2A\u516C\u5F0F\u8BA1\u7B97<span class="green">\u5468\u957F</span>\uFF1F</span>`;
-      correct='C = 2\u03C0r';
-      explain=`Circumference = 2\u03C0r (twice pi times the radius).<br><span class="zh">\u5468\u957F = 2\u03C0r\uFF08\u4E24\u500D\u7684\u03C0\u4E58\u4EE5\u534A\u5F84\uFF09\u3002</span>`;
-      choices=['C = 2\u03C0r','C = \u03C0r\u00B2','C = 2r','C = \u03C0d\u00B2'];break;
-    case 8:
-      q=`Which formula gives the <span class="purple">area</span>?<br><span style="color:#7bafc4">\u54EA\u4E2A\u516C\u5F0F\u8BA1\u7B97<span class="purple">\u9762\u79EF</span>\uFF1F</span>`;
-      correct='A = \u03C0r\u00B2';
-      explain=`Area = \u03C0r\u00B2 (pi times the radius squared).<br><span class="zh">\u9762\u79EF = \u03C0r\u00B2\uFF08\u03C0\u4E58\u4EE5\u534A\u5F84\u7684\u5E73\u65B9\uFF09\u3002</span>`;
-      choices=['A = \u03C0r\u00B2','A = 2\u03C0r','A = \u03C0d','A = 2r\u00B2'];break;
-    case 9:
-      const r2=rnd(3,20);
-      const big=Math.max(r,r2),small=Math.min(r,r2);
-      const ratio=+((big*big)/(small*small)).toFixed(2);
-      q=`Reef A has r=${r}, Reef B has r=${r2}. How many times larger is the bigger area?<br><span style="color:#7bafc4">\u73CA\u745A\u7901A\u7684r=${r}\uFF0C\u73CA\u745A\u7901B\u7684r=${r2}\u3002\u8F83\u5927\u7684\u9762\u79EF\u662F\u8F83\u5C0F\u7684\u51E0\u500D\uFF1F</span>`;
-      correct=ratio;
-      explain=`Area ratio = (${big}\u00B2) \u00F7 (${small}\u00B2) = ${big*big} \u00F7 ${small*small} = ${ratio}<br><span class="zh">\u9762\u79EF\u6BD4 = (${big}\u00B2) \u00F7 (${small}\u00B2) = ${big*big} \u00F7 ${small*small} = ${ratio}</span>`;
-      choices=[ratio,+((big/small)).toFixed(2),+((big*big-small*small)/(small*small)).toFixed(2),rnd(2,20)];
-      visual=null;break;
-    case 10:{
-      const ang=rnd(1,6)*30; // 30,60,90,120,150,180
-      const arc=+(ang/360*TAU*r).toFixed(2);
-      q=`r = <strong class="highlight">${r}</strong>, \u03B8 = <strong class="pink">${ang}\u00B0</strong>. What is the arc length?<br><span style="color:#7bafc4">\u534A\u5F91 = <strong>${r}</strong>\uFF0C\u03B8 = <strong>${ang}\u00B0</strong>\u3002\u5F27\u9577\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=arc;visual={r,show:'circumference'};
-      explain=`s = (\u03B8/360) \u00D7 2\u03C0r = (${ang}/360) \u00D7 2\u03C0 \u00D7 ${r} = ${arc}<br><span class="zh">\u5F27\u9577 = (\u03B8/360) \u00D7 2\u03C0r = (${ang}/360) \u00D7 2\u03C0 \u00D7 ${r} = ${arc}</span>`;
-      choices=[arc,+(TAU*r).toFixed(2),+(ang/360*PI*r).toFixed(2),+(ang/180*TAU*r).toFixed(2)];break;
-    }
-    case 11:{
-      const ang=rnd(1,6)*30;
-      const arc=+(ang/360*TAU*r).toFixed(2);
-      q=`r = <strong class="highlight">${r}</strong>, arc length = <strong class="gold">${arc}</strong>. What is the central angle?<br><span style="color:#7bafc4">\u534A\u5F91 = <strong>${r}</strong>\uFF0C\u5F27\u9577 = <strong>${arc}</strong>\u3002\u5713\u5FC3\u89D2\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=ang+'\u00B0';visual={r,show:'circumference'};
-      explain=`\u03B8 = (s / 2\u03C0r) \u00D7 360 = (${arc} / ${(TAU*r).toFixed(2)}) \u00D7 360 = ${ang}\u00B0<br><span class="zh">\u5713\u5FC3\u89D2 = (\u5F27\u9577 / 2\u03C0r) \u00D7 360 = (${arc} / ${(TAU*r).toFixed(2)}) \u00D7 360 = ${ang}\u00B0</span>`;
-      const a2=(ang+rnd(1,3)*30)%360||30;
-      const a3=(ang-rnd(1,2)*30+360)%360||30;
-      choices=[ang+'\u00B0',a2+'\u00B0',a3+'\u00B0',(ang*2%360||30)+'\u00B0'];break;
-    }
-    case 12:
-      q=`Which formula gives the <span class="gold">arc length</span>?<br><span style="color:#7bafc4">\u54EA\u500B\u516C\u5F0F\u8A08\u7B97<span class="gold">\u5F27\u9577</span>\uFF1F</span>`;
-      correct='s = (\u03B8/360)\u00D72\u03C0r';
-      explain=`Arc length = (\u03B8/360) \u00D7 2\u03C0r. The angle fraction of the full circumference.<br><span class="zh">\u5F27\u9577 = (\u03B8/360) \u00D7 2\u03C0r\u3002\u89D2\u5EA6\u5360\u6574\u500B\u5468\u9577\u7684\u6BD4\u4F8B\u3002</span>`;
-      choices=['s = (\u03B8/360)\u00D72\u03C0r','s = \u03B8\u00D7r\u00B2','s = 2\u03C0\u03B8','s = \u03C0r\u03B8/180'];break;
-    case 13:{
-      const ang=rnd(1,4)*90; // 90,180,270,360
-      const secA=+(ang/360*PI*r*r).toFixed(2);
-      q=`r = <strong class="highlight">${r}</strong>, \u03B8 = <strong class="pink">${ang}\u00B0</strong>. What is the sector area?<br><span style="color:#7bafc4">\u534A\u5F91 = <strong>${r}</strong>\uFF0C\u03B8 = <strong>${ang}\u00B0</strong>\u3002\u6252\u5F62\u9762\u7A4D\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=secA;visual={r,show:'area'};
-      explain=`Sector area = (\u03B8/360) \u00D7 \u03C0r\u00B2 = (${ang}/360) \u00D7 \u03C0 \u00D7 ${r}\u00B2 = ${secA}<br><span class="zh">\u6252\u5F62\u9762\u7A4D = (\u03B8/360) \u00D7 \u03C0r\u00B2 = (${ang}/360) \u00D7 \u03C0 \u00D7 ${r}\u00B2 = ${secA}</span>`;
-      choices=[secA,+(PI*r*r).toFixed(2),+(ang/360*TAU*r).toFixed(2),+(ang/180*PI*r*r).toFixed(2)];break;
-    }
-    case 14:{
-      // sector perimeter
-      const ang=rnd(1,6)*30;
-      const arcL=+(ang/360*TAU*r).toFixed(2);
-      const sp=+(2*r+arcL).toFixed(2);
-      q=`r = <strong class="highlight">${r}</strong>, \u03B8 = <strong class="pink">${ang}\u00B0</strong>. What is the sector perimeter?<br><span style="color:#7bafc4">\u534A\u5F91 = <strong>${r}</strong>\uFF0C\u03B8 = <strong>${ang}\u00B0</strong>\u3002\u6252\u5F62\u7684\u5468\u754C\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=sp;visual={r,show:'circumference'};
-      explain=`P = 2r + arc = 2\u00D7${r} + ${arcL} = ${sp}<br><span class="zh">\u6252\u5F62\u5468\u754C = 2r + \u5F27\u9577 = 2\u00D7${r} + ${arcL} = ${sp}</span>`;
-      choices=[sp,+(2*r).toFixed(2),arcL,+(TAU*r).toFixed(2)];break;
-    }
-    case 15:{
-      // chord length
-      const ang=rnd(1,5)*30; // 30-150
-      const ch=+(2*r*Math.sin(ang*PI/360)).toFixed(2);
-      q=`r = <strong class="highlight">${r}</strong>, \u03B8 = <strong class="pink">${ang}\u00B0</strong>. What is the chord length?<br><span style="color:#7bafc4">\u534A\u5F91 = <strong>${r}</strong>\uFF0C\u03B8 = <strong>${ang}\u00B0</strong>\u3002\u5F26\u9577\u662F\u591A\u5C11\uFF1F</span>`;
-      correct=ch;visual={r,show:'radius'};
-      explain=`chord = 2r\u00D7sin(\u03B8/2) = 2\u00D7${r}\u00D7sin(${ang/2}\u00B0) = ${ch}<br><span class="zh">\u5F26\u9577 = 2r\u00D7sin(\u03B8/2) = 2\u00D7${r}\u00D7sin(${ang/2}\u00B0) = ${ch}</span>`;
-      choices=[ch,+(2*r).toFixed(2),+(r*Math.sin(ang*PI/180)).toFixed(2),+(ang/360*TAU*r).toFixed(2)];break;
-    }
-    case 16:
-      q=`Which formula gives the <span style="color:#f4a261;font-weight:700">sector area</span>?<br><span style="color:#7bafc4">\u54EA\u500B\u516C\u5F0F\u8A08\u7B97<span style="color:#f4a261;font-weight:700">\u6252\u5F62\u9762\u7A4D</span>\uFF1F</span>`;
-      correct='(\u03B8/360)\u00D7\u03C0r\u00B2';
-      explain=`Sector area is the angle fraction of the full circle area: (\u03B8/360)\u00D7\u03C0r\u00B2.<br><span class="zh">\u6252\u5F62\u9762\u7A4D\u662F\u89D2\u5EA6\u5360\u5168\u5713\u9762\u7A4D\u7684\u6BD4\u4F8B\uFF1A(\u03B8/360)\u00D7\u03C0r\u00B2\u3002</span>`;
-      choices=['(\u03B8/360)\u00D7\u03C0r\u00B2','\u03B8\u00D7\u03C0r','2\u03C0r\u03B8','(\u03B8/180)\u00D7\u03C0r\u00B2'];break;
-    case 17:
-      q=`Which formula gives the <span style="color:#83c5be;font-weight:700">chord length</span>?<br><span style="color:#7bafc4">\u54EA\u500B\u516C\u5F0F\u8A08\u7B97<span style="color:#83c5be;font-weight:700">\u5F26\u9577</span>\uFF1F</span>`;
-      correct='2r\u00D7sin(\u03B8/2)';
-      explain=`Chord = 2r\u00D7sin(\u03B8/2). The sine of half the central angle times the diameter.<br><span class="zh">\u5F26\u9577 = 2r\u00D7sin(\u03B8/2)\u3002\u5713\u5FC3\u89D2\u4E00\u534A\u7684\u6B63\u5F26\u4E58\u4EE5\u76F4\u5F91\u3002</span>`;
-      choices=['2r\u00D7sin(\u03B8/2)','r\u00D7cos(\u03B8)','2\u03C0r\u03B8','r\u00D7sin(\u03B8)'];break;
-  }
-  const set=new Set(choices.map(String));
-  set.add(String(correct));
+// === BASICS (radius, diameter, circumference, area) ===
+QB.push(()=>{const r=rnd(3,25),d=r*2;return{q:bq(`A wave ring has radius <strong class="highlight">${r}</strong>. What's the diameter?`,`\u6D6A\u82B1\u5708\u7684\u534A\u5F91\u662F <strong>${r}</strong>\u3002\u76F4\u5F91\u662F\u591A\u5C11\uFF1F`),correct:d,visual:{r,show:'radius'},explain:bx(`d = 2r = 2\u00D7${r} = ${d}`,`\u76F4\u5F91 = 2r = 2\u00D7${r} = ${d}`),choices:[d,d+rnd(1,5),d-rnd(1,Math.max(1,r)),rnd(1,60)]}});
+QB.push(()=>{const r=rnd(3,25),d=r*2;return{q:bq(`A surfboard leash ring has diameter <strong class="blue">${d}</strong>. What's the radius?`,`\u885D\u6D6A\u677F\u7E69\u5708\u76F4\u5F91\u662F <strong>${d}</strong>\u3002\u534A\u5F91\u662F\u591A\u5C11\uFF1F`),correct:r,visual:{r,show:'diameter'},explain:bx(`r = d\u00F72 = ${d}\u00F72 = ${r}`,`\u534A\u5F91 = d\u00F72 = ${d}\u00F72 = ${r}`),choices:[r,r+rnd(1,4),r*2,rnd(1,30)]}});
+QB.push(()=>{const r=rnd(3,25),d=r*2;return{q:bq(`A tide pool has diameter <strong class="blue">${d}</strong>. What's the radius?`,`\u6F6E\u6C60\u76F4\u5F91\u662F <strong>${d}</strong>\u3002\u534A\u5F91\u662F\u591A\u5C11\uFF1F`),correct:r,visual:{r,show:'diameter'},explain:bx(`r = d\u00F72 = ${d}\u00F72 = ${r}`,`\u534A\u5F91 = d\u00F72 = ${d}\u00F72 = ${r}`),choices:[r,d,r+rnd(1,3),rnd(1,30)]}});
+QB.push(()=>{const r=rnd(3,25),C=+(TAU*r).toFixed(2);return{q:bq(`Radius = <strong class="highlight">${r}</strong>. Circumference?`,`\u534A\u5F91 = <strong>${r}</strong>\u3002\u5468\u9577\uFF1F`),correct:C,visual:{r,show:'circumference'},explain:bx(`C = 2\u03C0r = 2\u00D7\u03C0\u00D7${r} = ${C}`,`\u5468\u9577 = 2\u03C0r = 2\u00D7\u03C0\u00D7${r} = ${C}`),choices:[C,+(PI*r*r).toFixed(2),+(PI*r).toFixed(2),+(TAU*(r+rnd(1,3))).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,25),d=r*2;return{q:bq(`A buoy ring has diameter <strong class="blue">${d}</strong>. Circumference?`,`\u6D6E\u6A19\u5708\u76F4\u5F91\u662F <strong>${d}</strong>\u3002\u5468\u9577\uFF1F`),correct:+(PI*d).toFixed(2),visual:{r,show:'diameter'},explain:bx(`C = \u03C0d = \u03C0\u00D7${d} = ${(PI*d).toFixed(2)}`,`\u5468\u9577 = \u03C0d = \u03C0\u00D7${d} = ${(PI*d).toFixed(2)}`),choices:[+(PI*d).toFixed(2),+(TAU*d).toFixed(2),+(PI*d*d).toFixed(2),+(PI*(d+rnd(1,4))).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,25),A=+(PI*r*r).toFixed(2);return{q:bq(`Radius = <strong class="highlight">${r}</strong>. Area?`,`\u534A\u5F91 = <strong>${r}</strong>\u3002\u9762\u7A4D\uFF1F`),correct:A,visual:{r,show:'area'},explain:bx(`A = \u03C0r\u00B2 = \u03C0\u00D7${r}\u00B2 = ${A}`,`\u9762\u7A4D = \u03C0r\u00B2 = \u03C0\u00D7${r}\u00B2 = ${A}`),choices:[A,+(TAU*r).toFixed(2),+(PI*r).toFixed(2),+(PI*(r+rnd(1,3))**2).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,25),C=+(TAU*r).toFixed(2);return{q:bq(`Circumference = <strong class="green">${C}</strong>. Radius?`,`\u5468\u9577 = <strong>${C}</strong>\u3002\u534A\u5F91\uFF1F`),correct:r,visual:{r,show:'circumference'},explain:bx(`r = C\u00F7(2\u03C0) = ${C}\u00F7${TAU.toFixed(4)} = ${r}`,`\u534A\u5F91 = C\u00F7(2\u03C0) = ${C}\u00F7${TAU.toFixed(4)} = ${r}`),choices:[r,+(C/PI).toFixed(2),r+rnd(1,3),rnd(1,30)]}});
+QB.push(()=>{const r=rnd(3,25),A=+(PI*r*r).toFixed(2);return{q:bq(`Area = <strong class="purple">${A}</strong>. Radius?`,`\u9762\u7A4D = <strong>${A}</strong>\u3002\u534A\u5F91\uFF1F`),correct:r,visual:{r,show:'area'},explain:bx(`r = \u221A(A/\u03C0) = \u221A(${A}/\u03C0) = ${r}`,`\u534A\u5F91 = \u221A(\u9762\u7A4D/\u03C0) = ${r}`),choices:[r,+(A/PI).toFixed(2),r+rnd(1,3),rnd(1,30)]}});
+
+// === INVERSE DERIVATIONS ===
+QB.push(()=>{const r=rnd(3,25),C=+(TAU*r).toFixed(2),d=r*2;return{q:bq(`Circumference = <strong class="green">${C}</strong>. Diameter?`,`\u5468\u9577 = <strong>${C}</strong>\u3002\u76F4\u5F91\uFF1F`),correct:d,visual:{r,show:'circumference'},explain:bx(`d = C/\u03C0 = ${C}/${PI.toFixed(4)} = ${d}`,`\u76F4\u5F91 = C/\u03C0 = ${d}`),choices:[d,r,+(C/TAU).toFixed(2),d+rnd(1,5)]}});
+QB.push(()=>{const r=rnd(3,25),A=+(PI*r*r).toFixed(2),d=r*2;return{q:bq(`Area = <strong class="purple">${A}</strong>. Diameter?`,`\u9762\u7A4D = <strong>${A}</strong>\u3002\u76F4\u5F91\uFF1F`),correct:d,visual:{r,show:'area'},explain:bx(`d = 2\u221A(A/\u03C0) = 2\u00D7${r} = ${d}`,`\u76F4\u5F91 = 2\u221A(\u9762\u7A4D/\u03C0) = ${d}`),choices:[d,r,+(A/PI).toFixed(2),d+rnd(1,5)]}});
+QB.push(()=>{const r=rnd(3,25),d=r*2,A=+(PI*r*r).toFixed(2);return{q:bq(`Diameter = <strong class="blue">${d}</strong>. Area?`,`\u76F4\u5F91 = <strong>${d}</strong>\u3002\u9762\u7A4D\uFF1F`),correct:A,visual:{r,show:'diameter'},explain:bx(`A = \u03C0(d/2)\u00B2 = \u03C0\u00D7${r}\u00B2 = ${A}`,`\u9762\u7A4D = \u03C0(d/2)\u00B2 = ${A}`),choices:[A,+(PI*d).toFixed(2),+(TAU*r).toFixed(2),+(PI*d*d).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,25),C=+(TAU*r).toFixed(2),A=+(PI*r*r).toFixed(2);return{q:bq(`Circumference = <strong class="green">${C}</strong>. Area?`,`\u5468\u9577 = <strong>${C}</strong>\u3002\u9762\u7A4D\uFF1F`),correct:A,visual:{r,show:'circumference'},explain:bx(`r = C/(2\u03C0) = ${r}, A = \u03C0r\u00B2 = ${A}`,`r = C/(2\u03C0) = ${r}\uFF0C\u9762\u7A4D = \u03C0r\u00B2 = ${A}`),choices:[A,+(C*C).toFixed(2),+(PI*C).toFixed(2),+(C/TAU*C/TAU).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,25),C=+(TAU*r).toFixed(2),A=+(PI*r*r).toFixed(2);return{q:bq(`Area = <strong class="purple">${A}</strong>. Circumference?`,`\u9762\u7A4D = <strong>${A}</strong>\u3002\u5468\u9577\uFF1F`),correct:C,visual:{r,show:'area'},explain:bx(`r = \u221A(A/\u03C0) = ${r}, C = 2\u03C0r = ${C}`,`r = \u221A(\u9762\u7A4D/\u03C0) = ${r}\uFF0CC = 2\u03C0r = ${C}`),choices:[C,A,+(2*A).toFixed(2),+(PI*r).toFixed(2)]}});
+
+// === FORMULA ID ===
+QB.push(()=>({q:bq('Which formula gives the <span class="green">circumference</span>?','\u54EA\u500B\u516C\u5F0F\u8A08\u7B97<span class="green">\u5468\u9577</span>\uFF1F'),correct:'C = 2\u03C0r',explain:bx('C = 2\u03C0r (or \u03C0d)','\u5468\u9577 = 2\u03C0r\uFF08\u6216\u03C0d\uFF09'),choices:['C = 2\u03C0r','C = \u03C0r\u00B2','C = 2r','C = \u03C0d\u00B2']}));
+QB.push(()=>({q:bq('Which formula gives the <span class="purple">area</span>?','\u54EA\u500B\u516C\u5F0F\u8A08\u7B97<span class="purple">\u9762\u7A4D</span>\uFF1F'),correct:'A = \u03C0r\u00B2',explain:bx('A = \u03C0r\u00B2','\u9762\u7A4D = \u03C0r\u00B2'),choices:['A = \u03C0r\u00B2','A = 2\u03C0r','A = \u03C0d','A = 2r\u00B2']}));
+QB.push(()=>({q:bq('Which also equals the circumference?','\u54EA\u500B\u4E5F\u7B49\u65BC\u5468\u9577\uFF1F'),correct:'C = \u03C0d',explain:bx('C = \u03C0d = \u03C0 \u00D7 diameter','\u5468\u9577 = \u03C0d = \u03C0 \u00D7 \u76F4\u5F91'),choices:['C = \u03C0d','C = 2\u03C0d','C = \u03C0r','C = 2r']}));
+QB.push(()=>({q:bq('Which formula gives the <span class="gold">arc length</span>?','\u54EA\u500B\u516C\u5F0F\u8A08\u7B97<span class="gold">\u5F27\u9577</span>\uFF1F'),correct:'s = (\u03B8/360)\u00D72\u03C0r',explain:bx('Arc = angle fraction of circumference','\u5F27\u9577 = \u89D2\u5EA6\u5360\u5468\u9577\u7684\u6BD4\u4F8B'),choices:['s = (\u03B8/360)\u00D72\u03C0r','s = \u03B8\u00D7r\u00B2','s = 2\u03C0\u03B8','s = \u03C0r\u03B8/180']}));
+QB.push(()=>({q:bq('Which formula gives <span style="color:#f4a261;font-weight:700">sector area</span>?','\u54EA\u500B\u516C\u5F0F\u8A08\u7B97<span style="color:#f4a261;font-weight:700">\u6252\u5F62\u9762\u7A4D</span>\uFF1F'),correct:'(\u03B8/360)\u00D7\u03C0r\u00B2',explain:bx('Sector area = angle fraction of full area','\u6252\u5F62\u9762\u7A4D = \u89D2\u5EA6\u5360\u5168\u5713\u9762\u7A4D\u7684\u6BD4\u4F8B'),choices:['(\u03B8/360)\u00D7\u03C0r\u00B2','\u03B8\u00D7\u03C0r','2\u03C0r\u03B8','(\u03B8/180)\u00D7\u03C0r\u00B2']}));
+QB.push(()=>({q:bq('Which formula gives the <span style="color:#83c5be;font-weight:700">chord length</span>?','\u54EA\u500B\u516C\u5F0F\u8A08\u7B97<span style="color:#83c5be;font-weight:700">\u5F26\u9577</span>\uFF1F'),correct:'2r\u00D7sin(\u03B8/2)',explain:bx('chord = 2r\u00D7sin(\u03B8/2)','\u5F26\u9577 = 2r\u00D7sin(\u03B8/2)'),choices:['2r\u00D7sin(\u03B8/2)','r\u00D7cos(\u03B8)','2\u03C0r\u03B8','r\u00D7sin(\u03B8)']}));
+QB.push(()=>({q:bq('Sector perimeter formula?','\u6252\u5F62\u5468\u754C\u516C\u5F0F\uFF1F'),correct:'P = 2r + arc',explain:bx('Two radii + the arc','\u5169\u689D\u534A\u5F91 + \u5F27\u9577'),choices:['P = 2r + arc','P = 2\u03C0r','P = r + arc','P = \u03C0r + arc']}));
+
+// === AREA RATIO ===
+QB.push(()=>{const r=rnd(3,20),r2=rnd(3,20),big=Math.max(r,r2),sm=Math.min(r,r2),rat=+((big*big)/(sm*sm)).toFixed(2);return{q:bq(`Reef A: r=${r}, Reef B: r=${r2}. Area ratio (bigger\u00F7smaller)?`,`\u73CA\u745A\u7901A: r=${r}\uFF0CB: r=${r2}\u3002\u9762\u7A4D\u6BD4\uFF1F`),correct:rat,explain:bx(`(${big}\u00B2)/(${sm}\u00B2) = ${big*big}/${sm*sm} = ${rat}`,`(${big}\u00B2)/(${sm}\u00B2) = ${rat}`),choices:[rat,+((big/sm)).toFixed(2),big-sm,rnd(2,20)]}});
+QB.push(()=>{const r=rnd(3,15),r2=r+rnd(1,10),ring=+(PI*(r2*r2-r*r)).toFixed(2);return{q:bq(`Inner r=${r}, outer r=${r2}. Ring area between them?`,`\u5167\u5F91=${r}\uFF0C\u5916\u5F91=${r2}\u3002\u74B0\u5F62\u9762\u7A4D\uFF1F`),correct:ring,visual:{r:r2,show:'area'},explain:bx(`\u03C0(${r2}\u00B2\u2212${r}\u00B2) = \u03C0\u00D7${r2*r2-r*r} = ${ring}`,`\u03C0(${r2}\u00B2\u2212${r}\u00B2) = ${ring}`),choices:[ring,+(PI*r2*r2).toFixed(2),+(PI*r*r).toFixed(2),+(PI*(r2-r)*(r2-r)).toFixed(2)]}});
+
+// === ANGLE & ARC ===
+QB.push(()=>{const r=rnd(3,25),ang=rnd(1,11)*30,arc=+(ang/360*TAU*r).toFixed(2);return{q:bq(`r = <strong class="highlight">${r}</strong>, \u03B8 = <strong class="pink">${ang}\u00B0</strong>. Arc length?`,`\u534A\u5F91=${r}\uFF0C\u03B8=${ang}\u00B0\u3002\u5F27\u9577\uFF1F`),correct:arc,visual:{r,show:'circumference'},explain:bx(`s = (${ang}/360)\u00D72\u03C0\u00D7${r} = ${arc}`,`\u5F27\u9577 = (${ang}/360)\u00D72\u03C0\u00D7${r} = ${arc}`),choices:[arc,+(TAU*r).toFixed(2),+(ang/360*PI*r).toFixed(2),+(ang/180*TAU*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,25),ang=rnd(1,6)*30,arc=+(ang/360*TAU*r).toFixed(2);return{q:bq(`r = ${r}, arc = <strong class="gold">${arc}</strong>. Central angle?`,`r=${r}\uFF0C\u5F27\u9577=${arc}\u3002\u5713\u5FC3\u89D2\uFF1F`),correct:ang+'\u00B0',visual:{r,show:'circumference'},explain:bx(`\u03B8 = (${arc}/${(TAU*r).toFixed(2)})\u00D7360 = ${ang}\u00B0`,`\u5713\u5FC3\u89D2 = ${ang}\u00B0`),choices:[ang+'\u00B0',((ang+60)%360||30)+'\u00B0',((ang-30+360)%360||30)+'\u00B0',(ang*2%360||30)+'\u00B0']}});
+QB.push(()=>{const r=rnd(4,20),ang=rnd(1,6)*60,arc=+(ang/360*TAU*r).toFixed(2);return{q:bq(`\u03B8 = <strong class="pink">${ang}\u00B0</strong>, arc = <strong class="gold">${arc}</strong>. Radius?`,`\u03B8=${ang}\u00B0\uFF0C\u5F27\u9577=${arc}\u3002\u534A\u5F91\uFF1F`),correct:r,visual:{r,show:'circumference'},explain:bx(`r = arc\u00D7360/(2\u03C0\u00D7\u03B8) = ${arc}\u00D7360/(2\u03C0\u00D7${ang}) = ${r}`,`\u534A\u5F91 = ${r}`),choices:[r,r+rnd(1,5),+(arc/PI).toFixed(2),rnd(1,30)]}});
+
+// === SECTOR AREA ===
+QB.push(()=>{const r=rnd(3,25),ang=rnd(1,4)*90,sa=+(ang/360*PI*r*r).toFixed(2);return{q:bq(`r = <strong class="highlight">${r}</strong>, \u03B8 = <strong class="pink">${ang}\u00B0</strong>. Sector area?`,`\u534A\u5F91=${r}\uFF0C\u03B8=${ang}\u00B0\u3002\u6252\u5F62\u9762\u7A4D\uFF1F`),correct:sa,visual:{r,show:'area'},explain:bx(`(${ang}/360)\u00D7\u03C0\u00D7${r}\u00B2 = ${sa}`,`\u6252\u5F62\u9762\u7A4D = ${sa}`),choices:[sa,+(PI*r*r).toFixed(2),+(ang/360*TAU*r).toFixed(2),+(ang/180*PI*r*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,20),ang=rnd(1,6)*30,sa=+(ang/360*PI*r*r).toFixed(2);return{q:bq(`r = ${r}, \u03B8 = ${ang}\u00B0. Sector area?`,`r=${r}\uFF0C\u03B8=${ang}\u00B0\u3002\u6252\u5F62\u9762\u7A4D\uFF1F`),correct:sa,visual:{r,show:'area'},explain:bx(`(${ang}/360)\u00D7\u03C0\u00D7${r}\u00B2 = ${sa}`,`(${ang}/360)\u00D7\u03C0\u00D7${r}\u00B2 = ${sa}`),choices:[sa,+(PI*r*r).toFixed(2),+(ang/360*TAU*r).toFixed(2),+(2*ang/360*PI*r*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,20),ang=rnd(1,4)*90,sa=+(ang/360*PI*r*r).toFixed(2);return{q:bq(`Sector area = <strong style="color:#f4a261">${sa}</strong>, r = ${r}. Angle?`,`\u6252\u5F62\u9762\u7A4D=${sa}\uFF0Cr=${r}\u3002\u89D2\u5EA6\uFF1F`),correct:ang+'\u00B0',explain:bx(`\u03B8 = (${sa}/(\u03C0\u00D7${r}\u00B2))\u00D7360 = ${ang}\u00B0`,`\u89D2\u5EA6 = ${ang}\u00B0`),choices:[ang+'\u00B0',((ang+90)%360||90)+'\u00B0',((ang-90+360)%360||90)+'\u00B0',(ang/2)+'\u00B0']}});
+
+// === SECTOR PERIMETER ===
+QB.push(()=>{const r=rnd(3,25),ang=rnd(1,6)*30,arcL=+(ang/360*TAU*r).toFixed(2),sp=+(2*r+ +arcL).toFixed(2);return{q:bq(`r = <strong class="highlight">${r}</strong>, \u03B8 = <strong class="pink">${ang}\u00B0</strong>. Sector perimeter?`,`r=${r}\uFF0C\u03B8=${ang}\u00B0\u3002\u6252\u5F62\u5468\u754C\uFF1F`),correct:sp,visual:{r,show:'circumference'},explain:bx(`P = 2r + arc = 2\u00D7${r}+${arcL} = ${sp}`,`\u5468\u754C = 2r + \u5F27\u9577 = ${sp}`),choices:[sp,+(2*r).toFixed(2),+arcL,+(TAU*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,20),ang=rnd(1,4)*90,arcL=+(ang/360*TAU*r).toFixed(2),sp=+(2*r+ +arcL).toFixed(2);return{q:bq(`r = ${r}, \u03B8 = ${ang}\u00B0. What is the total distance around the sector?`,`r=${r}\uFF0C\u03B8=${ang}\u00B0\u3002\u6252\u5F62\u7E3D\u908A\u9577\uFF1F`),correct:sp,explain:bx(`P = 2\u00D7${r} + ${arcL} = ${sp}`,`\u5468\u754C = ${sp}`),choices:[sp,+arcL,+(2*r).toFixed(2),+(PI*r).toFixed(2)]}});
+
+// === CHORD ===
+QB.push(()=>{const r=rnd(3,25),ang=rnd(1,5)*30,ch=+(2*r*Math.sin(ang*PI/360)).toFixed(2);return{q:bq(`r = <strong class="highlight">${r}</strong>, \u03B8 = <strong class="pink">${ang}\u00B0</strong>. Chord?`,`r=${r}\uFF0C\u03B8=${ang}\u00B0\u3002\u5F26\u9577\uFF1F`),correct:ch,visual:{r,show:'radius'},explain:bx(`2r\u00D7sin(\u03B8/2) = 2\u00D7${r}\u00D7sin(${ang/2}\u00B0) = ${ch}`,`\u5F26\u9577 = 2r\u00D7sin(${ang/2}\u00B0) = ${ch}`),choices:[ch,+(2*r).toFixed(2),+(r*Math.sin(ang*PI/180)).toFixed(2),+(ang/360*TAU*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,25);return{q:bq(`\u03B8 = <strong class="pink">180\u00B0</strong>, r = ${r}. Chord length?`,`\u03B8=180\u00B0\uFF0Cr=${r}\u3002\u5F26\u9577\uFF1F`),correct:r*2,visual:{r,show:'diameter'},explain:bx(`At 180\u00B0 the chord IS the diameter = 2r = ${r*2}`,`180\u00B0\u6642\u5F26\u5C31\u662F\u76F4\u5F91 = 2r = ${r*2}`),choices:[r*2,r,+(PI*r).toFixed(2),+(TAU*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,25),ch=+(2*r*Math.sin(PI/4)).toFixed(2);return{q:bq(`r = ${r}, \u03B8 = 90\u00B0. Chord?`,`r=${r}\uFF0C\u03B8=90\u00B0\u3002\u5F26\u9577\uFF1F`),correct:ch,explain:bx(`2\u00D7${r}\u00D7sin(45\u00B0) = 2\u00D7${r}\u00D70.7071 = ${ch}`,`\u5F26 = 2\u00D7${r}\u00D7sin(45\u00B0) = ${ch}`),choices:[ch,+(2*r).toFixed(2),r,+(r*1.414).toFixed(2)]}});
+
+// === SEMICIRCLE & QUARTER CIRCLE ===
+QB.push(()=>{const r=rnd(3,25),a=+(PI*r*r/2).toFixed(2);return{q:bq(`Semicircle with r = ${r}. Area?`,`\u534A\u5713\uFF0Cr=${r}\u3002\u9762\u7A4D\uFF1F`),correct:a,visual:{r,show:'area'},explain:bx(`\u03C0r\u00B2/2 = \u03C0\u00D7${r}\u00B2/2 = ${a}`,`\u534A\u5713\u9762\u7A4D = \u03C0r\u00B2/2 = ${a}`),choices:[a,+(PI*r*r).toFixed(2),+(PI*r).toFixed(2),+(TAU*r/2).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,25),p=+(PI*r+2*r).toFixed(2);return{q:bq(`Semicircle r = ${r}. Perimeter (flat edge + curved)?`,`\u534A\u5713r=${r}\u3002\u5468\u9577\uFF08\u76F4\u908A+\u5F27\uFF09\uFF1F`),correct:p,visual:{r,show:'circumference'},explain:bx(`\u03C0r + 2r = ${(PI*r).toFixed(2)} + ${2*r} = ${p}`,`\u534A\u5713\u5468\u9577 = \u03C0r + 2r = ${p}`),choices:[p,+(PI*r).toFixed(2),+(TAU*r).toFixed(2),+(2*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,25),a=+(PI*r*r/4).toFixed(2);return{q:bq(`Quarter circle, r = ${r}. Area?`,`\u56DB\u5206\u5713\uFF0Cr=${r}\u3002\u9762\u7A4D\uFF1F`),correct:a,visual:{r,show:'area'},explain:bx(`\u03C0r\u00B2/4 = ${a}`,`\u56DB\u5206\u5713\u9762\u7A4D = \u03C0r\u00B2/4 = ${a}`),choices:[a,+(PI*r*r/2).toFixed(2),+(PI*r*r).toFixed(2),+(r*r/4).toFixed(2)]}});
+QB.push(()=>{const r=rnd(3,25),p=+(PI*r/2+2*r).toFixed(2);return{q:bq(`Quarter circle r = ${r}. Perimeter?`,`\u56DB\u5206\u5713r=${r}\u3002\u5468\u9577\uFF1F`),correct:p,explain:bx(`\u03C0r/2 + 2r = ${(PI*r/2).toFixed(2)}+${2*r} = ${p}`,`\u56DB\u5206\u5713\u5468\u9577 = ${p}`),choices:[p,+(PI*r).toFixed(2),+(TAU*r/4).toFixed(2),+(2*r).toFixed(2)]}});
+
+// === WORD PROBLEMS ===
+QB.push(()=>{const d=rnd(10,50),C=+(PI*d).toFixed(2);return{q:bq(`A wheel has diameter <strong class="blue">${d}</strong> cm. How far does it roll in 1 rotation?`,`\u8F2A\u5B50\u76F4\u5F91${d}cm\u3002\u6EFE\u4E00\u5708\u591A\u9060\uFF1F`),correct:C,explain:bx(`1 rotation = circumference = \u03C0d = ${C} cm`,`\u4E00\u5708 = \u5468\u9577 = \u03C0d = ${C} cm`),choices:[C,+(PI*d*d/4).toFixed(2),+(2*d).toFixed(2),+(d*d).toFixed(2)]}});
+QB.push(()=>{const r=rnd(5,30),C=+(TAU*r).toFixed(2);return{q:bq(`A circular track has r = ${r} m. How far is one lap?`,`\u5713\u5F62\u8DD1\u9053\u534A\u5F91${r}m\u3002\u4E00\u5708\u591A\u9060\uFF1F`),correct:C,visual:{r,show:'circumference'},explain:bx(`C = 2\u03C0\u00D7${r} = ${C} m`,`\u4E00\u5708 = 2\u03C0r = ${C} m`),choices:[C,+(PI*r*r).toFixed(2),+(PI*r).toFixed(2),+(4*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(5,20),n=rnd(4,12),sa=+(PI*r*r/n).toFixed(2);return{q:bq(`Pizza r = ${r}. Cut into ${n} equal slices. Area of one slice?`,`\u6BD4\u85A9\u534A\u5F91${r}\uFF0C\u5207\u6210${n}\u7247\u3002\u4E00\u7247\u9762\u7A4D\uFF1F`),correct:sa,visual:{r,show:'area'},explain:bx(`\u03C0r\u00B2/${n} = ${(PI*r*r).toFixed(2)}/${n} = ${sa}`,`\u6BCF\u7247 = \u03C0r\u00B2/${n} = ${sa}`),choices:[sa,+(PI*r*r).toFixed(2),+(TAU*r/n).toFixed(2),+(r*r/n).toFixed(2)]}});
+QB.push(()=>{const r=rnd(5,20),n=rnd(4,12),arcL=+(TAU*r/n).toFixed(2);return{q:bq(`Pizza r = ${r}, ${n} slices. Crust length per slice?`,`\u6BD4\u85A9r=${r}\uFF0C${n}\u7247\u3002\u6BCF\u7247\u9905\u908A\u9577\uFF1F`),correct:arcL,explain:bx(`2\u03C0r/${n} = ${(TAU*r).toFixed(2)}/${n} = ${arcL}`,`\u5F27\u9577 = 2\u03C0r/${n} = ${arcL}`),choices:[arcL,+(PI*r*r/n).toFixed(2),+(2*r).toFixed(2),+(PI*r/n).toFixed(2)]}});
+QB.push(()=>{const r=rnd(10,50),dist=rnd(100,1000),C=+(TAU*r).toFixed(2),rot=+(dist/C).toFixed(2);return{q:bq(`Wheel r = ${r} cm. How many rotations to travel ${dist} cm?`,`\u8F2A\u5B50r=${r}cm\u3002\u884C\u9032${dist}cm\u9700\u5E7E\u5708\uFF1F`),correct:rot,explain:bx(`${dist}\u00F7C = ${dist}\u00F7${C} = ${rot}`,`${dist}\u00F7\u5468\u9577 = ${rot}\u5708`),choices:[rot,+(dist/(PI*r)).toFixed(2),+(dist/r).toFixed(2),+(dist/(2*r)).toFixed(2)]}});
+QB.push(()=>{const r=rnd(5,30),A=+(PI*r*r).toFixed(2);return{q:bq(`Sprinkler covers r = ${r} m. What area is watered?`,`\u7051\u6C34\u5668\u5F91=${r}m\u3002\u6F86\u6E89\u9762\u7A4D\uFF1F`),correct:A,visual:{r,show:'area'},explain:bx(`A = \u03C0\u00D7${r}\u00B2 = ${A} m\u00B2`,`\u9762\u7A4D = \u03C0r\u00B2 = ${A}`),choices:[A,+(TAU*r).toFixed(2),+(4*r*r).toFixed(2),+(PI*r).toFixed(2)]}});
+QB.push(()=>{const A=+(PI*rnd(5,20)**2),r=+Math.sqrt(A/PI).toFixed(0),C=+(TAU*r).toFixed(2);return{q:bq(`Circular garden area = ${+(PI*r*r).toFixed(2)} m\u00B2. Fence needed?`,`\u5713\u5F62\u82B1\u5712\u9762\u7A4D=${+(PI*r*r).toFixed(2)}m\u00B2\u3002\u9700\u8981\u591A\u9577\u67F5\u6B04\uFF1F`),correct:C,explain:bx(`r = \u221A(A/\u03C0) = ${r}, fence = 2\u03C0r = ${C} m`,`r = ${r}\uFF0C\u67F5\u6B04 = 2\u03C0r = ${C}`),choices:[C,+(PI*r*r).toFixed(2),+(PI*r).toFixed(2),+(4*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(10,40),min=rnd(1,6)*10,ang=min*6,arc=+(ang/360*TAU*r).toFixed(2);return{q:bq(`Clock hand ${r} cm. Tip distance in ${min} minutes?`,`\u6642\u91DD\u9577${r}cm\u3002${min}\u5206\u9418\u91DD\u5C16\u79FB\u52D5\u591A\u9060\uFF1F`),correct:arc,explain:bx(`${min} min = ${ang}\u00B0. arc = (${ang}/360)\u00D72\u03C0\u00D7${r} = ${arc}`,`${min}\u5206=${ang}\u00B0\u3002\u5F27\u9577 = ${arc}`),choices:[arc,+(TAU*r).toFixed(2),+(min*r).toFixed(2),+(ang*r/360).toFixed(2)]}});
+QB.push(()=>{const d=rnd(20,80),r=d/2,dist=rnd(1,5)*+(PI*d).toFixed(2),n=+(dist/(PI*d)).toFixed(0);return{q:bq(`Wheel d = ${d}. How many full turns in ${(+n*PI*d).toFixed(2)} units?`,`\u8F2A\u5B50d=${d}\u3002${(+n*PI*d).toFixed(2)}\u55AE\u4F4D\u8DDD\u96E2\u8F49\u5E7E\u5708\uFF1F`),correct:+n,explain:bx(`turns = dist/(\u03C0d) = ${n}`,`\u5708\u6578 = \u8DDD\u96E2/(\u03C0d) = ${n}`),choices:[+n,n*2,+(n/2).toFixed(0),n+rnd(1,3)]}});
+
+// === CONCEPTUAL ===
+QB.push(()=>({q:bq('If you <strong>double</strong> the radius, circumference becomes:','\u534A\u5F91<strong>\u52A0\u500D</strong>\uFF0C\u5468\u9577\u8B8A\u70BA\uFF1A'),correct:'2\u00D7',explain:bx('C = 2\u03C0r. Double r \u2192 double C.','\u5468\u9577\u548C\u534A\u5F91\u6210\u6B63\u6BD4\uFF0C\u534A\u5F91\u52A0\u500D\u5468\u9577\u4E5F\u52A0\u500D'),choices:['2\u00D7','4\u00D7','3\u00D7','\u03C0\u00D7']}));
+QB.push(()=>({q:bq('If you <strong>double</strong> the radius, area becomes:','\u534A\u5F91<strong>\u52A0\u500D</strong>\uFF0C\u9762\u7A4D\u8B8A\u70BA\uFF1A'),correct:'4\u00D7',explain:bx('A = \u03C0r\u00B2. Double r \u2192 (2r)\u00B2 = 4r\u00B2 \u2192 4\u00D7 area.','\u9762\u7A4D\u8207r\u00B2\u6210\u6B63\u6BD4\uFF0C\u534A\u5F91\u52A0\u500D\u9762\u7A4D\u8B8A4\u500D'),choices:['4\u00D7','2\u00D7','8\u00D7','\u03C0\u00D7']}));
+QB.push(()=>({q:bq('If you <strong>triple</strong> the radius, area becomes:','\u534A\u5F91<strong>\u4E09\u500D</strong>\uFF0C\u9762\u7A4D\u8B8A\u70BA\uFF1A'),correct:'9\u00D7',explain:bx('(3r)\u00B2 = 9r\u00B2 \u2192 9\u00D7 the area.','\u534A\u5F91\u4E09\u500D\uFF0C\u9762\u7A4D\u8B8A9\u500D'),choices:['9\u00D7','3\u00D7','6\u00D7','27\u00D7']}));
+QB.push(()=>({q:bq('If you <strong>halve</strong> the radius, area becomes:','\u534A\u5F91<strong>\u6E1B\u534A</strong>\uFF0C\u9762\u7A4D\u8B8A\u70BA\uFF1A'),correct:'\u00BC (0.25\u00D7)',explain:bx('(r/2)\u00B2 = r\u00B2/4 \u2192 quarter the area.','\u534A\u5F91\u6E1B\u534A\uFF0C\u9762\u7A4D\u8B8A\u70BA\u56DB\u5206\u4E4B\u4E00'),choices:['\u00BC (0.25\u00D7)','\u00BD (0.5\u00D7)','\u215B (0.125\u00D7)','2\u00D7']}));
+QB.push(()=>({q:bq('Central angle of a semicircle?','\u534A\u5713\u7684\u5713\u5FC3\u89D2\uFF1F'),correct:'180\u00B0',explain:bx('A semicircle is exactly half the circle = 180\u00B0.','\u534A\u5713\u662F\u5713\u7684\u4E00\u534A = 180\u00B0'),choices:['180\u00B0','90\u00B0','270\u00B0','360\u00B0']}));
+QB.push(()=>({q:bq('Central angle of a quarter circle?','\u56DB\u5206\u5713\u7684\u5713\u5FC3\u89D2\uFF1F'),correct:'90\u00B0',explain:bx('Quarter = 360\u00B0/4 = 90\u00B0.','\u56DB\u5206\u5713 = 360\u00B0/4 = 90\u00B0'),choices:['90\u00B0','45\u00B0','180\u00B0','60\u00B0']}));
+QB.push(()=>({q:bq('Chord length when \u03B8 = 180\u00B0 equals:','\u03B8=180\u00B0\u6642\u5F26\u9577\u7B49\u65BC\uFF1A'),correct:'diameter',explain:bx('At 180\u00B0 the chord spans the full width = diameter.','\u03B8=180\u00B0\u6642\u5F26\u5C31\u662F\u76F4\u5F91'),choices:['diameter','radius','circumference','arc length']}));
+QB.push(()=>({q:bq('Which is always longer: the arc or its chord?','\u5F27\u548C\u5F26\u54EA\u500B\u7E3D\u662F\u66F4\u9577\uFF1F'),correct:'arc',explain:bx('A curved path is always longer than the straight line between the same endpoints.','\u66F2\u7DDA\u8DEF\u5F91\u7E3D\u6BD4\u76F4\u7DDA\u9577'),choices:['arc','chord','they\'re equal','depends on r']}));
+QB.push(()=>({q:bq('The longest chord of any circle is called the:','\u5713\u4E2D\u6700\u9577\u7684\u5F26\u53EB\u505A\uFF1A'),correct:'diameter \u76F4\u5F91',explain:bx('The diameter passes through the center = longest chord.','\u76F4\u5F91\u7D93\u904E\u5713\u5FC3\uFF0C\u662F\u6700\u9577\u7684\u5F26'),choices:['diameter \u76F4\u5F91','radius \u534A\u5F91','chord \u5F26','circumference \u5468\u9577']}));
+QB.push(()=>{const ang=rnd(1,11)*30;return{q:bq(`What fraction of the circle is a ${ang}\u00B0 sector?`,`${ang}\u00B0\u6252\u5F62\u5360\u5713\u7684\u5E7E\u5206\u4E4B\u5E7E\uFF1F`),correct:(ang/360).toFixed(4).replace(/0+$/,'').replace(/\.$/,''),explain:bx(`${ang}/360 = ${(ang/360).toFixed(4).replace(/0+$/,'').replace(/\.$/,'')}`,`${ang}/360 = ${(ang/360).toFixed(4).replace(/0+$/,'').replace(/\.$/,'')}`),choices:[(ang/360).toFixed(4).replace(/0+$/,'').replace(/\.$/,''),(ang/180).toFixed(4).replace(/0+$/,'').replace(/\.$/,''),(ang/720).toFixed(4).replace(/0+$/,'').replace(/\.$/,''),((360-ang)/360).toFixed(4).replace(/0+$/,'').replace(/\.$/,'')]}});
+
+// === MORE ARC/SECTOR COMBOS ===
+QB.push(()=>{const r=rnd(3,20),ang=rnd(1,4)*90,sa=+(ang/360*PI*r*r).toFixed(2),arc=+(ang/360*TAU*r).toFixed(2);return{q:bq(`Sector area = ${sa}, r = ${r}. Arc length?`,`\u6252\u5F62\u9762\u7A4D=${sa}\uFF0Cr=${r}\u3002\u5F27\u9577\uFF1F`),correct:arc,explain:bx(`\u03B8 = (${sa}/(\u03C0\u00D7${r}\u00B2))\u00D7360 = ${ang}\u00B0, arc = ${arc}`,`\u89D2\u5EA6=${ang}\u00B0\uFF0C\u5F27\u9577=${arc}`),choices:[arc,sa,+(2*r).toFixed(2),+(TAU*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(4,20),ang=60,arc=+(ang/360*TAU*r).toFixed(2);return{q:bq(`r = ${r}. Arc length at 60\u00B0?`,`r=${r}\u300260\u00B0\u5F27\u9577\uFF1F`),correct:arc,visual:{r,show:'circumference'},explain:bx(`60/360 = 1/6. arc = (1/6)\u00D72\u03C0\u00D7${r} = ${arc}`,`60\u00B0\u662F\u5713\u7684\u516D\u5206\u4E4B\u4E00\u3002\u5F27\u9577=${arc}`),choices:[arc,+(TAU*r).toFixed(2),+(PI*r/3).toFixed(2),+(PI*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(4,20),ang=120,sa=+(ang/360*PI*r*r).toFixed(2);return{q:bq(`r = ${r}, \u03B8 = 120\u00B0. Sector area?`,`r=${r}\uFF0C\u03B8=120\u00B0\u3002\u6252\u5F62\u9762\u7A4D\uFF1F`),correct:sa,visual:{r,show:'area'},explain:bx(`120/360 = 1/3. area = (1/3)\u00D7\u03C0\u00D7${r}\u00B2 = ${sa}`,`120\u00B0\u662F\u5713\u7684\u4E09\u5206\u4E4B\u4E00\u3002\u9762\u7A4D=${sa}`),choices:[sa,+(PI*r*r).toFixed(2),+(PI*r*r/2).toFixed(2),+(2*PI*r*r/3).toFixed(2)]}});
+QB.push(()=>{const r=rnd(4,15),r2=r+rnd(2,8),ang=rnd(1,4)*90,ring=+(ang/360*PI*(r2*r2-r*r)).toFixed(2);return{q:bq(`Inner r=${r}, outer r=${r2}, \u03B8=${ang}\u00B0. Ring sector area?`,`\u5167\u5F91=${r}\uFF0C\u5916\u5F91=${r2}\uFF0C\u03B8=${ang}\u00B0\u3002\u74B0\u5F62\u6252\u5F62\u9762\u7A4D\uFF1F`),correct:ring,explain:bx(`(${ang}/360)\u00D7\u03C0(${r2}\u00B2\u2212${r}\u00B2) = ${ring}`,`\u74B0\u5F62\u6252\u5F62\u9762\u7A4D = ${ring}`),choices:[ring,+(ang/360*PI*r2*r2).toFixed(2),+(PI*(r2*r2-r*r)).toFixed(2),+(ang/360*PI*r*r).toFixed(2)]}});
+
+// === TRICKY / MULTI-STEP ===
+QB.push(()=>{const r=rnd(5,20),ang=rnd(1,6)*30,sp=+(2*r+ang/360*TAU*r).toFixed(2);return{q:bq(`Sector perimeter = <strong style="color:#118ab2">${sp}</strong>, r = ${r}. Angle?`,`\u6252\u5F62\u5468\u754C=${sp}\uFF0Cr=${r}\u3002\u89D2\u5EA6\uFF1F`),correct:ang+'\u00B0',explain:bx(`arc = P\u22122r = ${sp}\u2212${2*r} = ${(sp-2*r).toFixed(2)}. \u03B8 = arc\u00D7360/(2\u03C0r) = ${ang}\u00B0`,`\u5F27\u9577 = ${(sp-2*r).toFixed(2)}\uFF0C\u89D2\u5EA6 = ${ang}\u00B0`),choices:[ang+'\u00B0',((ang+30)%360||30)+'\u00B0',((ang+60)%360||60)+'\u00B0',(ang*2%360||30)+'\u00B0']}});
+QB.push(()=>{const r=rnd(3,20),C=+(TAU*r).toFixed(2),A=+(PI*r*r).toFixed(2),rat=+(A/C).toFixed(2);return{q:bq(`r = ${r}. What is Area \u00F7 Circumference?`,`r=${r}\u3002\u9762\u7A4D \u00F7 \u5468\u9577 = \uFF1F`),correct:rat,explain:bx(`\u03C0r\u00B2/(2\u03C0r) = r/2 = ${r}/2 = ${rat}`,`\u9762\u7A4D/\u5468\u9577 = r/2 = ${rat}`),choices:[rat,r,+(PI*r).toFixed(2),+(2*r).toFixed(2)]}});
+QB.push(()=>{const r=rnd(5,25),ang=rnd(1,5)*60,ch=+(2*r*Math.sin(ang*PI/360)).toFixed(2),arc=+(ang/360*TAU*r).toFixed(2),diff=+(arc-ch).toFixed(2);return{q:bq(`r=${r}, \u03B8=${ang}\u00B0. How much longer is the arc than the chord?`,`r=${r}\uFF0C\u03B8=${ang}\u00B0\u3002\u5F27\u6BD4\u5F26\u9577\u591A\u5C11\uFF1F`),correct:diff,explain:bx(`arc=${arc}, chord=${ch}, diff=${diff}`,`\u5F27\u9577=${arc}\uFF0C\u5F26\u9577=${ch}\uFF0C\u5DEE=${diff}`),choices:[diff,arc,ch,+(arc+ch).toFixed(2)]}});
+
+// total: ~60 generators. With random r (3-25) and angles, this yields thousands of unique questions.
+
+function genQuestion(){
+  const gen=QB[rnd(0,QB.length-1)];
+  const g=gen();
+  const q=g.q, correct=String(g.correct), explain=g.explain||'', visual=g.visual||null;
+  let choices=(g.choices||[]).map(String);
+  const set=new Set(choices);
+  set.add(correct);
   while(set.size<4)set.add(String(rnd(1,100)));
-  return{q,correct:String(correct),choices:shuffle([...set].slice(0,4)),visual,explain};
+  choices=shuffle([...set].slice(0,4));
+  return{q,correct,choices,visual,explain};
 }
 
 let quizScore=0,quizQ=0,quizTotal=10;
