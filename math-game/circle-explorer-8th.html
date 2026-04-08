@@ -171,9 +171,6 @@ header .wave-emoji{font-size:1.5rem;display:inline-block;animation:waveHand 2s e
 .mode-btn:active{transform:scale(.95)}
 .mode-btn.active{background:linear-gradient(135deg,#5ec4d4,#06d6a0);color:#041e2e;border-color:#5ec4d4}
 
-/* pi unwrap */
-.pi-demo{margin-top:1rem;text-align:center}
-.pi-demo canvas{border-radius:.75rem;width:100%;height:auto}
 
 /* quiz */
 .quiz-header{
@@ -333,12 +330,6 @@ input[type=range]::-webkit-slider-thumb{
       <div class="stat"><div class="stat-icon">&#x1F3D6;&#xFE0F;</div><div class="stat-label">Sector Area 扇形面積</div><div class="stat-value secarea" id="lSecA">9503.32</div></div>
       <div class="stat"><div class="stat-icon">&#x1F6A7;</div><div class="stat-label">Sector Perim 扇形周界</div><div class="stat-value secperim" id="lSecP">392.79</div></div>
       <div class="stat"><div class="stat-icon">&#x1FA80;</div><div class="stat-label">Chord 弦長</div><div class="stat-value chord" id="lChord">155.56</div></div>
-    </div>
-
-    <div class="glass pi-demo">
-      <h3 style="color:#06d6a0;margin-bottom:.75rem;font-size:1rem">&#x1F30A; Unrolling the Wave / 展開海浪</h3>
-      <p style="color:#7bafc4;font-size:.85rem;margin-bottom:.75rem">Watch the circumference unroll like a wave stretching along the shore &mdash; it equals exactly &pi; &times; diameter<br>看周長像海浪一样展开——它恰好等于 &pi; &times; 直徑</p>
-      <canvas id="piCanvas"></canvas>
     </div>
 
     <div class="info-grid">
@@ -541,7 +532,7 @@ document.querySelectorAll('.tab').forEach(t=>{
     t.classList.add('active');
     document.getElementById(t.dataset.tab).classList.add('active');
     if(t.dataset.tab==='playground')resizePlayCanvas();
-    if(t.dataset.tab==='learn'){resizeLearnCanvas();resizePiCanvas()}
+    if(t.dataset.tab==='learn')resizeLearnCanvas()
   });
 });
 
@@ -826,73 +817,6 @@ aSlider.addEventListener('input',drawLearn);
   requestAnimationFrame(learnLoop);
 })();
 
-// ===================== PI UNWRAP =====================
-const piCanvas=document.getElementById('piCanvas');
-let piCtx,piW,piH;
-
-function resizePiCanvas(){
-  const parent=piCanvas.parentElement;
-  const w=Math.min(parent.clientWidth,640);
-  const h=Math.round(w*0.28);
-  piCanvas.width=w*DPR;piCanvas.height=h*DPR;
-  piCanvas.style.aspectRatio=`${w}/${h}`;
-  piCtx=piCanvas.getContext('2d');
-  piCtx.setTransform(DPR,0,0,DPR,0,0);
-  piW=w;piH=h;
-}
-resizePiCanvas();
-
-(function(){
-  let t=0;
-  function draw(){
-    if(!piCtx){requestAnimationFrame(draw);return}
-    const w=piW,h=piH;
-    piCtx.clearRect(0,0,w,h);
-    const circR=Math.min(35,h*0.4);
-    const cx=circR+20,cy=h/2;
-    const lineStart=cx+circR+25;
-
-    piCtx.beginPath();piCtx.arc(cx,cy,circR,0,TAU);
-    piCtx.strokeStyle='#06d6a0';piCtx.lineWidth=2.5;piCtx.stroke();
-    piCtx.beginPath();piCtx.arc(cx,cy,3,0,TAU);piCtx.fillStyle='#ffd166';piCtx.fill();
-
-    const angle=t%TAU;
-    const px=cx+Math.cos(angle-PI/2)*circR;
-    const py=cy+Math.sin(angle-PI/2)*circR;
-
-    piCtx.beginPath();piCtx.arc(cx,cy,circR,-PI/2,-PI/2+angle);
-    piCtx.strokeStyle='#f7936f';piCtx.lineWidth=4;piCtx.stroke();
-
-    piCtx.beginPath();piCtx.arc(px,py,Math.max(4,circR*.14),0,TAU);
-    piCtx.fillStyle='#f7936f';piCtx.shadowColor='#f7936f';piCtx.shadowBlur=10;piCtx.fill();piCtx.shadowBlur=0;
-
-    const lineLen=(angle/TAU)*(TAU*circR);
-    const maxLen=w-lineStart-15;
-    const drawLen=Math.min(lineLen,maxLen);
-    const fullLen=Math.min(TAU*circR,maxLen);
-
-    piCtx.beginPath();piCtx.moveTo(lineStart,cy);piCtx.lineTo(lineStart+fullLen,cy);
-    piCtx.strokeStyle='rgba(6,214,160,.2)';piCtx.lineWidth=3;piCtx.stroke();
-
-    piCtx.beginPath();piCtx.moveTo(lineStart,cy);piCtx.lineTo(lineStart+drawLen,cy);
-    piCtx.strokeStyle='#f7936f';piCtx.lineWidth=4;piCtx.stroke();
-
-    piCtx.beginPath();piCtx.arc(lineStart+drawLen,cy,4,0,TAU);
-    piCtx.fillStyle='#f7936f';piCtx.fill();
-
-    const fs=Math.max(10,w*0.022);
-    piCtx.font=`bold ${fs}px JetBrains Mono, monospace`;
-    piCtx.fillStyle='#06d6a0';
-    piCtx.fillText('\u03C0 \u00D7 d = '+(TAU*circR).toFixed(1)+'px',lineStart,cy-14);
-    piCtx.fillStyle='#5a8a9e';
-    piCtx.fillText((angle/TAU*100).toFixed(0)+'% unrolled',lineStart+fullLen/2-40,cy+20);
-
-    t+=.03;
-    if(document.getElementById('learn').classList.contains('active'))requestAnimationFrame(draw);
-    else setTimeout(()=>requestAnimationFrame(draw),200);
-  }
-  draw();
-})();
 
 // ===================== PLAYGROUND =====================
 let circles=[{x:0,y:0,r:100,color:'#5ec4d4'}];
@@ -1097,7 +1021,7 @@ let resizeTimer;
 window.addEventListener('resize',()=>{
   clearTimeout(resizeTimer);
   resizeTimer=setTimeout(()=>{
-    resizeLearnCanvas();resizePiCanvas();resizePlayCanvas();
+    resizeLearnCanvas();resizePlayCanvas();
   },150);
 });
 
