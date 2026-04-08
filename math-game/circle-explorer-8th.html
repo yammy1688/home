@@ -1231,12 +1231,21 @@ qp(()=>{const r=rnd(5,25),ang=rnd(1,5)*60,ch=+(2*r*Math.sin(ang*PI/360)).toFixed
 // total: 63 generators. With random r (3-25) and angles, this yields thousands of unique questions.
 
 let quizTopic='all';
-document.querySelectorAll('.topic-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    quizTopic=btn.dataset.topic;
-  });
+document.getElementById('topicRow').addEventListener('click',function(e){
+  const btn=e.target.closest('.topic-btn');
+  if(!btn)return;
+  this.querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  quizTopic=btn.dataset.topic;
+});
+// also handle touch explicitly for iPad
+document.getElementById('topicRow').addEventListener('touchend',function(e){
+  const btn=e.target.closest('.topic-btn');
+  if(!btn)return;
+  e.preventDefault();
+  this.querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  quizTopic=btn.dataset.topic;
 });
 
 function genQuestion(){
