@@ -1228,19 +1228,48 @@ qp(()=>{const r=rnd(5,25),ang=rnd(1,5)*60,ch=+(2*r*Math.sin(ang*PI/360)).toFixed
 
 // total: 63 generators. With random r (3-25) and angles, this yields thousands of unique questions.
 
-let quizTopic='all';
-// attach click to each topic button individually
-document.getElementById('topicRow').querySelectorAll('.topic-btn').forEach(function(btn){
-  function activate(){
-    document.getElementById('topicRow').querySelectorAll('.topic-btn').forEach(function(b){b.classList.remove('active')});
-    btn.classList.add('active');
-    quizTopic=btn.getAttribute('data-topic');
+let quizTopics=new Set(['all']);
+const topicBtns=document.getElementById('topicRow').querySelectorAll('.topic-btn');
+const allBtn=document.getElementById('topicRow').querySelector('[data-topic="all"]');
+const nonAllBtns=document.getElementById('topicRow').querySelectorAll('.topic-btn:not([data-topic="all"])');
+
+function syncAllBtn(){
+  // if all individual topics are selected, activate "All" too
+  let allOn=true;
+  nonAllBtns.forEach(function(b){if(!b.classList.contains('active'))allOn=false});
+  if(allOn){allBtn.classList.add('active');quizTopics.add('all')}
+  else{allBtn.classList.remove('active');quizTopics.delete('all')}
+  // if nothing selected, revert to all
+  let anyOn=false;
+  topicBtns.forEach(function(b){if(b.classList.contains('active'))anyOn=true});
+  if(!anyOn){
+    allBtn.classList.add('active');quizTopics.add('all');
+    nonAllBtns.forEach(function(b){b.classList.add('active');quizTopics.add(b.getAttribute('data-topic'))});
   }
-  btn.onclick=activate;
+}
+
+topicBtns.forEach(function(btn){
+  btn.onclick=function(){
+    var t=btn.getAttribute('data-topic');
+    if(t==='all'){
+      // toggle all on
+      var turnOn=!allBtn.classList.contains('active');
+      topicBtns.forEach(function(b){
+        if(turnOn){b.classList.add('active');quizTopics.add(b.getAttribute('data-topic'))}
+        else{b.classList.remove('active');quizTopics.delete(b.getAttribute('data-topic'))}
+      });
+      if(!turnOn)syncAllBtn(); // if turned off all, revert
+    }else{
+      btn.classList.toggle('active');
+      if(btn.classList.contains('active'))quizTopics.add(t);else quizTopics.delete(t);
+      syncAllBtn();
+    }
+  };
 });
 
 function genQuestion(){
-  const pool=quizTopic==='all'?QB:QB.filter(fn=>fn._t===quizTopic);
+  const useAll=quizTopics.has('all');
+  const pool=useAll?QB:QB.filter(function(fn){return quizTopics.has(fn._t)});
   const src=pool.length?pool:QB; // fallback to all if filter is empty
   const gen=src[rnd(0,src.length-1)];
   const g=gen();
