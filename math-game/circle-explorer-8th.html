@@ -2526,16 +2526,28 @@ const stepExplanations = {
     title:'Final Result / 最終結果',
     text:'Shaded Area ≈ <strong>100.5 cm²</strong> (using the 32π formula). Perimeter ≈ <strong>75.4 cm</strong>. This shape is called an "arbelos" or shoemaker\'s knife!',
     draw:(ctx)=>{
-      const cx=250,cy=140;
+      const cx=250,cy=160,R=90,r1=60,r2=30;
+      const c1=cx-R+r1,c2=cx+R-r2;
+      // arbelos: large semicircle down, two small semicircles up
       ctx.fillStyle='rgba(127,245,195,.3)';
-      ctx.beginPath();ctx.arc(cx,cy,70,0,Math.PI);ctx.lineTo(cx-100,cy);
-      ctx.arc(cx-45,cy,47,Math.PI,0);ctx.lineTo(cx+47,cy);
-      ctx.arc(cx+47,cy,23,Math.PI,0);ctx.lineTo(cx+100,cy);
+      ctx.beginPath();
+      ctx.arc(cx,cy,R,0,Math.PI);
+      ctx.arc(c1,cy,r1,Math.PI,0);
+      ctx.arc(c2,cy,r2,Math.PI,0);
+      ctx.closePath();
       ctx.fill();ctx.strokeStyle='#7ff5c3';ctx.lineWidth=3;ctx.stroke();
+      // baseline
+      ctx.strokeStyle='#4a366088';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(cx-R,cy);ctx.lineTo(cx+R,cy);ctx.stroke();
+      // labels
       ctx.font='bold 20px JetBrains Mono,monospace';
-      ctx.fillStyle='#ffe47a';ctx.fillText('Arbelos!',cx-50,cy-50);
+      ctx.fillStyle='#ffe47a';ctx.fillText('Arbelos!',cx-50,cy-R-25);
       ctx.fillStyle='#7ecbf5';ctx.font='14px JetBrains Mono,monospace';
-      ctx.fillText('(Shoemaker\'s Knife)',cx-70,cy-30);
+      ctx.fillText('(Shoemaker\'s Knife)',cx-70,cy-R-5);
+      ctx.fillStyle='#b8a9cc';ctx.font='12px JetBrains Mono,monospace';
+      ctx.fillText('r=12',cx-10,cy+R*0.55);
+      ctx.fillText('r=8',c1-8,cy-r1*0.4);
+      ctx.fillText('r=4',c2-8,cy-r2*0.3);
     }
   }
 };
