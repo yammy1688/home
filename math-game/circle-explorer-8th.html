@@ -2701,7 +2701,8 @@ function renderQuiz(){
         el.classList.add('correct');
         quizScore++;streakData[i]='correct';
         fb.className='feedback show right';
-        fb.innerHTML=surfPraise[rnd(0,surfPraise.length-1)]+' / '+surfPraiseCN[rnd(0,surfPraiseCN.length-1)];
+        fb.innerHTML=surfPraise[rnd(0,surfPraise.length-1)]+' / '+surfPraiseCN[rnd(0,surfPraiseCN.length-1)]
+          +`<div class="explain">${qd.explain}</div>`;
         const rect=el.getBoundingClientRect();
         spawnConfetti(rect.left+rect.width/2,rect.top);
         dot.className='streak-dot correct';dot.textContent='\u2713';
