@@ -197,7 +197,7 @@ header .wave-emoji{font-size:1.3rem;display:inline-block;animation:pixelBounce 1
 .score-display .label{color:#b8a9cc;font-size:.7rem;font-weight:700;font-family:'Press Start 2P',monospace}
 
 .quiz-canvas-area{text-align:center;margin-bottom:1rem}
-.quiz-canvas-area canvas{border:2px solid #4a3660;width:100%;height:auto;max-width:300px}
+.quiz-canvas-area canvas{border:2px solid #4a3660;width:100%;height:auto;max-width:500px}
 
 .question{margin-bottom:1rem}
 .question h4{color:#e8dff5;font-size:1rem;margin-bottom:.75rem;font-weight:700;line-height:1.5}
@@ -409,6 +409,22 @@ input[type=range]::-webkit-slider-thumb{
 }
 .step-modal-close:hover{background:#ff8fab}
 
+/* test prep */
+.prep-formulas{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.prep-formula-card{background:#1a1028;border:2px solid #4a3660;padding:1rem;box-shadow:2px 2px 0 #0d0818}
+.prep-formula-card h4{font-family:'Press Start 2P',monospace;font-size:.5rem;color:#ff6b9d;margin-bottom:.5rem}
+.prep-formula-card .formula{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:#7ff5c3;margin:.3rem 0}
+.prep-formula-card .note{font-size:.75rem;color:#8bb8cc}
+.prep-example{background:#1a1028;border:2px solid #4a3660;padding:1.25rem;margin-bottom:1rem;box-shadow:2px 2px 0 #0d0818}
+.prep-example h4{color:#ffb3d9;font-size:.95rem;margin-bottom:.75rem}
+.prep-example .prep-problem{color:#e8dff5;margin-bottom:.75rem;line-height:1.6}
+.prep-example .prep-step{display:flex;gap:.5rem;margin:.5rem 0;align-items:flex-start}
+.prep-example .prep-step-num{background:#ff6b9d;color:#1a1028;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;flex-shrink:0;margin-top:2px}
+.prep-example .prep-step-text{color:#b8a9cc;font-size:.85rem;line-height:1.5}
+.prep-example .prep-step-text .math{font-family:'JetBrains Mono',monospace;color:#7ff5c3}
+.prep-example .prep-tip{background:#2d1f42;border:2px solid #5a3f7a;padding:.5rem .75rem;margin-top:.75rem;font-size:.8rem;color:#ffe47a}
+@media(max-width:600px){.prep-formulas{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -427,6 +443,7 @@ input[type=range]::-webkit-slider-thumb{
     <button class="tab" data-tab="playground">&#x1F3D6;&#xFE0F; Play 操場</button>
     <button class="tab" data-tab="secret">&#x1F30D; Secret Advanced &#x9032;&#x968E;</button>
     <button class="tab" data-tab="quiz">&#x1F420; Quiz 測驗</button>
+    <button class="tab" data-tab="testprep">&#x1F4DD; Test Prep 考試準備</button>
   </div>
 
   <!-- LEARN PANEL -->
@@ -815,7 +832,7 @@ input[type=range]::-webkit-slider-thumb{
   <!-- QUIZ PANEL -->
   <div class="panel" id="quiz">
     <div class="glass quiz-header">
-      <div class="score-display"><span class="num" id="score">0</span><span class="label">/ 10</span></div>
+      <div class="score-display"><span class="num" id="score">0</span><span class="label" id="scoreLabel">/ 20</span></div>
       <div class="streak" id="streak"></div>
       <button class="btn" id="newQuiz" style="margin-left:auto">&#x1F3C4; New Wave 新浪</button>
     </div>
@@ -830,6 +847,7 @@ input[type=range]::-webkit-slider-thumb{
         <button class="topic-btn" data-topic="chord">Chords 弦</button>
         <button class="topic-btn" data-topic="word">Word Problems 應用題</button>
         <button class="topic-btn" data-topic="concept">Concepts 概念</button>
+        <button class="topic-btn" data-topic="testprep">Test Prep 考試準備</button>
       </div>
     </div>
     <div class="glass quiz-canvas-area" id="quizVisual" style="display:none">
@@ -837,6 +855,310 @@ input[type=range]::-webkit-slider-thumb{
     </div>
     <div class="quiz-area" id="quizArea"></div>
   </div>
+
+  <!-- TEST PREP PANEL -->
+  <div class="panel" id="testprep">
+
+    <div class="glass" style="margin-bottom:1.5rem">
+      <h2 style="font-family:'Press Start 2P',monospace;font-size:.8rem;color:#ffe47a;margin-bottom:1rem">&#x1F4D6; Key Formulas Reference / 關鍵公式</h2>
+      <div class="prep-formulas">
+        <div class="prep-formula-card">
+          <h4>Circumference 周長</h4>
+          <div class="formula">C = 2&pi;r = &pi;d</div>
+          <div class="note">Use the full circle distance around</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Area 面積</h4>
+          <div class="formula">A = &pi;r&sup2;</div>
+          <div class="note">Square the radius, multiply by &pi;</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Arc Length 弧長</h4>
+          <div class="formula">s = (&theta;/360) &times; 2&pi;r</div>
+          <div class="note">Fraction of the full circumference</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Sector Area 扇形面積</h4>
+          <div class="formula">A = (&theta;/360) &times; &pi;r&sup2;</div>
+          <div class="note">Fraction of the full circle area</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Sector Perimeter 扇形周長</h4>
+          <div class="formula">P = 2r + arc length</div>
+          <div class="note">Two radii + the curved arc</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>&pi; Approximations 圓周率</h4>
+          <div class="formula">&pi; &asymp; 22/7 or 3.14</div>
+          <div class="note">Use whichever the problem specifies</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Worked Examples -->
+    <div class="glass" style="margin-bottom:1.5rem">
+      <h2 style="font-family:'Press Start 2P',monospace;font-size:.8rem;color:#ffe47a;margin-bottom:1rem">&#x1F4DD; Worked Examples / 範例題</h2>
+      <p style="color:#7ecbf5;font-size:.8rem;margin-bottom:1rem">Click any step to see a visual explanation! / 點擊任何步驟查看視覺解說！</p>
+    </div>
+
+    <!-- Example 1: True/False -->
+    <div class="shape-problem" data-problem="prep1">
+      <div class="shape-header">
+        <div class="shape-icon">&#x2753;</div>
+        <div>
+          <div class="shape-title">Example 1: True/False — Same Angle, Same Arc? / 同角度同弧長？</div>
+          <div class="shape-type">CONCEPTUAL / 概念題</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="prepCanvas1" width="400" height="250"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Read the statement</strong> / 閱讀題目<br>
+            &ldquo;If the central angle of Sector A is twice that of Sector B, the arc length of A must also be twice that of B.&rdquo;
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Recall the formula</strong> / 回憶公式<br>
+            <div class="step-formula">Arc = (&theta;/360) &times; 2&pi;r</div>
+            Arc depends on BOTH &theta; and r!
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Test with a counterexample</strong> / 用反例驗證<br>
+            Sector A: &theta;=120&deg;, r=3 &rarr; Arc = 2&pi;<br>
+            Sector B: &theta;=60&deg;, r=10 &rarr; Arc = 10&pi;/3<br>
+            Arc A &lt; Arc B despite &theta;A = 2&times;&theta;B!
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Answer / 答案</div>
+        <div class="tip-content">
+          <strong>FALSE 錯</strong> &mdash; Only true when both sectors have the same radius. Always check! / 只有半徑相同時才成立。
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 2: Circumference Check -->
+    <div class="shape-problem" data-problem="prep2">
+      <div class="shape-header">
+        <div class="shape-icon">&#x2B55;</div>
+        <div>
+          <div class="shape-title">Example 2: Circumference &gt; 12? / 周長大於12？</div>
+          <div class="shape-type">TRUE/FALSE CALCULATION / 是非計算</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="prepCanvas2" width="400" height="250"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Identify given info</strong> / 確認已知<br>
+            Circle with radius r = 2 m. Question: Is C &gt; 12?
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Calculate</strong> / 計算<br>
+            <div class="step-formula">C = 2&pi;r = 2 &times; 3.14 &times; 2 = 12.56 m</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Compare</strong> / 比較<br>
+            12.56 &gt; 12 &check;
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Answer / 答案</div>
+        <div class="tip-content">
+          <strong>TRUE 對</strong> &mdash; When in doubt, just calculate! C = 2&pi;r. / 有疑問就直接算！
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 3: Quarter-Circle Perimeter -->
+    <div class="shape-problem" data-problem="prep3">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F4D0;</div>
+        <div>
+          <div class="shape-title">Example 3: Quarter-Circle Sector Perimeter / 四分之一圓周長</div>
+          <div class="shape-type">SECTOR PERIMETER / 扇形周長</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="prepCanvas3" width="400" height="250"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Identify</strong> / 確認<br>
+            Quarter circle: &theta; = 90&deg;, r = 70 cm, &pi; = 22/7
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Find arc length</strong> / 求弧長<br>
+            <div class="step-formula">Arc = (90/360) &times; 2 &times; (22/7) &times; 70 = (1/4) &times; 440 = 110 cm</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Add all edges</strong> / 加總所有邊<br>
+            <div class="step-formula">Perimeter = r + r + arc = 70 + 70 + 110 = 250 cm</div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip / 專業提示</div>
+        <div class="tip-content">
+          Sector perimeter = 2r + arc. Don&rsquo;t forget the two straight edges! / 扇形周長 = 2r + 弧長，別忘了直線邊！
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 4: Wheel Rolling -->
+    <div class="shape-problem" data-problem="prep4">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F6DE;</div>
+        <div>
+          <div class="shape-title">Example 4: Wheel Rolling Distance / 車輪滾動距離</div>
+          <div class="shape-type">CIRCUMFERENCE APPLICATION / 周長應用</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="prepCanvas4" width="400" height="250"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Identify</strong> / 確認<br>
+            Wheel radius = 35 cm, rolls 25 times. &pi; = 22/7
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>One rotation = circumference</strong> / 一圈 = 周長<br>
+            <div class="step-formula">C = 2 &times; (22/7) &times; 35 = 2 &times; 22 &times; 5 = 220 cm</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Multiply</strong> / 乘以圈數<br>
+            <div class="step-formula">Distance = 25 &times; 220 = 5500 cm = 55 m</div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip / 專業提示</div>
+        <div class="tip-content">
+          Each full rotation = one circumference of distance. / 每滾一圈 = 一個周長的距離。
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 5: Sector Park -->
+    <div class="shape-problem" data-problem="prep5">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F3DE;&#xFE0F;</div>
+        <div>
+          <div class="shape-title">Example 5: Sector Park Walk / 扇形公園步行</div>
+          <div class="shape-type">SECTOR BOUNDARY / 扇形邊界</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="prepCanvas5" width="400" height="250"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Identify</strong> / 確認<br>
+            Sector park: r = 6 m, &theta; = 120&deg;, &pi; = 22/7
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Find arc length</strong> / 求弧長<br>
+            <div class="step-formula">Arc = (120/360) &times; 2 &times; (22/7) &times; 6 = (1/3) &times; 264/7 = 88/7 &asymp; 12.57 m</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Total boundary</strong> / 總邊界<br>
+            <div class="step-formula">Walk = 2r + arc = 12 + 88/7 = 172/7 &asymp; 24.57 m</div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip / 專業提示</div>
+        <div class="tip-content">
+          Walking the full boundary = two radii + the arc. Keep fractions with 22/7! / 走完邊界 = 兩段半徑 + 弧長。
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 6: Inscribed Circle -->
+    <div class="shape-problem" data-problem="prep6">
+      <div class="shape-header">
+        <div class="shape-icon">&#x25A3;</div>
+        <div>
+          <div class="shape-title">Example 6: Circle Inscribed in Square / 圓內切正方形</div>
+          <div class="shape-type">SHADED AREA / 陰影面積</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="prepCanvas6" width="400" height="250"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Identify</strong> / 確認<br>
+            Square side = 60 cm, inscribed circle: r = 60/2 = 30 cm. &pi; = 3.14
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Square area</strong> / 正方形面積<br>
+            <div class="step-formula">Square = 60&sup2; = 3600 cm&sup2;</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Circle area</strong> / 圓面積<br>
+            <div class="step-formula">Circle = &pi;r&sup2; = 3.14 &times; 900 = 2826 cm&sup2;</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Shaded = Square &minus; Circle</strong> / 陰影 = 正方形 &minus; 圓<br>
+            <div class="step-formula">Shaded = 3600 &minus; 2826 = 774 cm&sup2;</div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip / 專業提示</div>
+        <div class="tip-content">
+          For inscribed circle: diameter = side. Shaded corners = square &minus; circle. / 內切圓：直徑 = 邊長。陰影 = 正方形 &minus; 圓。
+        </div>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
 <div class="viz-overlay" id="vizOverlay">
@@ -973,7 +1295,8 @@ document.querySelectorAll('.tab').forEach(t=>{
     t.classList.add('active');
     document.getElementById(t.dataset.tab).classList.add('active');
     if(t.dataset.tab==='playground')resizePlayCanvas();
-    if(t.dataset.tab==='learn')resizeLearnCanvas()
+    if(t.dataset.tab==='learn')resizeLearnCanvas();
+    if(t.dataset.tab==='testprep')drawPrepCanvases();
   });
 });
 
@@ -1885,7 +2208,7 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[
 const quizCanvas=document.getElementById('quizCanvas');
 
 function setupQuizCanvas(){
-  const w=300,h=220;
+  const w=500,h=320;
   quizCanvas.width=w*DPR;quizCanvas.height=h*DPR;
   quizCanvas.style.aspectRatio=`${w}/${h}`;
   const ctx=quizCanvas.getContext('2d');
@@ -2003,7 +2326,78 @@ qp(()=>{const r=rnd(5,20),ang=rnd(1,6)*30,sp=+(2*r+ang/360*TAU*r).toFixed(2);ret
 qp(()=>{const r=rnd(3,20),C=+(TAU*r).toFixed(2),A=+(PI*r*r).toFixed(2),rat=+(A/C).toFixed(2);return{q:bq(`r = ${r}. What is Area \u00F7 Circumference?`,`r=${r}\u3002\u9762\u7A4D \u00F7 \u5468\u9577 = \uFF1F`),correct:rat,explain:bx(`\u03C0r\u00B2/(2\u03C0r) = r/2 = ${r}/2 = ${rat}`,`\u9762\u7A4D/\u5468\u9577 = r/2 = ${rat}`),choices:[rat,r,+(PI*r).toFixed(2),+(2*r).toFixed(2)]}});
 qp(()=>{const r=rnd(5,25),ang=rnd(1,5)*60,ch=+(2*r*Math.sin(ang*PI/360)).toFixed(2),arc=+(ang/360*TAU*r).toFixed(2),diff=+(arc-ch).toFixed(2);return{q:bq(`r=${r}, \u03B8=${ang}\u00B0. How much longer is the arc than the chord?`,`r=${r}\uFF0C\u03B8=${ang}\u00B0\u3002\u5F27\u6BD4\u5F26\u9577\u591A\u5C11\uFF1F`),correct:diff,explain:bx(`arc=${arc}, chord=${ch}, diff=${diff}`,`\u5F27\u9577=${arc}\uFF0C\u5F26\u9577=${ch}\uFF0C\u5DEE=${diff}`),choices:[diff,arc,ch,+(arc+ch).toFixed(2)]}});
 
-// total: 63 generators. With random r (3-25) and angles, this yields thousands of unique questions.
+// === TEST PREP (Ch 7.1-7.3 exam style, using π≈22/7 or 3.14) ===
+_qt='testprep';
+
+// True/False conceptual (4) — wordy, exam-style
+qp(()=>({q:bq('Write T if the statement is true, or F if it is false:<br><br>If the central angle of Sector A is twice that of Sector B, then the arc length of Sector A must also be twice the arc length of Sector B.','判斷下列敘述的正確性，正確寫T，錯誤寫F：<br><br>若扇形A的圓心角是扇形B的兩倍，則扇形A的弧長一定也是扇形B的兩倍。'),correct:'False 錯',explain:bx('FALSE. Arc length = (θ/360)×2πr depends on BOTH the angle AND the radius. This statement is only true if both sectors have the same radius. If the radii are different, doubling the angle does NOT guarantee double the arc length.','錯。弧長 = (θ/360)×2πr，取決於角度和半徑。只有當兩個扇形的半徑相同時，角度加倍弧長才加倍。若半徑不同，則不一定成立。'),choices:['True 對','False 錯']}));
+qp(()=>({q:bq('Write T if the statement is true, or F if it is false:<br><br>Two sectors with the same central angle will always have the same arc length, regardless of the size of their radii.','判斷下列敘述的正確性，正確寫T，錯誤寫F：<br><br>兩個圓心角相同的扇形，不論半徑大小如何，弧長一定相同。'),correct:'False 錯',explain:bx('FALSE. Arc length = (θ/360)×2πr. Even with the same angle, a larger radius gives a longer arc. For example: θ=90°, r=5 gives arc ≈ 7.85, but θ=90°, r=10 gives arc ≈ 15.71.','錯。弧長 = (θ/360)×2πr。即使角度相同，較大的半徑會產生較長的弧。例如：θ=90°，r=5弧長≈7.85，而r=10弧長≈15.71。'),choices:['True 對','False 錯']}));
+qp(()=>({q:bq('Write T if the statement is true, or F if it is false:<br><br>A circle with a radius of 2 meters has a circumference greater than 12 meters.','判斷下列敘述的正確性，正確寫T，錯誤寫F：<br><br>半徑為2公尺的圓，其周長大於12公尺。'),correct:'True 對',visual:{r:2,show:'circumference'},explain:bx('TRUE. C = 2πr = 2 × 3.14 × 2 = 12.56 meters. Since 12.56 > 12, the statement is correct.','對。C = 2πr = 2 × 3.14 × 2 = 12.56公尺。因為12.56 > 12，所以敘述正確。'),choices:['True 對','False 錯']}));
+qp(()=>({q:bq('Write T if the statement is true, or F if it is false:<br><br>If the diameter of Circle A is equal to the radius of Circle B, then the circumference of Circle A is twice the circumference of Circle B.','判斷下列敘述的正確性，正確寫T，錯誤寫F：<br><br>若圓A的直徑等於圓B的半徑，則圓A的周長是圓B周長的兩倍。'),correct:'False 錯',explain:bx('FALSE. If Circle B has radius R, then Circle A has diameter = R, so radius = R/2. C_A = 2π(R/2) = πR. C_B = 2πR. So C_A is actually HALF of C_B, not twice.','錯。若圓B半徑=R，則圓A直徑=R，半徑=R/2。C_A = πR，C_B = 2πR。所以C_A是C_B的一半，不是兩倍。'),choices:['True 對','False 錯']}));
+
+// Fill-in-the-blank & computation (8) — wordy exam style with π=22/7 or 3.14
+qp(()=>{const r=rnd(2,10)*7;const arc=2*22*r/7/4;const peri=2*r+arc;return{q:bq(`A sector is a quarter-circle with a radius of ${r} cm. What is the perimeter of this sector? (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`一個扇形是四分之一圓，半徑為 ${r} 公分。這個扇形的周長是多少？（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:peri.toFixed(2)+' cm',visual:{type:'sector',r:r,angle:90},explain:bx(`Arc = (90/360) × 2 × (22/7) × ${r} = (1/4) × ${2*22*r/7} = ${arc} cm.\nPerimeter = 2r + arc = ${2*r} + ${arc} = ${peri} cm.`,`弧長 = (1/4) × 2 × (22/7) × ${r} = ${arc} cm。\n周長 = 2r + 弧長 = ${2*r} + ${arc} = ${peri} cm。`),choices:[peri.toFixed(2)+' cm',(2*r+2*22*r/7).toFixed(2)+' cm',arc.toFixed(2)+' cm',(2*r).toFixed(2)+' cm']}});
+qp(()=>{const r=rnd(1,8)*7;const n=rnd(10,50);const circ=2*22*r/7;const dist=n*circ;return{q:bq(`The radius of a car wheel is ${r} cm. If the wheel rolls ${n} full rotations along a straight line, how many centimeters has the car traveled? (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`一個車輪的半徑為 ${r} 公分。若車輪沿直線滾了 ${n} 圈，車子行進了多少公分？（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:dist.toFixed(2)+' cm',visual:{type:'wheel',r:r,n:n},explain:bx(`One rotation = circumference = 2 × (22/7) × ${r} = ${circ} cm.\nTotal distance = ${n} × ${circ} = ${dist} cm.`,`一圈 = 周長 = 2 × (22/7) × ${r} = ${circ} cm。\n總距離 = ${n} × ${circ} = ${dist} cm。`),choices:[dist.toFixed(2)+' cm',circ.toFixed(2)+' cm',(dist/2).toFixed(2)+' cm',(n*r).toFixed(2)+' cm']}});
+qp(()=>{const r=rnd(3,15);const ang=[60,90,120,150][rnd(0,3)];const arc=ang/360*2*22/7*r;const peri=2*r+arc;return{q:bq(`There is a park in the shape of a sector, as shown in the figure below. The radius is ${r} m and the central angle is ${ang}°. If Grandpa walks one full lap around the outer boundary of the park, how many meters does he travel? (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`如下圖所示，有一個扇形公園，半徑為 ${r} 公尺，圓心角為 ${ang}°。爺爺沿著公園的外圍走一圈，他走了多少公尺？（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:+(peri).toFixed(2)+' m',visual:{type:'park',r:r,angle:ang},explain:bx(`Arc = (${ang}/360) × 2 × (22/7) × ${r} = ${arc.toFixed(2)} m.\nWalking distance = 2r + arc = ${2*r} + ${arc.toFixed(2)} = ${peri.toFixed(2)} m.`,`弧長 = (${ang}/360) × 2 × (22/7) × ${r} = ${arc.toFixed(2)} m。\n步行距離 = 2r + 弧長 = ${2*r} + ${arc.toFixed(2)} = ${peri.toFixed(2)} m。`),choices:[peri.toFixed(2)+' m',arc.toFixed(2)+' m',(2*r).toFixed(2)+' m',(2*22/7*r).toFixed(2)+' m']}});
+qp(()=>{const r=rnd(2,12);const r2=r*2;const C1=+(2*3.14*r).toFixed(2);const C2=+(2*3.14*r2).toFixed(2);return{q:bq(`When the radius of a circle is doubled (becomes ${r2} times its original length of ${r}), how many times larger does the circumference become? (use 3.14 as an approximation for π)`,`當一個圓的半徑從 ${r} 加倍變為 ${r2} 時，周長變為原來的幾倍？（π 用 3.14 計算）`),correct:'2',visual:{r:r2,show:'circumference'},explain:bx(`Original C = 2 × 3.14 × ${r} = ${C1}.\nNew C = 2 × 3.14 × ${r2} = ${C2}.\nRatio = ${C2} ÷ ${C1} = 2. Doubling the radius always doubles the circumference.`,`原周長 = 2 × 3.14 × ${r} = ${C1}。\n新周長 = 2 × 3.14 × ${r2} = ${C2}。\n比值 = ${C2} ÷ ${C1} = 2。半徑加倍，周長也加倍。`),choices:['2','4','3','π']}});
+qp(()=>{const r=rnd(1,10)*7;const ang=[60,90,120,180][rnd(0,3)];const sa=+(ang/360*22/7*r*r).toFixed(2);return{q:bq(`A sector has a radius of ${r} cm and a central angle of ${ang}°. Find the area of this sector. (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`一個扇形的半徑為 ${r} 公分，圓心角為 ${ang}°。求這個扇形的面積。（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:sa+' cm²',visual:{type:'sector',r:r,angle:ang},explain:bx(`Sector area = (${ang}/360) × (22/7) × ${r}² = (${ang}/360) × (22/7) × ${r*r} = ${sa} cm².`,`扇形面積 = (${ang}/360) × (22/7) × ${r}² = ${sa} cm²。`),choices:[String(sa)+' cm²',(22/7*r*r).toFixed(2)+' cm²',(ang/360*2*22/7*r).toFixed(2)+' cm',(2*r+ang/360*2*22/7*r).toFixed(2)+' cm']}});
+qp(()=>{const r=rnd(1,8)*7;const ang=[45,60,90,120,180][rnd(0,4)];const arc=+(ang/360*2*22/7*r).toFixed(2);return{q:bq(`A sector has a radius of ${r} cm and a central angle of ${ang}°. Its arc length is approximately how many cm? (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`一個扇形的半徑為 ${r} 公分，圓心角為 ${ang}°。它的弧長大約是多少公分？（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:arc+' cm',visual:{type:'sector',r:r,angle:ang},explain:bx(`Arc = (${ang}/360) × 2 × (22/7) × ${r} = ${arc} cm.`,`弧長 = (${ang}/360) × 2 × (22/7) × ${r} = ${arc} cm。`),choices:[String(arc)+' cm',(2*22/7*r).toFixed(2)+' cm',(22/7*r*r).toFixed(2)+' cm²',(ang/360*22/7*r*r).toFixed(2)+' cm²']}});
+qp(()=>{const side=rnd(3,15)*2;const r=side/2;const sq=side*side;const circ=+(3.14*r*r).toFixed(2);const shaded=+(sq-circ).toFixed(2);return{q:bq(`There is a square with a side length of ${side} cm. A circle is inscribed within the square. Find the area of the shaded region (the part of the square outside the circle). (use 3.14 as an approximation for π)`,`有一個邊長為 ${side} 公分的正方形，一個圓內切於正方形中。求陰影部分（正方形在圓外的部分）的面積。（π 用 3.14 計算）`),correct:shaded+' cm²',visual:{type:'inscribed',side:side},explain:bx(`Circle radius = ${side}/2 = ${r} cm.\nSquare area = ${side}² = ${sq} cm².\nCircle area = 3.14 × ${r}² = ${circ} cm².\nShaded = ${sq} − ${circ} = ${shaded} cm².`,`圓的半徑 = ${side}/2 = ${r} cm。\n正方形面積 = ${sq} cm²。\n圓面積 = ${circ} cm²。\n陰影面積 = ${sq} − ${circ} = ${shaded} cm²。`),choices:[String(shaded)+' cm²',String(circ)+' cm²',String(sq)+' cm²',(sq+circ).toFixed(2)+' cm²']}});
+qp(()=>{const r=rnd(1,10)*7;const C=+(2*22/7*r).toFixed(2);const ang=240;const sArc=+(ang/360*2*22/7*r).toFixed(2);const sPeri=+(2*r+ +sArc).toFixed(2);return{q:bq(`The figure below shows a circle with a circumference of ${C} cm. Inside the circle, there is a sector with a central angle of ${ang}°. What is the perimeter of the shaded region? (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`如下圖，一個圓的周長為 ${C} 公分。圓內有一個圓心角為 ${ang}° 的扇形。求陰影區域的周長。（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:sPeri+' cm',visual:{type:'sector',r:r,angle:ang},explain:bx(`From C = 2πr = ${C}, we get r = ${r} cm.\nSector arc = (${ang}/360) × ${C} = ${sArc} cm.\nPerimeter = 2r + arc = ${2*r} + ${sArc} = ${sPeri} cm.`,`由 C = 2πr = ${C}，得 r = ${r} cm。\n扇形弧長 = (${ang}/360) × ${C} = ${sArc} cm。\n周長 = 2r + 弧長 = ${2*r} + ${sArc} = ${sPeri} cm。`),choices:[String(sPeri)+' cm',String(sArc)+' cm',(2*r).toFixed(2)+' cm',String(C)+' cm']}});
+
+// Multi-part word problems — exam style with (a) and (b) like the real test
+// Square with inscribed circle: (a) perimeter of shaded, (b) area of shaded
+qp(()=>{const side=rnd(5,15)*2;const r=side/2;const sq=side*side;const circArea=+(3.14*r*r).toFixed(2);const shaded=+(sq-circArea).toFixed(2);const circC=+(2*3.14*r).toFixed(2);return{q:bq(`There is a square with a side length of ${side} cm. A circle is inscribed within the square. As shown in the figure, find the following:<br>(a) What is the <strong>perimeter</strong> of the shaded region?<br>(b) What is the <strong>area</strong> of the shaded region?<br><br>Answer part <strong>(a) the perimeter</strong>. (use 3.14 as an approximation for π)`,`有一個邊長 ${side} 公分的正方形，圓內切於正方形中。如圖所示，求下列各值：<br>(a) 陰影區域的<strong>周長</strong>是多少？<br>(b) 陰影區域的<strong>面積</strong>是多少？<br><br>回答 <strong>(a) 周長</strong>。（π 用 3.14 計算）`),correct:circC+' cm',visual:{type:'inscribed',side:side},explain:bx(`(a) The perimeter of the shaded region is the circumference of the inscribed circle (the curved boundary between shaded and circle).\nPerimeter = πd = 3.14 × ${side} = ${circC} cm.\n\n(b) Shaded area = Square − Circle = ${sq} − ${circArea} = ${shaded} cm².`,`(a) 陰影周長 = 圓的周長 = πd = 3.14 × ${side} = ${circC} cm。\n(b) 陰影面積 = 正方形 − 圓 = ${sq} − ${circArea} = ${shaded} cm²。`),choices:[String(circC)+' cm',String(shaded)+' cm²',(4*side).toFixed(2)+' cm',String(circArea)+' cm²']}});
+qp(()=>{const side=rnd(5,15)*2;const r=side/2;const sq=side*side;const circArea=+(3.14*r*r).toFixed(2);const shaded=+(sq-circArea).toFixed(2);return{q:bq(`There is a square with a side length of ${side} cm. A circle is inscribed within the square. As shown in the figure, find the following:<br>(a) What is the perimeter of the shaded region?<br>(b) What is the <strong>area</strong> of the shaded region?<br><br>Answer part <strong>(b) the area</strong>. (use 3.14 as an approximation for π)`,`有一個邊長 ${side} 公分的正方形，圓內切於正方形中。如圖所示，求下列各值：<br>(a) 陰影區域的周長是多少？<br>(b) 陰影區域的<strong>面積</strong>是多少？<br><br>回答 <strong>(b) 面積</strong>。（π 用 3.14 計算）`),correct:shaded+' cm²',visual:{type:'inscribed',side:side},explain:bx(`Inscribed circle: diameter = side = ${side}, so r = ${r}.\nSquare area = ${side}² = ${sq} cm².\nCircle area = 3.14 × ${r}² = ${circArea} cm².\nShaded area = ${sq} − ${circArea} = ${shaded} cm².`,`內切圓：直徑 = 邊長 = ${side}，r = ${r}。\n正方形 = ${sq}。圓 = ${circArea}。\n陰影面積 = ${sq} − ${circArea} = ${shaded} cm²。`),choices:[String(shaded)+' cm²',String(circArea)+' cm²',(sq/2).toFixed(2)+' cm²',(sq+circArea).toFixed(2)+' cm²']}});
+
+// Sector: (a) perimeter, (b) area — two separate questions
+qp(()=>{const r=rnd(1,10)*7;const ang=[60,90,120][rnd(0,2)];const arc=+(ang/360*2*22/7*r).toFixed(2);const peri=+(2*r+ +arc).toFixed(2);const area=+(ang/360*22/7*r*r).toFixed(2);return{q:bq(`As shown in the figure, a sector has a radius of ${r} cm and a central angle of ${ang}°. Find the following values:<br>(a) What is the <strong>perimeter</strong> of the sector?<br>(b) What is the area of the sector?<br><br>Answer part <strong>(a) the perimeter</strong>. (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`如圖所示，一個扇形的半徑為 ${r} 公分，圓心角為 ${ang}°。求下列各值：<br>(a) 扇形的<strong>周長</strong>是多少？<br>(b) 扇形的面積是多少？<br><br>回答 <strong>(a) 周長</strong>。（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:peri+' cm',visual:{type:'sector',r:r,angle:ang},explain:bx(`Arc = (${ang}/360) × 2 × (22/7) × ${r} = ${arc} cm.\n(a) Perimeter = 2r + arc = ${2*r} + ${arc} = ${peri} cm.\n(b) Area = (${ang}/360) × (22/7) × ${r}² = ${area} cm².`,`弧長 = ${arc} cm。\n(a) 周長 = 2r + 弧長 = ${peri} cm。\n(b) 面積 = ${area} cm²。`),choices:[String(peri)+' cm',String(area)+' cm²',String(arc)+' cm',(2*22/7*r).toFixed(2)+' cm']}});
+qp(()=>{const r=rnd(1,10)*7;const ang=[60,90,120][rnd(0,2)];const arc=+(ang/360*2*22/7*r).toFixed(2);const peri=+(2*r+ +arc).toFixed(2);const area=+(ang/360*22/7*r*r).toFixed(2);return{q:bq(`As shown in the figure, a sector has a radius of ${r} cm and a central angle of ${ang}°. Find the following values:<br>(a) What is the perimeter of the sector?<br>(b) What is the <strong>area</strong> of the sector?<br><br>Answer part <strong>(b) the area</strong>. (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`如圖所示，一個扇形的半徑為 ${r} 公分，圓心角為 ${ang}°。求下列各值：<br>(a) 扇形的周長是多少？<br>(b) 扇形的<strong>面積</strong>是多少？<br><br>回答 <strong>(b) 面積</strong>。（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:area+' cm²',visual:{type:'sector',r:r,angle:ang},explain:bx(`(a) Arc = ${arc}, Perimeter = 2r + arc = ${peri} cm.\n(b) Area = (${ang}/360) × (22/7) × ${r}² = ${area} cm².`,`(a) 周長 = ${peri} cm。\n(b) 面積 = (${ang}/360) × (22/7) × ${r}² = ${area} cm²。`),choices:[String(area)+' cm²',String(peri)+' cm',String(arc)+' cm',(22/7*r*r).toFixed(2)+' cm²']}});
+
+// Circle with circumference given, sector inside: (a) perimeter, (b) area
+qp(()=>{const r=rnd(1,10)*7;const C=+(2*22/7*r).toFixed(2);const ang=240;const sArc=+(ang/360*C).toFixed(2);const sPeri=+(2*r+ +sArc).toFixed(2);const sArea=+(ang/360*22/7*r*r).toFixed(2);return{q:bq(`The figure below shows a circle with a circumference of ${C} cm. Inside the circle, there is a sector with a central angle of ${ang}°. Find the following:<br>(a) What is the <strong>perimeter</strong> of the shaded region?<br>(b) What is the area of the shaded region?<br><br>Answer part <strong>(a) the perimeter</strong>. (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`如下圖，一個圓的周長為 ${C} 公分。圓內有一個圓心角為 ${ang}° 的扇形。求下列各值：<br>(a) 陰影區域的<strong>周長</strong>是多少？<br>(b) 陰影區域的面積是多少？<br><br>回答 <strong>(a) 周長</strong>。（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:sPeri+' cm',visual:{type:'sector',r:r,angle:ang},explain:bx(`From C = 2πr = ${C}, we get r = ${r} cm.\n(a) Arc = (${ang}/360) × ${C} = ${sArc}. Perimeter = 2r + arc = ${2*r} + ${sArc} = ${sPeri} cm.\n(b) Area = (${ang}/360) × (22/7) × ${r}² = ${sArea} cm².`,`由 C = ${C}，r = ${r}。\n(a) 弧長 = ${sArc}，周長 = ${sPeri} cm。\n(b) 面積 = ${sArea} cm²。`),choices:[String(sPeri)+' cm',String(sArc)+' cm',String(sArea)+' cm²',String(C)+' cm']}});
+qp(()=>{const r=rnd(1,10)*7;const C=+(2*22/7*r).toFixed(2);const ang=240;const sArc=+(ang/360*C).toFixed(2);const sArea=+(ang/360*22/7*r*r).toFixed(2);return{q:bq(`The figure below shows a circle with a circumference of ${C} cm. Inside the circle, there is a sector with a central angle of ${ang}°. Find the following:<br>(a) What is the perimeter of the shaded region?<br>(b) What is the <strong>area</strong> of the shaded region?<br><br>Answer part <strong>(b) the area</strong>. (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`如下圖，一個圓的周長為 ${C} 公分。圓內有一個圓心角為 ${ang}° 的扇形。求下列各值：<br>(a) 陰影區域的周長是多少？<br>(b) 陰影區域的<strong>面積</strong>是多少？<br><br>回答 <strong>(b) 面積</strong>。（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:sArea+' cm²',visual:{type:'sector',r:r,angle:ang},explain:bx(`From C = ${C}, r = ${r} cm.\nArc = (${ang}/360) × ${C} = ${sArc} cm.\n(b) Area = (${ang}/360) × (22/7) × ${r}² = ${sArea} cm².`,`由 C = ${C}，r = ${r}。\n(b) 面積 = (${ang}/360) × (22/7) × ${r}² = ${sArea} cm²。`),choices:[String(sArea)+' cm²',String(sArc)+' cm',(22/7*r*r).toFixed(2)+' cm²',(2*r+ +sArc).toFixed(2)+' cm']}});
+
+// Annulus
+qp(()=>{const r1=rnd(2,8)*7;const r2=r1+rnd(1,4)*7;const A1=+(22/7*r1*r1).toFixed(2);const A2=+(22/7*r2*r2).toFixed(2);const ring=+(A2-A1).toFixed(2);return{q:bq(`The figure shows two concentric circles. The inner circle has a radius of ${r1} cm and the outer circle has a radius of ${r2} cm. What is the area of the shaded ring between the two circles? (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`如圖所示，兩個同心圓，內圓半徑為 ${r1} 公分，外圓半徑為 ${r2} 公分。求兩圓之間陰影環形的面積。（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:ring+' cm²',visual:{type:'annulus',r1:r1,r2:r2},explain:bx(`Outer area = (22/7) × ${r2}² = ${A2} cm².\nInner area = (22/7) × ${r1}² = ${A1} cm².\nRing area = ${A2} − ${A1} = ${ring} cm².`,`外圓面積 = ${A2}，內圓面積 = ${A1}。\n環形面積 = ${A2} − ${A1} = ${ring} cm²。`),choices:[String(ring)+' cm²',String(A2)+' cm²',String(A1)+' cm²',(A2+A1).toFixed(2)+' cm²']}});
+
+// Sector park walk
+qp(()=>{const r=rnd(3,15);const ang=[90,120,150,180][rnd(0,3)];const arc=+(ang/360*2*22/7*r).toFixed(2);const peri=+(2*r+ +arc).toFixed(2);return{q:bq(`There is a park in the shape of a sector, as shown in the figure. The sector has a radius of ${r} m and a central angle of ${ang}°. If Grandpa walks one full lap around the outer boundary of the park, how many meters does he travel? (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`如下圖所示，有一個扇形公園，半徑為 ${r} 公尺，圓心角為 ${ang}°。爺爺沿著公園的外圍走一圈，他走了多少公尺？（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:peri+' m',visual:{type:'park',r:r,angle:ang},explain:bx(`Arc = (${ang}/360) × 2 × (22/7) × ${r} = ${arc} m.\nBoundary = 2 radii + arc = ${2*r} + ${arc} = ${peri} m.`,`弧長 = ${arc} m。邊界 = ${2*r} + ${arc} = ${peri} m。`),choices:[String(peri)+' m',String(arc)+' m',(2*22/7*r).toFixed(2)+' m',(2*r).toFixed(2)+' m']}});
+
+// Wheel distance in meters
+qp(()=>{const r=rnd(2,10)*7;const n=rnd(5,30);const circ=2*22/7*r;const dist=n*circ;const distM=+(dist/100).toFixed(2);return{q:bq(`The radius of a car wheel is ${r} cm. If the wheel rolls ${n} full rotations along a straight line, how many meters has the car traveled? (use <sup>22</sup>/<sub>7</sub> as an approximation for π)`,`一個車輪的半徑為 ${r} 公分。若車輪沿直線滾了 ${n} 圈，車子行進了多少公尺？（π 用 <sup>22</sup>/<sub>7</sub> 計算）`),correct:distM+' m',visual:{type:'wheel',r:r,n:n},explain:bx(`C = 2 × (22/7) × ${r} = ${circ} cm.\nTotal = ${n} × ${circ} = ${dist} cm = ${distM} m.`,`周長 = ${circ} cm。總距離 = ${dist} cm = ${distM} m。`),choices:[String(distM)+' m',String(dist)+' cm',(circ/100).toFixed(2)+' m',(distM*2).toFixed(2)+' m']}});
+
+// Semicircle fence: (a) perimeter, (b) area — two questions
+qp(()=>{const r=rnd(2,12);const semiArc=+(3.14*r).toFixed(2);const semiPeri=+(2*r+ +semiArc).toFixed(2);const semiArea=+(3.14*r*r/2).toFixed(2);return{q:bq(`A semicircular garden has a radius of ${r} meters. Find the following:<br>(a) What is the <strong>perimeter</strong> of the garden (curved edge + straight diameter)?<br>(b) What is the area of the garden?<br><br>Answer part <strong>(a) the perimeter</strong>. (use 3.14 as an approximation for π)`,`一個半圓形花園的半徑為 ${r} 公尺。求下列各值：<br>(a) 花園的<strong>周長</strong>（弧線 + 直徑）是多少？<br>(b) 花園的面積是多少？<br><br>回答 <strong>(a) 周長</strong>。（π 用 3.14 計算）`),correct:semiPeri+' m',visual:{type:'semicircle',r:r},explain:bx(`(a) Arc = πr = 3.14 × ${r} = ${semiArc}. Diameter = 2r = ${2*r}.\nPerimeter = ${2*r} + ${semiArc} = ${semiPeri} m.\n(b) Area = πr²/2 = 3.14 × ${r}² / 2 = ${semiArea} m².`,`(a) 弧 = ${semiArc}，直徑 = ${2*r}，周長 = ${semiPeri} m。\n(b) 面積 = ${semiArea} m²。`),choices:[String(semiPeri)+' m',String(semiArea)+' m²',String(semiArc)+' m',(2*3.14*r).toFixed(2)+' m']}});
+qp(()=>{const r=rnd(2,12);const semiArc=+(3.14*r).toFixed(2);const semiPeri=+(2*r+ +semiArc).toFixed(2);const semiArea=+(3.14*r*r/2).toFixed(2);return{q:bq(`A semicircular garden has a radius of ${r} meters. Find the following:<br>(a) What is the perimeter of the garden?<br>(b) What is the <strong>area</strong> of the garden?<br><br>Answer part <strong>(b) the area</strong>. (use 3.14 as an approximation for π)`,`一個半圓形花園的半徑為 ${r} 公尺。求下列各值：<br>(a) 花園的周長是多少？<br>(b) 花園的<strong>面積</strong>是多少？<br><br>回答 <strong>(b) 面積</strong>。（π 用 3.14 計算）`),correct:semiArea+' m²',visual:{type:'semicircle',r:r},explain:bx(`(a) Perimeter = 2r + πr = ${semiPeri} m.\n(b) Area = πr²/2 = 3.14 × ${r*r} / 2 = ${semiArea} m².`,`(a) 周長 = ${semiPeri} m。\n(b) 面積 = πr²/2 = ${semiArea} m²。`),choices:[String(semiArea)+' m²',String(semiPeri)+' m',String(semiArc)+' m',(3.14*r*r).toFixed(2)+' m²']}});
+
+// Square with quarter-circle cutouts: (a) perimeter, (b) area
+qp(()=>{const r=rnd(2,10);const s=r*2;const quarterArc=+(2*3.14*r/4).toFixed(2);const twoQuarters=+(2* +quarterArc).toFixed(2);const totalP=+(s*2+ +twoQuarters).toFixed(2);const sqArea=s*s;const cutArea=+(2*3.14*r*r/4).toFixed(2);const remain=+(sqArea- +cutArea).toFixed(2);return{q:bq(`A ${s}×${s} cm square has two quarter-circle cutouts removed from opposite corners, each with radius ${r} cm. Find the following:<br>(a) What is the <strong>perimeter</strong> of the remaining shape?<br>(b) What is the area of the remaining shape?<br><br>Answer part <strong>(a) the perimeter</strong>. (use 3.14 as an approximation for π)`,`一個 ${s}×${s} cm 正方形，對角挖去兩個半徑 ${r} cm 的四分之一圓。求：<br>(a) 剩餘形狀的<strong>周長</strong>？<br>(b) 剩餘形狀的面積？<br><br>回答 <strong>(a) 周長</strong>。（π 用 3.14 計算）`),correct:totalP+' cm',visual:{type:'quarterSquare',r:r},explain:bx(`(a) 2 straight sides = ${s*2}. 2 quarter arcs = π×${r} = ${twoQuarters}.\nPerimeter = ${s*2} + ${twoQuarters} = ${totalP} cm.\n(b) Square = ${sqArea}. Cutouts = ${cutArea}. Remaining = ${remain} cm².`,`(a) 直邊 = ${s*2}，弧 = ${twoQuarters}，周長 = ${totalP} cm。\n(b) 面積 = ${sqArea} − ${cutArea} = ${remain} cm²。`),choices:[String(totalP)+' cm',String(remain)+' cm²',(4*s).toFixed(2)+' cm',String(twoQuarters)+' cm']}});
+qp(()=>{const r=rnd(2,10);const s=r*2;const sqArea=s*s;const cutArea=+(2*3.14*r*r/4).toFixed(2);const remain=+(sqArea- +cutArea).toFixed(2);const twoQuarters=+(2*2*3.14*r/4).toFixed(2);const totalP=+(s*2+ +twoQuarters).toFixed(2);return{q:bq(`A ${s}×${s} cm square has two quarter-circle cutouts removed from opposite corners, each with radius ${r} cm. Find the following:<br>(a) What is the perimeter of the remaining shape?<br>(b) What is the <strong>area</strong> of the remaining shape?<br><br>Answer part <strong>(b) the area</strong>. (use 3.14 as an approximation for π)`,`一個 ${s}×${s} cm 正方形，對角挖去兩個半徑 ${r} cm 的四分之一圓。求：<br>(a) 剩餘形狀的周長？<br>(b) 剩餘形狀的<strong>面積</strong>？<br><br>回答 <strong>(b) 面積</strong>。（π 用 3.14 計算）`),correct:remain+' cm²',visual:{type:'quarterSquare',r:r},explain:bx(`Square area = ${s}² = ${sqArea} cm².\n2 quarter-circles = 2 × (1/4)π${r}² = ${cutArea} cm².\n(b) Remaining area = ${sqArea} − ${cutArea} = ${remain} cm².`,`正方形 = ${sqArea}。挖去 = ${cutArea}。\n(b) 剩餘面積 = ${sqArea} − ${cutArea} = ${remain} cm²。`),choices:[String(remain)+' cm²',String(totalP)+' cm',String(sqArea)+' cm²',String(cutArea)+' cm²']}});
+
+// === EXACT π ANSWERS (express in terms of π, like the worksheet) ===
+// Circumference from diameter (answer in π)
+qp(()=>{const d=rnd(2,30);return{q:bq(`Find the circumference of a circle with <strong>diameter ${d} cm</strong>. Express your answer using π.`,`求直徑為 <strong>${d} cm</strong> 的圓的周長。用 π 表示答案。`),correct:d+'π cm',visual:{r:d/2,show:'diameter'},explain:bx(`C = πd = π × ${d} = ${d}π cm`,`周長 = πd = π × ${d} = ${d}π cm`),choices:[d+'π cm',(2*d)+'π cm',(d*d)+'π cm',d+' cm']}});
+// Circumference from radius (answer in π)
+qp(()=>{const r=rnd(2,20);return{q:bq(`Find the circumference of a circle with <strong>radius ${r} cm</strong>. Express your answer using π.`,`求半徑為 <strong>${r} cm</strong> 的圓的周長。用 π 表示答案。`),correct:(2*r)+'π cm',visual:{r:r,show:'circumference'},explain:bx(`C = 2πr = 2 × π × ${r} = ${2*r}π cm`,`周長 = 2πr = 2 × π × ${r} = ${2*r}π cm`),choices:[(2*r)+'π cm',r+'π cm',(r*r)+'π cm',(4*r)+'π cm']}});
+// Area from radius (answer in π)
+qp(()=>{const r=rnd(2,15);return{q:bq(`Find the area of a circle with <strong>radius ${r} cm</strong>. Express your answer using π.`,`求半徑為 <strong>${r} cm</strong> 的圓的面積。用 π 表示答案。`),correct:(r*r)+'π cm²',visual:{r:r,show:'area'},explain:bx(`A = πr² = π × ${r}² = ${r*r}π cm²`,`面積 = πr² = π × ${r}² = ${r*r}π cm²`),choices:[(r*r)+'π cm²',(2*r)+'π cm',r+'π cm',(r*r*2)+'π cm²']}});
+// Area from diameter (answer in π)
+qp(()=>{const d=rnd(2,20)*2;const r=d/2;return{q:bq(`Find the area of a circle with <strong>diameter ${d} cm</strong>. Express your answer using π.`,`求直徑為 <strong>${d} cm</strong> 的圓的面積。用 π 表示答案。`),correct:(r*r)+'π cm²',visual:{r:r,show:'area'},explain:bx(`r = d/2 = ${d}/2 = ${r}.\nA = πr² = π × ${r}² = ${r*r}π cm²`,`r = d/2 = ${r}。\n面積 = πr² = ${r*r}π cm²`),choices:[(r*r)+'π cm²',(d*d)+'π cm²',(2*r)+'π cm',d+'π cm']}});
+// Arc length in π
+qp(()=>{const r=rnd(2,15);const ang=[60,90,120,180,270][rnd(0,4)];const num=2*r*ang/360;const g=function(a,b){return b?g(b,a%b):a;};const gc=g(2*r*ang,360);const numer=2*r*ang/gc;const denom=360/gc;const ans=denom===1?numer+'π':(numer+'/'+denom)+'π';const dec=+(ang/360*2*Math.PI*r).toFixed(2);return{q:bq(`A sector has radius ${r} cm and central angle ${ang}°. Find the arc length. Express your answer using π.`,`一個扇形半徑 ${r} cm，圓心角 ${ang}°。求弧長。用 π 表示答案。`),correct:ans+' cm',visual:{type:'sector',r:r,angle:ang},explain:bx(`Arc = (${ang}/360) × 2πr = (${ang}/360) × 2π × ${r} = ${ans} cm ≈ ${dec} cm`,`弧長 = (${ang}/360) × 2π × ${r} = ${ans} cm`),choices:[ans+' cm',(2*r)+'π cm',(r*r)+'π cm²',dec+' cm']}});
+// Sector area in π
+qp(()=>{const r=rnd(2,12);const ang=[60,90,120,180][rnd(0,3)];const g=function(a,b){return b?g(b,a%b):a;};const num0=r*r*ang;const gc=g(num0,360);const numer=num0/gc;const denom=360/gc;const ans=denom===1?numer+'π':(numer+'/'+denom)+'π';const dec=+(ang/360*Math.PI*r*r).toFixed(2);return{q:bq(`A sector has radius ${r} cm and central angle ${ang}°. Find the sector area. Express your answer using π.`,`一個扇形半徑 ${r} cm，圓心角 ${ang}°。求扇形面積。用 π 表示答案。`),correct:ans+' cm²',visual:{type:'sector',r:r,angle:ang},explain:bx(`Area = (${ang}/360) × πr² = (${ang}/360) × π × ${r}² = ${ans} cm²`,`面積 = (${ang}/360) × π × ${r}² = ${ans} cm²`),choices:[ans+' cm²',(r*r)+'π cm²',(2*r)+'π cm',dec+' cm²']}});
+// Circumference given, find diameter in π
+qp(()=>{const d=rnd(3,25);return{q:bq(`A circle has circumference <strong>${d}π cm</strong>. What is its diameter?`,`一個圓的周長為 <strong>${d}π cm</strong>。它的直徑是多少？`),correct:d+' cm',visual:{r:d/2,show:'diameter'},explain:bx(`C = πd, so ${d}π = πd → d = ${d} cm`,`C = πd，所以 ${d}π = πd → d = ${d} cm`),choices:[d+' cm',(d/2)+' cm',(2*d)+' cm',(d*d)+' cm']}});
+// Circumference given, find radius
+qp(()=>{const r=rnd(2,20);const C=2*r;return{q:bq(`A circle has circumference <strong>${C}π cm</strong>. What is its radius?`,`一個圓的周長為 <strong>${C}π cm</strong>。它的半徑是多少？`),correct:r+' cm',visual:{r:r,show:'circumference'},explain:bx(`C = 2πr, so ${C}π = 2πr → r = ${C}/2 = ${r} cm`,`C = 2πr，所以 ${C}π = 2πr → r = ${r} cm`),choices:[r+' cm',(C)+' cm',(r*2)+' cm',(r*r)+' cm']}});
+// Semicircle perimeter in π
+qp(()=>{const r=rnd(2,15);return{q:bq(`Find the perimeter of a semicircle with radius ${r} cm. Express using π.<br><em>(Perimeter = diameter + half circumference)</em>`,`求半徑為 ${r} cm 的半圓的周長。用 π 表示答案。<br><em>（周長 = 直徑 + 半圓弧）</em>`),correct:(2*r)+' + '+r+'π cm',visual:{type:'semicircle',r:r},explain:bx(`Straight edge = 2r = ${2*r} cm.\nCurved edge = πr = ${r}π cm.\nPerimeter = ${2*r} + ${r}π cm`,`直邊 = 2r = ${2*r}。弧 = πr = ${r}π。\n周長 = ${2*r} + ${r}π cm`),choices:[(2*r)+' + '+r+'π cm',(2*r)+'π cm',r+'π cm',(2*r+r)+'π cm']}});
+// Sector perimeter in π
+qp(()=>{const r=rnd(3,15);const ang=[90,120,180][rnd(0,2)];const g=function(a,b){return b?g(b,a%b):a;};const num0=2*r*ang;const gc=g(num0,360);const numer=num0/gc;const denom=360/gc;const arcPi=denom===1?numer+'π':(numer+'/'+denom)+'π';return{q:bq(`A sector has radius ${r} cm and central angle ${ang}°. Find the perimeter. Express using π.<br><em>(Perimeter = 2r + arc length)</em>`,`一個扇形半徑 ${r} cm，圓心角 ${ang}°。求周長。用 π 表示答案。<br><em>（周長 = 2r + 弧長）</em>`),correct:(2*r)+' + '+arcPi+' cm',visual:{type:'sector',r:r,angle:ang},explain:bx(`Arc = (${ang}/360) × 2π × ${r} = ${arcPi} cm.\nPerimeter = 2r + arc = ${2*r} + ${arcPi} cm`,`弧長 = ${arcPi}。周長 = ${2*r} + ${arcPi} cm`),choices:[(2*r)+' + '+arcPi+' cm',arcPi+' cm',(2*r)+'π cm',(r*r)+'π cm²']}});
+
+// total: 99 generators. With random r and angles, this yields thousands of unique questions.
 
 let quizTopics=new Set(['all']);
 const topicBtns=document.getElementById('topicRow').querySelectorAll('.topic-btn');
@@ -2059,8 +2453,9 @@ function genQuestion(){
   return{q,correct,choices,visual,explain};
 }
 
-let quizScore=0,quizQ=0,quizTotal=10;
+let quizScore=0,quizQ=0,quizTotal=20;
 let streakData=[];
+let quizQuestions=[]; // store all 20 generated questions
 
 function initStreak(){
   streakData=Array(quizTotal).fill('pending');
@@ -2075,43 +2470,162 @@ function renderStreak(){
   }).join('');
 }
 
-function drawQuizVisual(v){
-  const wrap=document.getElementById('quizVisual');
-  if(!v){wrap.style.display='none';return}
-  wrap.style.display='block';
-  const ctx=setupQuizCanvas();
-  const w=300,h=220,cx=w/2,cy=h/2;
-  const scale=Math.min(80,v.r*3);
+function drawVisualToCanvas(canvas,v){
+  if(!v||!canvas)return;
+  const w=500,h=320;
+  canvas.width=w*DPR;canvas.height=h*DPR;
+  canvas.style.aspectRatio=w+'/'+h;
+  const ctx=canvas.getContext('2d');
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  const cx=w/2,cy=h/2;
   ctx.clearRect(0,0,w,h);
 
+  // custom type-based drawing (large)
+  if(v.type){
+    if(v.type==='sector'){
+      var sc=Math.min(130,v.r*5);
+      var ang=v.angle*Math.PI/180;
+      ctx.fillStyle='rgba(244,162,97,.2)';
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,sc,-Math.PI/2,-Math.PI/2+ang);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=4;
+      ctx.beginPath();ctx.arc(cx,cy,sc,-Math.PI/2,-Math.PI/2+ang);ctx.stroke();
+      ctx.strokeStyle='#7ecbf5';ctx.lineWidth=2.5;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-sc);ctx.stroke();
+      var ex2=cx+Math.cos(-Math.PI/2+ang)*sc,ey2=cy+Math.sin(-Math.PI/2+ang)*sc;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(ex2,ey2);ctx.stroke();
+      ctx.strokeStyle='#ffe47a';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(cx,cy,28,-Math.PI/2,-Math.PI/2+ang);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 16px JetBrains Mono';
+      ctx.fillStyle='#7ecbf5';ctx.fillText('r = '+v.r,cx+8,cy-sc/2);
+      ctx.fillStyle='#ffe47a';ctx.fillText(v.angle+'\u00B0',cx-45,cy-8);
+      ctx.fillStyle='#ff6b9d';ctx.fillText('arc',cx+sc*0.3,cy-sc*0.7);
+    }
+    else if(v.type==='wheel'){
+      var sc=Math.min(70,v.r*2.5);
+      var wy=cy+10;
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(30,wy+sc+5);ctx.lineTo(470,wy+sc+5);ctx.stroke();
+      ctx.strokeStyle='#5ec4d4';ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(130,wy,sc,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='rgba(94,196,212,.08)';ctx.beginPath();ctx.arc(130,wy,sc,0,Math.PI*2);ctx.fill();
+      for(var i=0;i<4;i++){var a=i*Math.PI/2;ctx.strokeStyle='#4a366088';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(130,wy);ctx.lineTo(130+Math.cos(a)*sc,wy+Math.sin(a)*sc);ctx.stroke();}
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(130,wy,4,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#f7936f';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(130,wy);ctx.lineTo(130+sc,wy);ctx.stroke();
+      ctx.font='bold 15px JetBrains Mono';ctx.fillStyle='#f7936f';ctx.fillText('r = '+v.r+' cm',130+sc/2-25,wy-12);
+      ctx.strokeStyle='#7ff5c3';ctx.lineWidth=2;ctx.setLineDash([8,5]);ctx.beginPath();ctx.moveTo(130+sc+15,wy+sc+5);ctx.lineTo(430,wy+sc+5);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#7ff5c3';ctx.beginPath();ctx.moveTo(430,wy+sc+5);ctx.lineTo(420,wy+sc);ctx.lineTo(420,wy+sc+10);ctx.closePath();ctx.fill();
+      if(v.n){ctx.font='bold 18px JetBrains Mono';ctx.fillStyle='#ffe47a';ctx.fillText('\u00D7 '+v.n+' rotations',260,wy-10);}
+      ctx.fillStyle='#b8a9cc';ctx.font='13px JetBrains Mono';ctx.fillText('distance = C \u00D7 n',280,wy+15);
+    }
+    else if(v.type==='inscribed'){
+      var hs=Math.min(120,v.side*2.5);
+      ctx.fillStyle='rgba(255,107,157,.18)';ctx.fillRect(cx-hs,cy-hs,hs*2,hs*2);
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2.5;ctx.strokeRect(cx-hs,cy-hs,hs*2,hs*2);
+      ctx.save();ctx.globalCompositeOperation='destination-out';ctx.fillStyle='#000';ctx.beginPath();ctx.arc(cx,cy,hs,0,Math.PI*2);ctx.fill();ctx.restore();
+      ctx.strokeStyle='#5ec4d4';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,hs,0,Math.PI*2);ctx.stroke();
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2.5;ctx.strokeRect(cx-hs,cy-hs,hs*2,hs*2);
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#f7936f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+hs,cy);ctx.stroke();
+      ctx.font='bold 15px JetBrains Mono';
+      ctx.fillStyle='#f7936f';ctx.fillText('r = '+v.side/2,cx+hs/2-15,cy-10);
+      ctx.fillStyle='#e8dff5';ctx.fillText('side = '+v.side+' cm',cx-hs,cy+hs+22);
+      ctx.fillStyle='#ff6b9d';ctx.fillText('Shaded \u9670\u5F71',cx+hs-60,cy-hs+20);
+    }
+    else if(v.type==='park'){
+      var sc=Math.min(120,v.r*8);var ang=v.angle*Math.PI/180;
+      var pcy=cy+30;
+      ctx.fillStyle='rgba(127,245,195,.12)';
+      ctx.beginPath();ctx.moveTo(cx,pcy);ctx.arc(cx,pcy,sc,-Math.PI/2-ang/2,-Math.PI/2+ang/2);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#7ff5c3';ctx.lineWidth=4;
+      var a1=-Math.PI/2-ang/2,a2=-Math.PI/2+ang/2;
+      ctx.beginPath();ctx.moveTo(cx,pcy);ctx.lineTo(cx+Math.cos(a1)*sc,pcy+Math.sin(a1)*sc);ctx.stroke();
+      ctx.beginPath();ctx.arc(cx,pcy,sc,a1,a2);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx+Math.cos(a2)*sc,pcy+Math.sin(a2)*sc);ctx.lineTo(cx,pcy);ctx.stroke();
+      ctx.strokeStyle='#ffe47a';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,pcy,28,a1,a2);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,pcy,5,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 16px JetBrains Mono';
+      ctx.fillStyle='#7ecbf5';ctx.fillText('r = '+v.r+' m',cx-70,pcy-35);
+      ctx.fillStyle='#7ecbf5';ctx.fillText('r = '+v.r+' m',cx+15,pcy-35);
+      ctx.fillStyle='#ffe47a';ctx.fillText(v.angle+'\u00B0',cx-20,pcy-5);
+      ctx.fillStyle='#ff6b9d';ctx.font='bold 14px JetBrains Mono';ctx.fillText('arc',cx-8,pcy-sc-8);
+      ctx.fillStyle='#b8a9cc';ctx.font='13px JetBrains Mono';ctx.fillText('\uD83D\uDEB6 walk around boundary',cx+sc/2-20,pcy+sc/2+20);
+    }
+    else if(v.type==='annulus'){
+      var sc1=Math.min(55,v.r1*3),sc2=Math.min(130,v.r2*3);
+      ctx.fillStyle='rgba(163,113,247,.18)';ctx.beginPath();ctx.arc(cx,cy,sc2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#1a1028';ctx.beginPath();ctx.arc(cx,cy,sc1,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#a371f7';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,sc2,0,Math.PI*2);ctx.stroke();
+      ctx.strokeStyle='#7ecbf5';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,sc1,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#f7936f';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+sc1,cy);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-sc2);ctx.stroke();
+      ctx.font='bold 15px JetBrains Mono';
+      ctx.fillStyle='#7ecbf5';ctx.fillText('r\u2081 = '+v.r1,cx+sc1/2-15,cy+20);
+      ctx.fillStyle='#a371f7';ctx.fillText('r\u2082 = '+v.r2,cx+10,cy-sc2/2);
+      ctx.fillStyle='#ff6b9d';ctx.fillText('Shaded ring \u74B0\u5F62',cx+sc2+10,cy);
+    }
+    else if(v.type==='semicircle'){
+      var sc=Math.min(130,v.r*5);
+      ctx.fillStyle='rgba(126,203,245,.12)';
+      ctx.beginPath();ctx.arc(cx,cy+20,sc,Math.PI,0);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#5ec4d4';ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(cx,cy+20,sc,Math.PI,0);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx-sc,cy+20);ctx.lineTo(cx+sc,cy+20);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy+20,4,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#f7936f';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(cx,cy+20);ctx.lineTo(cx+sc,cy+20);ctx.stroke();
+      ctx.font='bold 15px JetBrains Mono';
+      ctx.fillStyle='#f7936f';ctx.fillText('r = '+v.r,cx+sc/2-15,cy+40);
+      ctx.fillStyle='#5ec4d4';ctx.fillText('d = '+v.r*2,cx-20,cy+60);
+    }
+    else if(v.type==='quarterSquare'){
+      var sc=Math.min(110,v.r*6);var ss=sc*2;
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=2.5;ctx.strokeRect(cx-sc,cy-sc,ss,ss);
+      ctx.fillStyle='rgba(244,162,97,.2)';ctx.fillRect(cx-sc,cy-sc,ss,ss);
+      ctx.save();ctx.globalCompositeOperation='destination-out';ctx.fillStyle='#000';
+      ctx.beginPath();ctx.arc(cx-sc,cy-sc,sc,0,Math.PI/2);ctx.lineTo(cx-sc,cy-sc);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.arc(cx+sc,cy+sc,sc,Math.PI,Math.PI*1.5);ctx.lineTo(cx+sc,cy+sc);ctx.closePath();ctx.fill();
+      ctx.restore();
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(cx-sc,cy-sc,sc,0,Math.PI/2);ctx.stroke();
+      ctx.beginPath();ctx.arc(cx+sc,cy+sc,sc,Math.PI,Math.PI*1.5);ctx.stroke();
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=2.5;ctx.strokeRect(cx-sc,cy-sc,ss,ss);
+      ctx.font='bold 15px JetBrains Mono';ctx.fillStyle='#f7936f';ctx.fillText('r = '+v.r,cx+8,cy-8);
+      ctx.fillStyle='#e8dff5';ctx.fillText(v.r*2+' \u00D7 '+v.r*2+' cm',cx-sc,cy+sc+20);
+    }
+    return;
+  }
+
+  // basic circle visuals
+  const scale=Math.min(120,v.r*4);
   const grd=ctx.createRadialGradient(cx,cy,0,cx,cy,scale);
   grd.addColorStop(0,'rgba(94,196,212,.15)');grd.addColorStop(1,'rgba(94,196,212,.03)');
   ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);ctx.fillStyle=grd;ctx.fill();
   ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);
-  ctx.strokeStyle='#5ec4d4';ctx.lineWidth=2.5;ctx.stroke();
+  ctx.strokeStyle='#5ec4d4';ctx.lineWidth=3;ctx.stroke();
 
   if(v.show==='radius'||v.show==='area'){
     ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+scale,cy);
-    ctx.strokeStyle='#f7936f';ctx.lineWidth=2.5;ctx.stroke();
-    ctx.beginPath();ctx.arc(cx+scale,cy,4,0,TAU);ctx.fillStyle='#f7936f';ctx.fill();
-    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#f7936f';
-    ctx.fillText('r = '+v.r,cx+scale/2-10,cy-10);
+    ctx.strokeStyle='#f7936f';ctx.lineWidth=3;ctx.stroke();
+    ctx.beginPath();ctx.arc(cx+scale,cy,5,0,TAU);ctx.fillStyle='#f7936f';ctx.fill();
+    ctx.font='bold 16px JetBrains Mono';ctx.fillStyle='#f7936f';
+    ctx.fillText('r = '+v.r,cx+scale/2-15,cy-14);
   }
   if(v.show==='diameter'){
     ctx.beginPath();ctx.moveTo(cx-scale,cy);ctx.lineTo(cx+scale,cy);
-    ctx.strokeStyle='#5ec4d4';ctx.lineWidth=2.5;ctx.stroke();
-    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#5ec4d4';
-    ctx.fillText('d = '+v.r*2,cx-15,cy-10);
+    ctx.strokeStyle='#5ec4d4';ctx.lineWidth=3;ctx.stroke();
+    ctx.font='bold 16px JetBrains Mono';ctx.fillStyle='#5ec4d4';
+    ctx.fillText('d = '+v.r*2,cx-20,cy-14);
   }
   if(v.show==='circumference'){
     ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);
-    ctx.strokeStyle='#06d6a0';ctx.lineWidth=4;ctx.stroke();
+    ctx.strokeStyle='#06d6a0';ctx.lineWidth=5;ctx.stroke();
   }
   if(v.show==='area'){
     ctx.beginPath();ctx.arc(cx,cy,scale,0,TAU);
     ctx.fillStyle='rgba(255,209,102,.15)';ctx.fill();
   }
-  ctx.beginPath();ctx.arc(cx,cy,3,0,TAU);ctx.fillStyle='#ffd166';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,4,0,TAU);ctx.fillStyle='#ffd166';ctx.fill();
 }
 
 const surfPraise=['Radical!','Cowabunga!','Gnarly!','Tubular!','Stoked!','Hang ten!','Shaka!'];
@@ -2137,77 +2651,107 @@ function spawnConfetti(x,y){
 
 function renderQuiz(){
   const area=document.getElementById('quizArea');
-  if(quizQ>=quizTotal){
-    const pct=Math.round(quizScore/quizTotal*100);
-    const msg=pct>=90?'Total shredder! You crushed it!':'';
-    const msgA=pct>=90?'\u5168\u80FD\u51B2\u6D6A\u624B\uFF01\u4F60\u592A\u68D2\u4E86\uFF01':pct>=70?'\u51B2\u5F97\u6F02\u4EAE\uFF0CKayla\uFF01\u7EE7\u7EED\u52A0\u6CB9\uFF01':pct>=50?'\u4E0D\u9519\u7684\u5F00\u59CB\uFF01\u518D\u591A\u7EC3\u4E60\u51E0\u6B21\u5427\u3002':'\u56DE\u5230\u5B66\u4E60\u9875\u518D\u7EC3\u4E60\u4E00\u4E0B\u5427\uFF01';
-    const msgE=pct>=90?'Total shredder! You crushed it!':pct>=70?'Nice ride, Kayla! Keep it up!':pct>=50?'Good paddle out! Try catching more waves.':'Head back to the Learn tab and ride again!';
-    const grade=pct>=90?'Pro Surfer \u51B2\u6D6A\u9AD8\u624B':pct>=80?'Wave Rider \u6D6A\u82B1\u9A91\u58EB':pct>=70?'Beach Cruiser \u6D77\u6EE9\u6F2B\u6E38':pct>=60?'Paddler \u5212\u6C34\u65B0\u624B':'Grommet \u521D\u5B66\u8005';
-    area.innerHTML=`<div class="glass" style="text-align:center;padding:2.5rem">
-      <div style="font-size:3rem;font-weight:700;font-family:JetBrains Mono;
-        background:linear-gradient(135deg,#ffd166,#f7936f);-webkit-background-clip:text;
-        background-clip:text;-webkit-text-fill-color:transparent">${pct}%</div>
-      <div style="color:#5ec4d4;margin:.5rem 0;font-size:1.1rem;font-weight:700">${grade}</div>
-      <p style="color:#8bb8cc;margin:.75rem 0">${msgE}</p>
-      <p style="color:#7bafc4;margin:.25rem 0;font-size:.9rem">${msgA}</p>
-      <p style="color:#5a8a9e;font-size:.85rem;margin-top:.5rem">${quizScore} of ${quizTotal} waves caught / \u6355\u83B7\u4E86 ${quizScore} / ${quizTotal} \u4E2A\u6D6A</p>
-    </div>`;
-    document.getElementById('quizVisual').style.display='none';
-    if(pct>=70){
-      setTimeout(()=>spawnConfetti(innerWidth/2,innerHeight/2),200);
-      setTimeout(()=>spawnConfetti(innerWidth/3,innerHeight/2),400);
-      setTimeout(()=>spawnConfetti(innerWidth*2/3,innerHeight/2),600);
-    }
-    return;
-  }
-  const{q,correct,choices,visual,explain}=genQuestion();
-  drawQuizVisual(visual);
+  document.getElementById('quizVisual').style.display='none';
+  quizScore=0;quizQ=0;
+  document.getElementById('score').textContent='0';
+  document.getElementById('scoreLabel').textContent='/ '+quizTotal;
 
-  let html=`<div class="glass question"><h4>${q}</h4><div class="choices">`;
-  choices.forEach(ch=>{html+=`<div class="choice" data-val="${ch}">${ch}</div>`});
-  html+=`</div><div class="feedback" id="fb"></div></div>`;
+  // generate all questions up front
+  quizQuestions=[];
+  for(let i=0;i<quizTotal;i++)quizQuestions.push(genQuestion());
+
+  let html='';
+  for(let i=0;i<quizTotal;i++){
+    const qd=quizQuestions[i];
+    const hasVis=!!qd.visual;
+    html+=`<div class="glass question" id="q${i}" style="scroll-margin-top:1rem">`;
+    html+=`<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">`;
+    html+=`<span style="font-family:'Press Start 2P',monospace;font-size:.55rem;color:#ff6b9d;background:#ff6b9d20;padding:.3rem .5rem;min-width:28px;text-align:center">${i+1}</span>`;
+    html+=`<span class="streak-dot pending" id="dot${i}" style="width:16px;height:16px;font-size:.5rem"></span>`;
+    html+=`</div>`;
+    if(hasVis) html+=`<div class="quiz-canvas-area"><canvas id="qcanvas${i}" style="max-width:500px;width:100%;height:auto;border:2px solid #4a3660"></canvas></div>`;
+    html+=`<h4>${qd.q}</h4><div class="choices" id="choices${i}">`;
+    qd.choices.forEach(ch=>{html+=`<div class="choice" data-qi="${i}" data-val="${ch}">${ch}</div>`});
+    html+=`</div><div class="feedback" id="fb${i}"></div></div>`;
+  }
+  html+=`<div class="glass" id="quizSummary" style="display:none;text-align:center;padding:2.5rem;scroll-margin-top:1rem"></div>`;
   area.innerHTML=html;
 
+  // draw all visuals
+  for(let i=0;i<quizTotal;i++){
+    const qd=quizQuestions[i];
+    if(qd.visual){
+      const c=document.getElementById('qcanvas'+i);
+      if(c)drawVisualToCanvas(c,qd.visual);
+    }
+  }
+
+  // attach click handlers to all choices
   area.querySelectorAll('.choice').forEach(el=>{
     el.addEventListener('click',function(){
-      if(el.classList.contains('disabled'))return;
-      area.querySelectorAll('.choice').forEach(c=>c.classList.add('disabled'));
-      const fb=document.getElementById('fb');
-      if(el.dataset.val===correct){
+      const i=+el.dataset.qi;
+      const qWrap=document.getElementById('choices'+i);
+      if(qWrap.classList.contains('answered'))return;
+      qWrap.classList.add('answered');
+      qWrap.querySelectorAll('.choice').forEach(c=>c.classList.add('disabled'));
+      const qd=quizQuestions[i];
+      const fb=document.getElementById('fb'+i);
+      const dot=document.getElementById('dot'+i);
+      if(el.dataset.val===qd.correct){
         el.classList.add('correct');
-        quizScore++;streakData[quizQ]='correct';
+        quizScore++;streakData[i]='correct';
         fb.className='feedback show right';
         fb.innerHTML=surfPraise[rnd(0,surfPraise.length-1)]+' / '+surfPraiseCN[rnd(0,surfPraiseCN.length-1)];
         const rect=el.getBoundingClientRect();
         spawnConfetti(rect.left+rect.width/2,rect.top);
-        renderStreak();
-        document.getElementById('score').textContent=quizScore;
-        quizQ++;
-        setTimeout(renderQuiz,1200);
+        dot.className='streak-dot correct';dot.textContent='\u2713';
       }else{
-        el.classList.add('wrong');streakData[quizQ]='wrong';
-        area.querySelector(`.choice[data-val="${CSS.escape(correct)}"]`)?.classList.add('correct');
+        el.classList.add('wrong');streakData[i]='wrong';
+        qWrap.querySelector(`.choice[data-val="${CSS.escape(qd.correct)}"]`)?.classList.add('correct');
         fb.className='feedback show wrong-fb';
-        const bummer=surfBummer[rnd(0,surfBummer.length-1)];
-        const bummerCN=surfBummerCN[rnd(0,surfBummerCN.length-1)];
-        fb.innerHTML=`<strong>${bummer}</strong> / <strong>${bummerCN}</strong>`
-          +`<div class="explain">${explain}</div>`
-          +`<button class="btn-next" id="nextQ">\u2192 Next Question \u4E0B\u4E00\u9898</button>`;
-        renderStreak();
-        document.getElementById('score').textContent=quizScore;
-        quizQ++;
-        document.getElementById('nextQ').addEventListener('click',renderQuiz);
+        fb.innerHTML=`<strong>${surfBummer[rnd(0,surfBummer.length-1)]}</strong> / <strong>${surfBummerCN[rnd(0,surfBummerCN.length-1)]}</strong>`
+          +`<div class="explain">${qd.explain}</div>`;
+        dot.className='streak-dot wrong';dot.textContent='\u2717';
       }
+      quizQ++;
+      document.getElementById('score').textContent=quizScore;
+      renderStreak();
+      // check if all answered
+      if(quizQ>=quizTotal)showQuizSummary();
     });
   });
+
+  initStreak();
+}
+
+function showQuizSummary(){
+  const el=document.getElementById('quizSummary');
+  if(!el)return;
+  const pct=Math.round(quizScore/quizTotal*100);
+  const grade=pct>=90?'Pro Surfer \u51B2\u6D6A\u9AD8\u624B':pct>=80?'Wave Rider \u6D6A\u82B1\u9A91\u58EB':pct>=70?'Beach Cruiser \u6D77\u6EE9\u6F2B\u6E38':pct>=60?'Paddler \u5212\u6C34\u65B0\u624B':'Grommet \u521D\u5B66\u8005';
+  const msgE=pct>=90?'Total shredder! You crushed it!':pct>=70?'Nice ride, Kayla! Keep it up!':pct>=50?'Good paddle out! Try catching more waves.':'Head back to the Learn tab and ride again!';
+  const msgA=pct>=90?'\u5168\u80FD\u51B2\u6D6A\u624B\uFF01\u4F60\u592A\u68D2\u4E86\uFF01':pct>=70?'\u51B2\u5F97\u6F02\u4EAE\uFF0CKayla\uFF01\u7EE7\u7EED\u52A0\u6CB9\uFF01':pct>=50?'\u4E0D\u9519\u7684\u5F00\u59CB\uFF01\u518D\u591A\u7EC3\u4E60\u51E0\u6B21\u5427\u3002':'\u56DE\u5230\u5B66\u4E60\u9875\u518D\u7EC3\u4E60\u4E00\u4E0B\u5427\uFF01';
+  el.style.display='block';
+  el.innerHTML=`<div style="font-size:3rem;font-weight:700;font-family:JetBrains Mono;
+    background:linear-gradient(135deg,#ffd166,#f7936f);-webkit-background-clip:text;
+    background-clip:text;-webkit-text-fill-color:transparent">${pct}%</div>
+    <div style="color:#5ec4d4;margin:.5rem 0;font-size:1.1rem;font-weight:700">${grade}</div>
+    <p style="color:#8bb8cc;margin:.75rem 0">${msgE}</p>
+    <p style="color:#7bafc4;margin:.25rem 0;font-size:.9rem">${msgA}</p>
+    <p style="color:#5a8a9e;font-size:.85rem;margin-top:.5rem">${quizScore} of ${quizTotal} waves caught / \u6355\u83B7\u4E86 ${quizScore} / ${quizTotal} \u4E2A\u6D6A</p>`;
+  el.scrollIntoView({behavior:'smooth'});
+  if(pct>=70){
+    setTimeout(()=>spawnConfetti(innerWidth/2,innerHeight/2),200);
+    setTimeout(()=>spawnConfetti(innerWidth/3,innerHeight/2),400);
+    setTimeout(()=>spawnConfetti(innerWidth*2/3,innerHeight/2),600);
+  }
 }
 
 document.getElementById('newQuiz').addEventListener('click',()=>{
-  quizScore=0;quizQ=0;
-  document.getElementById('score').textContent='0';
-  initStreak();renderQuiz();
+  renderQuiz();
+  document.getElementById('quizArea').scrollIntoView({behavior:'smooth'});
 });
-initStreak();renderQuiz();
+renderQuiz();
 </script>
 
 <!-- STEP EXPLANATION MODAL -->
@@ -2330,6 +2874,159 @@ initStreak();renderQuiz();
   }
 
   drawProblem1();drawProblem2();drawProblem3();drawProblem4();
+
+  // DRAW TEST PREP CANVASES
+  function drawPrep1(){
+    const c=document.getElementById('prepCanvas1');if(!c)return;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle='#1a1028';ctx.fillRect(0,0,400,220);
+    // Sector A: small radius, θ=120°
+    const cxA=120,cyA=120,rA=65;
+    ctx.fillStyle='rgba(255,107,157,.2)';ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(cxA,cyA);ctx.arc(cxA,cyA,rA,-Math.PI/2,-Math.PI/2+2*Math.PI/3);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.strokeStyle='#ff6b9d';ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(cxA,cyA,rA,-Math.PI/2,-Math.PI/2+2*Math.PI/3);ctx.stroke();
+    ctx.strokeStyle='#7ecbf5';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(cxA,cyA);ctx.lineTo(cxA,cyA-rA);ctx.stroke();
+    var exA=cxA+Math.cos(-Math.PI/2+2*Math.PI/3)*rA,eyA=cyA+Math.sin(-Math.PI/2+2*Math.PI/3)*rA;
+    ctx.beginPath();ctx.moveTo(cxA,cyA);ctx.lineTo(exA,eyA);ctx.stroke();
+    ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cxA,cyA,3,0,Math.PI*2);ctx.fill();
+    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#ff6b9d';ctx.fillText('Sector A',cxA-30,cyA+rA+18);
+    ctx.fillStyle='#7ecbf5';ctx.fillText('r=3',cxA+5,cyA-rA/2);
+    ctx.fillStyle='#f7936f';ctx.fillText('\u03B8=120\u00B0',cxA-50,cyA-8);
+    // Sector B: big radius, θ=60°
+    var cxB=300,cyB=120,rB=85;
+    ctx.fillStyle='rgba(126,203,245,.2)';ctx.strokeStyle='#7ecbf5';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(cxB,cyB);ctx.arc(cxB,cyB,rB,-Math.PI/2,-Math.PI/2+Math.PI/3);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.strokeStyle='#7ecbf5';ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(cxB,cyB,rB,-Math.PI/2,-Math.PI/2+Math.PI/3);ctx.stroke();
+    ctx.strokeStyle='#7ecbf5';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(cxB,cyB);ctx.lineTo(cxB,cyB-rB);ctx.stroke();
+    var exB=cxB+Math.cos(-Math.PI/2+Math.PI/3)*rB,eyB=cyB+Math.sin(-Math.PI/2+Math.PI/3)*rB;
+    ctx.beginPath();ctx.moveTo(cxB,cyB);ctx.lineTo(exB,eyB);ctx.stroke();
+    ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cxB,cyB,3,0,Math.PI*2);ctx.fill();
+    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#7ecbf5';ctx.fillText('Sector B',cxB-30,cyB+rB+18);
+    ctx.fillStyle='#7ecbf5';ctx.fillText('r=10',cxB+5,cyB-rB/2);
+    ctx.fillStyle='#f7936f';ctx.fillText('\u03B8=60\u00B0',cxB-45,cyB-8);
+    // "≠" symbol
+    ctx.font='bold 22px sans-serif';ctx.fillStyle='#ffe47a';ctx.fillText('\u2260',200,110);
+    ctx.font='11px JetBrains Mono';ctx.fillStyle='#b8a9cc';ctx.fillText('Arc A \u2260 2\u00D7 Arc B',165,135);
+  }
+
+  function drawPrep2(){
+    const c=document.getElementById('prepCanvas2');if(!c)return;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle='#1a1028';ctx.fillRect(0,0,400,220);
+    var cx=200,cy=110,r=70;
+    ctx.strokeStyle='#06d6a0';ctx.lineWidth=4;
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle='rgba(6,214,160,.08)';ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#f7936f';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.stroke();
+    ctx.beginPath();ctx.arc(cx+r,cy,3,0,Math.PI*2);ctx.fillStyle='#f7936f';ctx.fill();
+    ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fill();
+    ctx.font='bold 14px JetBrains Mono';ctx.fillStyle='#f7936f';ctx.fillText('r = 2',cx+r/2-15,cy-10);
+    ctx.fillStyle='#06d6a0';ctx.fillText('C = 2\u03C0\u00D72 = 12.56',cx-70,cy+r+25);
+    ctx.fillStyle='#ffe47a';ctx.fillText('12.56 > 12 \u2713',cx-45,cy+r+45);
+  }
+
+  function drawPrep3(){
+    const c=document.getElementById('prepCanvas3');if(!c)return;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle='#1a1028';ctx.fillRect(0,0,400,220);
+    var cx=160,cy=190,r=150;
+    ctx.fillStyle='rgba(244,162,97,.15)';
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,-Math.PI/2,0);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='#ff6b9d';ctx.lineWidth=4;
+    ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,0);ctx.stroke();
+    ctx.strokeStyle='#7ecbf5';ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-r);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.stroke();
+    ctx.strokeStyle='#ffe47a';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(cx,cy,20,-Math.PI/2,0);ctx.stroke();
+    ctx.font='bold 11px JetBrains Mono';ctx.fillStyle='#ffe47a';ctx.fillText('90\u00B0',cx+8,cy-8);
+    ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+    ctx.font='bold 13px JetBrains Mono';
+    ctx.fillStyle='#7ecbf5';ctx.fillText('r = 70',cx-55,cy-r/2);
+    ctx.fillStyle='#7ecbf5';ctx.fillText('r = 70',cx+r/2-15,cy+16);
+    ctx.fillStyle='#ff6b9d';ctx.fillText('arc = 110',cx+r*0.5,cy-r*0.55);
+    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#7ff5c3';
+    ctx.fillText('P = 70+70+110 = 250 cm',140,25);
+  }
+
+  function drawPrep4(){
+    const c=document.getElementById('prepCanvas4');if(!c)return;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle='#1a1028';ctx.fillRect(0,0,400,220);
+    ctx.strokeStyle='#4a3660';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(20,170);ctx.lineTo(380,170);ctx.stroke();
+    var cx=100,cy=130,r=40;
+    ctx.strokeStyle='#5ec4d4';ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle='rgba(94,196,212,.1)';ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#4a366088';ctx.lineWidth=1;
+    for(var i=0;i<4;i++){var a=i*Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);ctx.stroke();}
+    ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#f7936f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.stroke();
+    ctx.font='bold 12px JetBrains Mono';ctx.fillStyle='#f7936f';ctx.fillText('r=35',cx+r/2-10,cy-8);
+    ctx.strokeStyle='#7ff5c3';ctx.lineWidth=2;ctx.setLineDash([6,4]);
+    ctx.beginPath();ctx.moveTo(cx+r+10,170);ctx.lineTo(350,170);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#7ff5c3';ctx.beginPath();ctx.moveTo(350,170);ctx.lineTo(342,165);ctx.lineTo(342,175);ctx.closePath();ctx.fill();
+    ctx.font='bold 14px JetBrains Mono';ctx.fillStyle='#ffe47a';ctx.fillText('\u00D725 rotations',200,155);
+    ctx.fillStyle='#7ff5c3';ctx.fillText('= 5500 cm',230,190);
+  }
+
+  function drawPrep5(){
+    const c=document.getElementById('prepCanvas5');if(!c)return;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle='#1a1028';ctx.fillRect(0,0,400,220);
+    var cx=200,cy=170,r=130;
+    ctx.fillStyle='rgba(127,245,195,.1)';
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,-Math.PI/2-Math.PI/3,-Math.PI/2+Math.PI/3);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='#7ff5c3';ctx.lineWidth=4;
+    var a1=-Math.PI/2-Math.PI/3,a2=-Math.PI/2+Math.PI/3;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a1)*r,cy+Math.sin(a1)*r);ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,r,a1,a2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+Math.cos(a2)*r,cy+Math.sin(a2)*r);ctx.lineTo(cx,cy);ctx.stroke();
+    ctx.strokeStyle='#ffe47a';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(cx,cy,22,a1,a2);ctx.stroke();
+    ctx.font='bold 11px JetBrains Mono';ctx.fillStyle='#ffe47a';ctx.fillText('120\u00B0',cx-18,cy-25);
+    ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+    ctx.font='bold 13px JetBrains Mono';
+    ctx.fillStyle='#7ecbf5';ctx.fillText('r = 6m',cx-65,cy-40);
+    ctx.fillStyle='#7ecbf5';ctx.fillText('r = 6m',cx+15,cy-40);
+    ctx.fillStyle='#ff6b9d';ctx.fillText('arc',cx-10,cy-r-5);
+    ctx.font='11px JetBrains Mono';ctx.fillStyle='#b8a9cc';ctx.fillText('\uD83D\uDEB6 Walk around boundary',225,195);
+  }
+
+  function drawPrep6(){
+    const c=document.getElementById('prepCanvas6');if(!c)return;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle='#1a1028';ctx.fillRect(0,0,400,220);
+    var cx=200,cy=110,side=160,half=80;
+    ctx.fillStyle='rgba(255,107,157,.15)';ctx.fillRect(cx-half,cy-half,side,side);
+    ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2;ctx.strokeRect(cx-half,cy-half,side,side);
+    ctx.save();
+    ctx.globalCompositeOperation='destination-out';
+    ctx.fillStyle='#000';ctx.beginPath();ctx.arc(cx,cy,half,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+    ctx.strokeStyle='#5ec4d4';ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.arc(cx,cy,half,0,Math.PI*2);ctx.stroke();
+    ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2;ctx.strokeRect(cx-half,cy-half,side,side);
+    ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#f7936f';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+half,cy);ctx.stroke();
+    ctx.font='bold 13px JetBrains Mono';
+    ctx.fillStyle='#f7936f';ctx.fillText('r=30',cx+half/2-15,cy-8);
+    ctx.fillStyle='#e8dff5';ctx.fillText('side = 60',cx-half,cy+half+18);
+    ctx.fillStyle='#ff6b9d';ctx.fillText('Shaded',cx+half-10,cy-half+18);
+    ctx.fillStyle='#ff6b9d';ctx.fillText('\u9670\u5F71',cx-half+5,cy+half-8);
+  }
+
+  // expose for redraw on tab switch
+  window.drawPrepCanvases=function(){drawPrep1();drawPrep2();drawPrep3();drawPrep4();drawPrep5();drawPrep6();};
+  // initial draw attempt (will work if panel visible)
+  window.drawPrepCanvases();
 })();
 
 // STEP CLICK POPUP FUNCTIONALITY
@@ -2653,6 +3350,331 @@ const stepExplanations = {
       ctx.fillText('r=12',cx-10,cy+R*0.55);
       ctx.fillText('r=8',c1-8,cy-r1*0.4);
       ctx.fillText('r=4',c2-8,cy-r2*0.3);
+    }
+  },
+
+  // Test Prep Example 1: True/False (same angle, same arc?)
+  'pprep1s1':{
+    title:'Read the Statement / 閱讀題目',
+    text:'The claim: "If θ_A = 2×θ_B, then Arc_A = 2×Arc_B." Is this always true? We need to think about what variables affect arc length.',
+    draw:(ctx)=>{
+      ctx.font='bold 16px JetBrains Mono,monospace';
+      ctx.fillStyle='#ffe47a';ctx.fillText('Claim:',100,50);
+      ctx.fillStyle='#e8dff5';ctx.font='14px JetBrains Mono,monospace';
+      ctx.fillText('θ_A = 2 × θ_B',100,80);
+      ctx.fillStyle='#ff6b9d';ctx.fillText('→ Arc_A = 2 × Arc_B  ???',100,110);
+      ctx.font='bold 20px sans-serif';ctx.fillStyle='#ffe47a';ctx.fillText('🤔',400,80);
+    }
+  },
+  'pprep1s2':{
+    title:'The Formula / 公式',
+    text:'Arc length = (θ/360) × 2πr. It depends on <strong>both</strong> the angle θ AND the radius r. If the radii are different, doubling the angle alone doesn\'t double the arc.',
+    draw:(ctx)=>{
+      ctx.font='bold 20px JetBrains Mono,monospace';
+      ctx.fillStyle='#7ff5c3';ctx.fillText('Arc = (θ/360) × 2πr',80,80);
+      // highlight both variables
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(115,88);ctx.lineTo(140,88);ctx.stroke(); // under θ
+      ctx.beginPath();ctx.moveTo(368,88);ctx.lineTo(385,88);ctx.stroke(); // under r
+      ctx.font='bold 14px JetBrains Mono,monospace';
+      ctx.fillStyle='#ff6b9d';ctx.fillText('↑ angle matters',100,115);
+      ctx.fillStyle='#ff6b9d';ctx.fillText('↑ radius ALSO matters!',310,115);
+      ctx.font='14px JetBrains Mono,monospace';
+      ctx.fillStyle='#b8a9cc';ctx.fillText('Both must be considered!',140,170);
+    }
+  },
+  'pprep1s3':{
+    title:'Counterexample / 反例',
+    text:'Sector A: θ=120°, r=3 → Arc = 2π ≈ 6.28. Sector B: θ=60°, r=10 → Arc = 10π/3 ≈ 10.47. Even though θ_A = 2×θ_B, Arc A is actually SHORTER!',
+    draw:(ctx)=>{
+      // Sector A small
+      var cxA=140,cyA=140,rA=60;
+      ctx.fillStyle='rgba(255,107,157,.2)';ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(cxA,cyA);ctx.arc(cxA,cyA,rA,-Math.PI/2,-Math.PI/2+2*Math.PI/3);ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.strokeStyle='#7ecbf5';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(cxA,cyA);ctx.lineTo(cxA,cyA-rA);ctx.stroke();
+      var exA=cxA+Math.cos(-Math.PI/2+2*Math.PI/3)*rA,eyA=cyA+Math.sin(-Math.PI/2+2*Math.PI/3)*rA;
+      ctx.beginPath();ctx.moveTo(cxA,cyA);ctx.lineTo(exA,eyA);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cxA,cyA,3,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 11px JetBrains Mono';
+      ctx.fillStyle='#ff6b9d';ctx.fillText('A: θ=120°, r=3',cxA-40,cyA+rA+20);
+      ctx.fillStyle='#7ff5c3';ctx.fillText('Arc ≈ 6.28',cxA-30,cyA+rA+38);
+      // Sector B big
+      var cxB=370,cyB=140,rB=90;
+      ctx.fillStyle='rgba(126,203,245,.2)';ctx.strokeStyle='#7ecbf5';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(cxB,cyB);ctx.arc(cxB,cyB,rB,-Math.PI/2,-Math.PI/2+Math.PI/3);ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.strokeStyle='#7ecbf5';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(cxB,cyB);ctx.lineTo(cxB,cyB-rB);ctx.stroke();
+      var exB=cxB+Math.cos(-Math.PI/2+Math.PI/3)*rB,eyB=cyB+Math.sin(-Math.PI/2+Math.PI/3)*rB;
+      ctx.beginPath();ctx.moveTo(cxB,cyB);ctx.lineTo(exB,eyB);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cxB,cyB,3,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#7ecbf5';ctx.fillText('B: θ=60°, r=10',cxB-40,cyB+rB+20);
+      ctx.fillStyle='#7ff5c3';ctx.fillText('Arc ≈ 10.47',cxB-35,cyB+rB+38);
+      // not equal
+      ctx.font='bold 24px sans-serif';ctx.fillStyle='#ffe47a';ctx.fillText('≠',240,140);
+      ctx.font='bold 13px JetBrains Mono';ctx.fillStyle='#ff6b9d';ctx.fillText('Arc A < Arc B !',220,175);
+    }
+  },
+
+  // Test Prep Example 2: Circumference > 12
+  'pprep2s1':{
+    title:'Given Information / 已知條件',
+    text:'A circle with radius r = 2 m. We need to check if circumference > 12.',
+    draw:(ctx)=>{
+      var cx=250,cy=140,r=70;
+      ctx.strokeStyle='#5ec4d4';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+      ctx.strokeStyle='#f7936f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 16px JetBrains Mono';ctx.fillStyle='#f7936f';ctx.fillText('r = 2 m',cx+10,cy-12);
+      ctx.fillStyle='#ffe47a';ctx.fillText('C > 12 ?',cx-30,cy+r+30);
+    }
+  },
+  'pprep2s2':{
+    title:'Calculate / 計算',
+    text:'C = 2πr = 2 × 3.14 × 2 = 12.56 m',
+    draw:(ctx)=>{
+      var cx=250,cy=120,r=70;
+      ctx.strokeStyle='#06d6a0';ctx.lineWidth=5;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='rgba(6,214,160,.1)';ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 18px JetBrains Mono';ctx.fillStyle='#06d6a0';
+      ctx.fillText('C = 2 × 3.14 × 2',120,cy+r+35);
+      ctx.fillText('= 12.56 m',185,cy+r+60);
+    }
+  },
+  'pprep2s3':{
+    title:'Compare / 比較',
+    text:'12.56 > 12 ✓ — TRUE!',
+    draw:(ctx)=>{
+      ctx.font='bold 36px JetBrains Mono';ctx.fillStyle='#7ff5c3';ctx.fillText('12.56',120,120);
+      ctx.fillStyle='#ffe47a';ctx.fillText('>',250,120);
+      ctx.fillStyle='#ff6b9d';ctx.fillText('12',300,120);
+      ctx.font='bold 24px JetBrains Mono';ctx.fillStyle='#06d6a0';ctx.fillText('✓ TRUE 對',180,180);
+    }
+  },
+
+  // Test Prep Example 3: Quarter-circle perimeter
+  'pprep3s1':{
+    title:'Identify / 確認已知',
+    text:'Quarter-circle: θ = 90°, r = 70 cm. Using π = 22/7.',
+    draw:(ctx)=>{
+      var cx=180,cy=220,r=160;
+      ctx.fillStyle='rgba(244,162,97,.15)';
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,-Math.PI/2,0);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#7ecbf5';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-r);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.stroke();
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,0);ctx.stroke();
+      ctx.strokeStyle='#ffe47a';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(cx,cy,25,-Math.PI/2,0);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 14px JetBrains Mono';
+      ctx.fillStyle='#ffe47a';ctx.fillText('90°',cx+10,cy-10);
+      ctx.fillStyle='#7ecbf5';ctx.fillText('r = 70',cx-60,cy-r/2);
+      ctx.fillStyle='#7ecbf5';ctx.fillText('r = 70',cx+r/2-15,cy+18);
+    }
+  },
+  'pprep3s2':{
+    title:'Arc Length / 弧長',
+    text:'Arc = (90/360) × 2 × (22/7) × 70 = (1/4) × 440 = 110 cm',
+    draw:(ctx)=>{
+      var cx=180,cy=220,r=150;
+      ctx.fillStyle='rgba(244,162,97,.1)';
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,-Math.PI/2,0);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-r);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.stroke();
+      // highlight arc
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=6;ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,0);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 16px JetBrains Mono';
+      ctx.fillStyle='#ff6b9d';ctx.fillText('Arc = 110 cm',cx+r*0.3,cy-r*0.55);
+      ctx.fillStyle='#b8a9cc';ctx.font='13px JetBrains Mono';
+      ctx.fillText('(1/4) × 2 × (22/7) × 70 = 110',50,30);
+    }
+  },
+  'pprep3s3':{
+    title:'Total Perimeter / 總周長',
+    text:'P = r + r + arc = 70 + 70 + 110 = 250 cm',
+    draw:(ctx)=>{
+      var cx=180,cy=220,r=150;
+      // highlight all three edges with different colors
+      ctx.strokeStyle='#7ecbf5';ctx.lineWidth=5;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-r);ctx.stroke(); // radius 1
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.stroke(); // radius 2
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=5;
+      ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,0);ctx.stroke(); // arc
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 14px JetBrains Mono';
+      ctx.fillStyle='#7ecbf5';ctx.fillText('70',cx-35,cy-r/2);
+      ctx.fillStyle='#7ecbf5';ctx.fillText('70',cx+r/2-5,cy+18);
+      ctx.fillStyle='#ff6b9d';ctx.fillText('110',cx+r*0.45,cy-r*0.5);
+      ctx.font='bold 18px JetBrains Mono';
+      ctx.fillStyle='#7ff5c3';ctx.fillText('P = 70+70+110 = 250 cm',80,30);
+    }
+  },
+
+  // Test Prep Example 4: Wheel rolling
+  'pprep4s1':{
+    title:'Given Info / 已知',
+    text:'Wheel radius = 35 cm, 25 full rotations. Using π = 22/7.',
+    draw:(ctx)=>{
+      var cx=130,cy=130,r=60;
+      ctx.strokeStyle='#5ec4d4';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='rgba(94,196,212,.1)';ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+      for(var i=0;i<4;i++){var a=i*Math.PI/2;ctx.strokeStyle='#4a366088';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);ctx.stroke();}
+      ctx.strokeStyle='#f7936f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 14px JetBrains Mono';ctx.fillStyle='#f7936f';ctx.fillText('r = 35 cm',cx+r/2-20,cy-12);
+      ctx.fillStyle='#ffe47a';ctx.fillText('× 25 rotations',260,130);
+    }
+  },
+  'pprep4s2':{
+    title:'One Rotation / 一圈',
+    text:'One rotation covers one full circumference: C = 2 × (22/7) × 35 = 220 cm',
+    draw:(ctx)=>{
+      var cx=130,cy=130,r=60;
+      ctx.strokeStyle='#06d6a0';ctx.lineWidth=5;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+      // arrow on the circle
+      var ax=cx+r*Math.cos(-0.1),ay=cy+r*Math.sin(-0.1);
+      ctx.fillStyle='#06d6a0';ctx.beginPath();ctx.moveTo(ax,ay-8);ctx.lineTo(ax+8,ay);ctx.lineTo(ax,ay+8);ctx.fill();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 16px JetBrains Mono';
+      ctx.fillStyle='#06d6a0';ctx.fillText('1 rotation = C',260,100);
+      ctx.fillText('= 2×(22/7)×35',260,125);
+      ctx.fillStyle='#ffe47a';ctx.fillText('= 220 cm',260,155);
+    }
+  },
+  'pprep4s3':{
+    title:'Total Distance / 總距離',
+    text:'25 rotations × 220 cm = 5500 cm = 55 m',
+    draw:(ctx)=>{
+      // wheels rolling
+      for(var i=0;i<4;i++){
+        var x=60+i*110,y=100,r=25;
+        ctx.strokeStyle='#5ec4d488';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke();
+        ctx.strokeStyle='#4a366044';ctx.lineWidth=1;
+        for(var j=0;j<4;j++){var a=j*Math.PI/2+i*0.5;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);ctx.stroke();}
+      }
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(20,130);ctx.lineTo(480,130);ctx.stroke();
+      ctx.strokeStyle='#7ff5c3';ctx.lineWidth=2;ctx.setLineDash([5,3]);ctx.beginPath();ctx.moveTo(60,150);ctx.lineTo(440,150);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#7ff5c3';ctx.beginPath();ctx.moveTo(440,150);ctx.lineTo(432,146);ctx.lineTo(432,154);ctx.fill();
+      ctx.font='bold 18px JetBrains Mono';
+      ctx.fillStyle='#ffe47a';ctx.fillText('25 × 220 = 5500 cm',130,200);
+      ctx.fillStyle='#7ff5c3';ctx.fillText('= 55 m',220,230);
+    }
+  },
+
+  // Test Prep Example 5: Sector park walk
+  'pprep5s1':{
+    title:'Identify / 確認',
+    text:'Sector park: r = 6 m, θ = 120°. Walking the outer boundary means 2 radii + arc.',
+    draw:(ctx)=>{
+      var cx=250,cy=200,r=130,ang=120*Math.PI/180;
+      var a1=-Math.PI/2-ang/2,a2=-Math.PI/2+ang/2;
+      ctx.fillStyle='rgba(127,245,195,.15)';
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a1,a2);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#7ff5c3';ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a1)*r,cy+Math.sin(a1)*r);ctx.stroke();
+      ctx.beginPath();ctx.arc(cx,cy,r,a1,a2);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx+Math.cos(a2)*r,cy+Math.sin(a2)*r);ctx.lineTo(cx,cy);ctx.stroke();
+      ctx.strokeStyle='#ffe47a';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(cx,cy,25,a1,a2);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 14px JetBrains Mono';
+      ctx.fillStyle='#7ecbf5';ctx.fillText('r = 6m',cx+10,cy-30);
+      ctx.fillStyle='#ffe47a';ctx.fillText('120°',cx-20,cy-30);
+      ctx.fillStyle='#b8a9cc';ctx.fillText('🚶 Walk boundary',300,250);
+    }
+  },
+  'pprep5s2':{
+    title:'Arc Length / 弧長',
+    text:'Arc = (120/360) × 2 × (22/7) × 6 = (1/3) × 264/7 = 88/7 ≈ 12.57 m',
+    draw:(ctx)=>{
+      var cx=250,cy=200,r=130,ang=120*Math.PI/180;
+      var a1=-Math.PI/2-ang/2,a2=-Math.PI/2+ang/2;
+      ctx.fillStyle='rgba(127,245,195,.05)';
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a1,a2);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#4a3660';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a1)*r,cy+Math.sin(a1)*r);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx+Math.cos(a2)*r,cy+Math.sin(a2)*r);ctx.lineTo(cx,cy);ctx.stroke();
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=6;ctx.beginPath();ctx.arc(cx,cy,r,a1,a2);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 14px JetBrains Mono';
+      ctx.fillStyle='#ff6b9d';ctx.fillText('Arc = 88/7 ≈ 12.57 m',120,40);
+      ctx.fillStyle='#b8a9cc';ctx.font='12px JetBrains Mono';
+      ctx.fillText('(1/3) × 2 × (22/7) × 6',130,65);
+    }
+  },
+  'pprep5s3':{
+    title:'Total Boundary / 總邊界',
+    text:'Walk = 2r + arc = 12 + 88/7 = 172/7 ≈ 24.57 m',
+    draw:(ctx)=>{
+      var cx=250,cy=200,r=130,ang=120*Math.PI/180;
+      var a1=-Math.PI/2-ang/2,a2=-Math.PI/2+ang/2;
+      // three edges in different colors
+      ctx.strokeStyle='#7ecbf5';ctx.lineWidth=5;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a1)*r,cy+Math.sin(a1)*r);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx+Math.cos(a2)*r,cy+Math.sin(a2)*r);ctx.lineTo(cx,cy);ctx.stroke();
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=5;ctx.beginPath();ctx.arc(cx,cy,r,a1,a2);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 14px JetBrains Mono';
+      ctx.fillStyle='#7ecbf5';ctx.fillText('6',cx-80,cy-60);
+      ctx.fillStyle='#7ecbf5';ctx.fillText('6',cx+40,cy-60);
+      ctx.fillStyle='#ff6b9d';ctx.fillText('88/7',cx-15,cy-r-10);
+      ctx.font='bold 18px JetBrains Mono';
+      ctx.fillStyle='#7ff5c3';ctx.fillText('Total = 6+6+88/7 = 172/7 ≈ 24.57 m',50,35);
+    }
+  },
+
+  // Test Prep Example 6: Inscribed circle
+  'pprep6s1':{
+    title:'Identify / 確認',
+    text:'Square side = 60 cm. Inscribed circle touches all 4 sides, so diameter = 60, radius = 30.',
+    draw:(ctx)=>{
+      var cx=250,cy=140,hs=90;
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2;ctx.strokeRect(cx-hs,cy-hs,hs*2,hs*2);
+      ctx.strokeStyle='#5ec4d4';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,hs,0,Math.PI*2);ctx.stroke();
+      ctx.strokeStyle='#f7936f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+hs,cy);ctx.stroke();
+      ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+      ctx.font='bold 14px JetBrains Mono';
+      ctx.fillStyle='#e8dff5';ctx.fillText('side = 60',cx-hs,cy+hs+20);
+      ctx.fillStyle='#f7936f';ctx.fillText('r = 30',cx+hs/2-15,cy-10);
+    }
+  },
+  'pprep6s2':{
+    title:'Square Area / 正方形面積',
+    text:'Square = 60² = 3600 cm²',
+    draw:(ctx)=>{
+      var cx=250,cy=140,hs=90;
+      ctx.fillStyle='rgba(255,107,157,.2)';ctx.fillRect(cx-hs,cy-hs,hs*2,hs*2);
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=3;ctx.strokeRect(cx-hs,cy-hs,hs*2,hs*2);
+      ctx.font='bold 20px JetBrains Mono';
+      ctx.fillStyle='#ff6b9d';ctx.fillText('60² = 3600',cx-55,cy+5);
+    }
+  },
+  'pprep6s3':{
+    title:'Circle Area / 圓面積',
+    text:'Circle = π × 30² = 3.14 × 900 = 2826 cm²',
+    draw:(ctx)=>{
+      var cx=250,cy=140,hs=90;
+      ctx.fillStyle='rgba(94,196,212,.2)';ctx.beginPath();ctx.arc(cx,cy,hs,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#5ec4d4';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,hs,0,Math.PI*2);ctx.stroke();
+      ctx.font='bold 18px JetBrains Mono';
+      ctx.fillStyle='#5ec4d4';ctx.fillText('π×30² = 2826',cx-70,cy+5);
+    }
+  },
+  'pprep6s4':{
+    title:'Shaded Area / 陰影面積',
+    text:'Shaded = Square − Circle = 3600 − 2826 = 774 cm²',
+    draw:(ctx)=>{
+      var cx=250,cy=140,hs=90;
+      ctx.fillStyle='rgba(255,107,157,.3)';ctx.fillRect(cx-hs,cy-hs,hs*2,hs*2);
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2;ctx.strokeRect(cx-hs,cy-hs,hs*2,hs*2);
+      ctx.save();ctx.globalCompositeOperation='destination-out';ctx.fillStyle='#000';ctx.beginPath();ctx.arc(cx,cy,hs,0,Math.PI*2);ctx.fill();ctx.restore();
+      ctx.strokeStyle='#5ec4d4';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,hs,0,Math.PI*2);ctx.stroke();
+      ctx.strokeStyle='#ff6b9d';ctx.lineWidth=2;ctx.strokeRect(cx-hs,cy-hs,hs*2,hs*2);
+      ctx.font='bold 20px JetBrains Mono';
+      ctx.fillStyle='#ffe47a';ctx.fillText('3600 − 2826 = 774 cm²',90,cy+hs+30);
+      ctx.fillStyle='#ff6b9d';ctx.fillText('Shaded',cx+hs-50,cy-hs+20);
     }
   }
 };
