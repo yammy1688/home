@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Chapter 7 Prep — Area, Volume, Surface Area</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Quicksand',system-ui,-apple-system,sans-serif;
+  background:#1a1028;color:#e8dff5;
+  min-height:100vh;min-height:100dvh;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:1.5rem}
+
+.back{display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.5rem;color:#7ecbf5;text-decoration:none;
+  font-family:'Press Start 2P',monospace;font-size:.55rem;
+  padding:.5rem .9rem;border:2px solid #7ecbf544;background:rgba(26,16,40,.6);
+  transition:all .25s;-webkit-touch-callout:none}
+.back:hover{border-color:#7ecbf5;background:rgba(26,16,40,.8)}
+
+header{text-align:center;padding:1.5rem 0 .5rem}
+header h1{font-family:'Press Start 2P',monospace;font-size:clamp(.95rem,3.2vw,1.4rem);
+  color:#ffb3d9;text-shadow:3px 3px 0 #6c3483,0 0 20px rgba(255,179,217,.3);
+  line-height:1.6;
+}
+header .subtitle{color:#b8a9cc;margin-top:.5rem;font-size:.85rem}
+header .emoji{font-size:1.3rem;display:inline-block;animation:bounce 1.2s steps(4) infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* tabs */
+.tabs{display:flex;gap:.3rem;margin:1.25rem 0;padding:3px;
+  background:#2d1f42;border:3px solid #4a3660;width:fit-content;margin-inline:auto;flex-wrap:wrap;justify-content:center}
+.tab{
+  padding:.55rem 1rem;border:none;
+  background:transparent;color:#b8a9cc;cursor:pointer;
+  font-family:'Press Start 2P',monospace;font-size:.5rem;
+  transition:all .2s;position:relative;user-select:none;
+}
+.tab:hover{color:#ffb3d9}
+.tab:active{transform:translateY(2px)}
+.tab.active{background:#ff6b9d;color:#1a1028;
+  box-shadow:0 4px 0 #c44d78,0 0 16px rgba(255,107,157,.3)}
+
+.panel{display:none;animation:fadeUp .4s ease}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.glass{
+  background:#2d1f42;border:3px solid #4a3660;
+  padding:1.5rem;margin-bottom:1.25rem;
+  box-shadow:4px 4px 0 #1a1028;
+}
+.section-title{font-family:'Press Start 2P',monospace;font-size:.75rem;color:#ffe47a;margin-bottom:1rem;line-height:1.5}
+.section-intro{color:#b8a9cc;font-size:.88rem;margin-bottom:1rem;line-height:1.6}
+
+/* formula cards */
+.prep-formulas{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.prep-formula-card{background:#1a1028;border:2px solid #4a3660;padding:1rem;box-shadow:2px 2px 0 #0d0818}
+.prep-formula-card h4{font-family:'Press Start 2P',monospace;font-size:.5rem;color:#ff6b9d;margin-bottom:.5rem;line-height:1.5}
+.prep-formula-card .formula{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:#7ff5c3;margin:.3rem 0;word-break:break-word}
+.prep-formula-card .note{font-size:.75rem;color:#8bb8cc;line-height:1.5}
+@media(max-width:600px){.prep-formulas{grid-template-columns:1fr}}
+
+/* worked examples */
+.shape-problem{
+  background:#2d1f42;border:3px solid #4a3660;
+  padding:1.5rem;margin-bottom:1.25rem;
+  box-shadow:4px 4px 0 #1a1028;
+}
+.shape-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.shape-icon{font-size:1.8rem}
+.shape-title{font-family:'Press Start 2P',monospace;font-size:.55rem;color:#ffb3d9;line-height:1.6}
+.shape-type{font-size:.7rem;color:#c084fc;font-weight:700;margin-top:.2rem}
+.shape-canvas{
+  width:100%;height:auto;border:2px solid #4a3660;
+  background:#1a1028;margin-bottom:1rem;display:block;
+}
+.solution-steps{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}
+.step-item{cursor:pointer;transition:all .2s;position:relative;display:flex;align-items:flex-start;gap:.6rem;padding:.5rem 2.5rem .5rem .5rem}
+.step-item:hover{background:rgba(255,107,157,.1);border-radius:4px}
+.step-item::after{content:'👆 click';font-size:.6rem;color:#ff6b9d;opacity:.6;position:absolute;right:8px;top:50%;transform:translateY(-50%)}
+
+/* step-click modal */
+.step-modal{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(26,16,40,.95);
+  display:none;align-items:center;justify-content:center;
+  padding:1rem;
+}
+.step-modal.active{display:flex}
+.step-modal-content{
+  background:#2d1f42;border:3px solid #4a3660;
+  max-width:620px;width:100%;max-height:90vh;
+  overflow-y:auto;padding:1.5rem;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  animation:modalPop .3s ease;
+}
+@keyframes modalPop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.step-modal-header{
+  display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;
+  border-bottom:2px solid #4a3660;padding-bottom:.75rem;
+}
+.step-modal-num{
+  width:32px;height:32px;min-width:32px;background:#ff6b9d;color:#1a1028;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Press Start 2P',monospace;font-size:.6rem;
+}
+.step-modal-title{font-size:1rem;font-weight:700;color:#ffe47a;line-height:1.4}
+.step-modal-canvas{
+  width:100%;height:300px;border:2px solid #4a3660;
+  background:#1a1028;margin:1rem 0;
+}
+.step-modal-explanation{color:#b8a9cc;font-size:.9rem;line-height:1.7;margin:1rem 0}
+.step-modal-explanation strong{color:#7ecbf5}
+.step-modal-close{
+  background:#ff6b9d;color:#1a1028;border:none;
+  padding:.6rem 1.2rem;font-family:'Press Start 2P',monospace;font-size:.5rem;
+  cursor:pointer;margin-top:1rem;
+}
+.step-modal-close:hover{background:#ff8fab}
+.step-num{
+  width:28px;height:28px;min-width:28px;background:#ff6b9d;color:#1a1028;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Press Start 2P',monospace;font-size:.5rem;font-weight:700;
+}
+.step-content{font-size:.85rem;color:#e8dff5;line-height:1.6}
+.step-content strong{color:#7ecbf5}
+.step-formula{
+  background:#1a1028;border-left:3px solid #ffe47a;
+  padding:.4rem .7rem;margin:.4rem 0;
+  font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#e8dff5;
+  overflow-x:auto;
+}
+.green{color:#7ff5c3}
+.purple{color:#c084fc}
+.tip-box{
+  background:#1a1028;border:2px solid #c084fc;padding:1rem;margin-top:.5rem;
+  box-shadow:2px 2px 0 #1a1028;
+}
+.tip-title{font-family:'Press Start 2P',monospace;font-size:.5rem;color:#c084fc;margin-bottom:.4rem}
+.tip-content{font-size:.82rem;color:#b8a9cc;line-height:1.6}
+.tip-content strong{color:#7ff5c3}
+
+.mini-label{font-family:'Press Start 2P',monospace;font-size:.45rem;color:#ffe47a;letter-spacing:1px;margin-bottom:.4rem;display:block}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="wrap">
+  <a href="index.html" class="back">&larr; Back to Math Games / 返回數學遊戲</a>
+  <header>
+    <h1><span class="emoji">&#x1F4D0;</span> Chapter 7 Prep</h1>
+    <p class="subtitle">Area, Volume &amp; Surface Area / 面積、體積與表面積</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="s74">&#x1F9E9; 7.4 Composite Area</button>
+    <button class="tab" data-tab="s75">&#x1F4E6; 7.5 Prism Volume</button>
+    <button class="tab" data-tab="s76">&#x1F3E0; 7.6 Surface Area</button>
+  </div>
+
+  <!-- =================== 7.4 COMPOSITE AREA =================== -->
+  <div class="panel active" id="s74">
+
+    <div class="glass">
+      <h2 class="section-title">&#x1F4D6; 7.4 — Area of Composite Figures</h2>
+      <p class="section-intro">A composite figure is built from simple shapes. Two strategies: <strong style="color:#7ff5c3">ADD</strong> the pieces, or draw a bigger shape and <strong style="color:#ff6b9d">SUBTRACT</strong> what you don&rsquo;t want.</p>
+
+      <span class="mini-label">Key Formulas / 關鍵公式</span>
+      <div class="prep-formulas">
+        <div class="prep-formula-card">
+          <h4>Rectangle 長方形</h4>
+          <div class="formula">A = l &times; w</div>
+          <div class="note">length &times; width</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Triangle 三角形</h4>
+          <div class="formula">A = &frac12; &times; b &times; h</div>
+          <div class="note">base &times; height &divide; 2</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Trapezoid 梯形</h4>
+          <div class="formula">A = &frac12;(b&#x2081; + b&#x2082;) &times; h</div>
+          <div class="note">avg of parallel sides &times; height</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Parallelogram 平行四邊形</h4>
+          <div class="formula">A = b &times; h</div>
+          <div class="note">base &times; perpendicular height</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Circle 圓形</h4>
+          <div class="formula">A = &pi;r&sup2;</div>
+          <div class="note">Semicircle = &frac12;&pi;r&sup2;</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Method 方法</h4>
+          <div class="formula">ADD &nbsp;or&nbsp; SUBTRACT</div>
+          <div class="note">加法法 或 減去法</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 7.4 - 1 : Trapezoid + Semicircle -->
+    <div class="shape-problem" data-problem="74_1">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F3DB;&#xFE0F;</div>
+        <div>
+          <div class="shape-title">Example 1: Trapezoid + Semicircle / 梯形加半圓</div>
+          <div class="shape-type">ADD METHOD / 加法法</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c74_1" width="500" height="260"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Identify the pieces</strong> / 找出各部分<br>
+            A trapezoid (top = 10, bottom = 16, height = 6) with a semicircle of radius 5 sitting on the top edge.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Area of the trapezoid</strong> / 梯形面積<br>
+            <div class="step-formula">A<sub>trap</sub> = &frac12;(10 + 16) &times; 6 = &frac12; &times; 26 &times; 6 = <span class="green">78 cm&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Area of the semicircle</strong> / 半圓面積 (use &pi; &asymp; 3.14)<br>
+            <div class="step-formula">A<sub>semi</sub> = &frac12; &times; 3.14 &times; 5&sup2; = &frac12; &times; 3.14 &times; 25 = <span class="green">39.25 cm&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Add them up</strong> / 相加<br>
+            <div class="step-formula">Total = 78 + 39.25 = <span class="green">117.25 cm&sup2;</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">When the curve sits on a straight edge, the flat side of the semicircle IS that edge &mdash; no overlap to worry about. / 半圓坐在直邊上時，不用擔心重疊。</div>
+      </div>
+    </div>
+
+    <!-- Example 7.4 - 2 : Running Track Field -->
+    <div class="shape-problem" data-problem="74_2">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F3C3;</div>
+        <div>
+          <div class="shape-title">Example 2: Running-Track Field / 跑道操場</div>
+          <div class="shape-type">ADD METHOD / 加法法</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c74_2" width="500" height="260"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Break it down</strong> / 拆解<br>
+            One rectangle in the middle + two semicircles (one on each end). Two semicircles = one full circle.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Rectangle area</strong> / 長方形面積<br>
+            <div class="step-formula">A<sub>rect</sub> = 80 &times; 40 = <span class="green">3,200 m&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Two semicircles = one circle</strong> / 兩個半圓 = 一個圓, radius = 20<br>
+            <div class="step-formula">A<sub>circle</sub> = &pi;r&sup2; = 3.14 &times; 20&sup2; = 3.14 &times; 400 = <span class="green">1,256 m&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Total field area</strong> / 總面積<br>
+            <div class="step-formula">Total = 3,200 + 1,256 = <span class="green">4,456 m&sup2;</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">Two semicircles of equal radius always fuse into one full circle &mdash; saves a multiplication! / 兩個相等半徑的半圓合併為一個圓，省一步。</div>
+      </div>
+    </div>
+
+    <!-- Example 7.4 - 3 : Square minus Triangle (flag) -->
+    <div class="shape-problem" data-problem="74_3">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F3F4;</div>
+        <div>
+          <div class="shape-title">Example 3: Flag &mdash; Square minus Triangle / 旗子 (正方形減三角形)</div>
+          <div class="shape-type">SUBTRACT METHOD / 減去法</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c74_3" width="500" height="260"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Big shape first</strong> / 先找大形狀<br>
+            The whole flag is a 12&times;12 square; a right triangle is cut from one corner with legs 5 and 12.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Square area</strong> / 正方形面積<br>
+            <div class="step-formula">A<sub>sq</sub> = 12 &times; 12 = <span class="green">144 in&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Triangle area</strong> / 三角形面積<br>
+            <div class="step-formula">A<sub>tri</sub> = &frac12; &times; 5 &times; 12 = <span class="green">30 in&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Subtract</strong> / 相減<br>
+            <div class="step-formula">Flag area = 144 &minus; 30 = <span class="green">114 in&sup2;</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">When the leftover shape has a weird angled edge, SUBTRACT is almost always easier than breaking the shape into triangles. / 剩下形狀有斜邊時，減去法通常比拆三角形更容易。</div>
+      </div>
+    </div>
+
+    <!-- Example 7.4 - 4 : Petal (two quarter circles) -->
+    <div class="shape-problem" data-problem="74_4">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F338;</div>
+        <div>
+          <div class="shape-title">Example 4: Petal inside a Square / 正方形中的花瓣</div>
+          <div class="shape-type">INTERSECTION / 相交區域</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c74_4" width="500" height="260"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>See the trick</strong> / 看出巧思<br>
+            Two quarter-circles (each with r = 14) are drawn from opposite corners of a 14&times;14 square. The petal is the overlap of both quarter-circles.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Area of one quarter-circle</strong> / 一個四分之一圓<br>
+            <div class="step-formula">A<sub>Q</sub> = &frac14; &times; 3.14 &times; 14&sup2; = &frac14; &times; 615.44 = <span class="green">153.86 cm&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Both quarters together cover the square, PLUS the petal twice</strong> / 兩個四分之一覆蓋整個正方形，並且多覆蓋花瓣一次<br>
+            <div class="step-formula">2 &times; Q = square + petal<br>2(153.86) = 196 + petal<br>petal = 307.72 &minus; 196 = <span class="green">111.72 cm&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Remaining paper (square minus petal)</strong> / 剩餘部分<br>
+            <div class="step-formula">Remaining = 196 &minus; 111.72 = <span class="green">84.28 cm&sup2;</span></div>
+            That&rsquo;s the total area of the two crescent-shaped pieces on the outside. / 外圍兩塊月牙的總面積。
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Inclusion-Exclusion</div>
+        <div class="tip-content">When two shapes overlap, <strong>A &cup; B = A + B &minus; (A &cap; B)</strong>. Solve for the overlap when you know the union. / 知道聯集時，反過來解交集。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== 7.5 PRISM VOLUME =================== -->
+  <div class="panel" id="s75">
+
+    <div class="glass">
+      <h2 class="section-title">&#x1F4E6; 7.5 — Volume of Prisms</h2>
+      <p class="section-intro">A solid is a <strong style="color:#7ff5c3">prism</strong> if every slice parallel to the base is congruent to the base. That one property is the whole reason the volume formula works.</p>
+
+      <span class="mini-label">Key Formulas / 關鍵公式</span>
+      <div class="prep-formulas">
+        <div class="prep-formula-card">
+          <h4>Prism Volume 柱體體積</h4>
+          <div class="formula">V = (base area) &times; height</div>
+          <div class="note">The golden rule for every prism</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Cross-Section Rule 截面性質</h4>
+          <div class="formula">slices &parallel; base &rArr; congruent</div>
+          <div class="note">That&rsquo;s what defines a prism</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Rectangular 長方柱</h4>
+          <div class="formula">V = l &times; w &times; h</div>
+          <div class="note">Base is a rectangle</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Triangular 三角柱</h4>
+          <div class="formula">V = &frac12; b h &times; L</div>
+          <div class="note">L = length of the prism</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Trapezoidal 梯形柱</h4>
+          <div class="formula">V = &frac12;(b&#x2081;+b&#x2082;)h &times; L</div>
+          <div class="note">Trapezoid base &times; depth</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Any Polygon 任意多邊形</h4>
+          <div class="formula">V = (base A) &times; L</div>
+          <div class="note">Pentagon, hexagon &mdash; same rule</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 7.5 - 1 : Rectangular prism -->
+    <div class="shape-problem" data-problem="75_1">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F9CA;</div>
+        <div>
+          <div class="shape-title">Example 1: Rectangular Prism / 長方柱</div>
+          <div class="shape-type">V = l &times; w &times; h</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c75_1" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Given</strong> / 已知<br>
+            length = 8 cm, width = 5 cm, height = 6 cm.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Area of base</strong> / 底面積<br>
+            <div class="step-formula">A<sub>base</sub> = 8 &times; 5 = <span class="green">40 cm&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Volume</strong> / 體積<br>
+            <div class="step-formula">V = 40 &times; 6 = <span class="green">240 cm&sup3;</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">Any face can be the &ldquo;base&rdquo; &mdash; just make sure <strong>height</strong> is the distance perpendicular to that face. / 任一面可當底，高度必須垂直於底。</div>
+      </div>
+    </div>
+
+    <!-- Example 7.5 - 2 : Triangular prism -->
+    <div class="shape-problem" data-problem="75_2">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F53A;</div>
+        <div>
+          <div class="shape-title">Example 2: Triangular Prism (tent) / 三角柱 (帳篷)</div>
+          <div class="shape-type">V = &frac12;bh &middot; L</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c75_2" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Given</strong> / 已知<br>
+            Triangular base: legs 4 cm &times; 3 cm (right triangle). Prism length L = 10 cm.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Base area</strong> / 底面積<br>
+            <div class="step-formula">A<sub>base</sub> = &frac12; &times; 4 &times; 3 = <span class="green">6 cm&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Volume</strong> / 體積<br>
+            <div class="step-formula">V = 6 &times; 10 = <span class="green">60 cm&sup3;</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">For a non-right triangle, use the <strong>perpendicular</strong> height, not a slanted side. / 非直角三角形要用垂直高，不是斜邊。</div>
+      </div>
+    </div>
+
+    <!-- Example 7.5 - 3 : Trapezoidal prism -->
+    <div class="shape-problem" data-problem="75_3">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F6E2;&#xFE0F;</div>
+        <div>
+          <div class="shape-title">Example 3: Trapezoidal Prism / 梯形柱</div>
+          <div class="shape-type">V = &frac12;(b&#x2081;+b&#x2082;)h &middot; L</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c75_3" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Given</strong> / 已知<br>
+            Trapezoid base: parallel sides 5 in and 8 in, height between them 4 in. Prism length L = 12 in.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Base area</strong> / 底面積<br>
+            <div class="step-formula">A<sub>base</sub> = &frac12;(5 + 8) &times; 4 = &frac12; &times; 13 &times; 4 = <span class="green">26 in&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Volume</strong> / 體積<br>
+            <div class="step-formula">V = 26 &times; 12 = <span class="green">312 in&sup3;</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">Don&rsquo;t mix up the trapezoid&rsquo;s internal height (between parallel sides) with the prism length. Different axes! / 別把梯形內部的高和柱體的長度混淆！</div>
+      </div>
+    </div>
+
+    <!-- Example 7.5 - 4 : Cross-section -->
+    <div class="shape-problem" data-problem="75_4">
+      <div class="shape-header">
+        <div class="shape-icon">&#x2702;&#xFE0F;</div>
+        <div>
+          <div class="shape-title">Example 4: What&rsquo;s the Cross-Section? / 截面形狀</div>
+          <div class="shape-type">CONCEPTUAL / 概念題</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c75_4" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Slice the prism parallel to its base</strong> / 平行於底切開<br>
+            A hexagonal prism is sliced parallel to its hexagonal base. What shape is the cut?
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Prism rule</strong> / 柱體性質<br>
+            Every slice parallel to the base of a prism is <strong>congruent</strong> to the base &mdash; same shape, same size.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Conclusion</strong> / 結論<br>
+            <div class="step-formula">Cross-section = <span class="green">congruent hexagon</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Non-Prism Warning</div>
+        <div class="tip-content">A cone or pyramid does NOT have this property &mdash; parallel slices shrink toward the apex. That&rsquo;s why the volume formula changes (V = &#8531; base &times; h). / 錐體的平行截面會縮小，體積公式不同 (V = 底 &times; 高 &divide; 3)。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== 7.6 SURFACE AREA =================== -->
+  <div class="panel" id="s76">
+
+    <div class="glass">
+      <h2 class="section-title">&#x1F3E0; 7.6 — Real-World Problems: Surface Area &amp; Volume</h2>
+      <p class="section-intro"><strong style="color:#7ff5c3">Surface area</strong> = total area of all the outside faces. The cleanest way to find it: imagine unfolding the solid into a flat <strong style="color:#7ff5c3">net</strong>, then add every piece.</p>
+
+      <span class="mini-label">Key Formulas / 關鍵公式</span>
+      <div class="prep-formulas">
+        <div class="prep-formula-card">
+          <h4>Net Method 展開圖</h4>
+          <div class="formula">SA = &Sigma; (all faces)</div>
+          <div class="note">Unfold &rarr; add every piece</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Rectangular Prism 長方柱</h4>
+          <div class="formula">SA = 2(lw + lh + wh)</div>
+          <div class="note">Three pairs of matching rectangles</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Triangular Prism 三角柱</h4>
+          <div class="formula">SA = 2 &middot; A<sub>tri</sub> + (perim)L</div>
+          <div class="note">2 triangular ends + 3 rectangle sides</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Composite Solid 組合體</h4>
+          <div class="formula">V<sub>total</sub> = V&#x2081; + V&#x2082;</div>
+          <div class="note">Split, compute, add</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Hidden Face Warning &#x26A0;&#xFE0F;</h4>
+          <div class="formula">SA &ne; SA&#x2081; + SA&#x2082;</div>
+          <div class="note">Subtract glued faces (counted twice)</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Units 單位</h4>
+          <div class="formula">Volume: cm&sup3;&nbsp; SA: cm&sup2;</div>
+          <div class="note">Volume = cubed, Area = squared</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 7.6 - 1 : Wooden block -->
+    <div class="shape-problem" data-problem="76_1">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F9F1;</div>
+        <div>
+          <div class="shape-title">Example 1: Wooden Block / 木塊</div>
+          <div class="shape-type">RECTANGULAR PRISM / 長方柱</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c76_1" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Given</strong> / 已知<br>
+            l = 5 cm, w = 3 cm, h = 4 cm. Find volume AND surface area.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Volume</strong> / 體積<br>
+            <div class="step-formula">V = 5 &times; 3 &times; 4 = <span class="green">60 cm&sup3;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Surface area from the net</strong> / 利用展開圖<br>
+            Top &amp; bottom: each 5&times;3 = 15&nbsp;&rArr;&nbsp;30<br>
+            Front &amp; back: each 5&times;4 = 20&nbsp;&rArr;&nbsp;40<br>
+            Left &amp; right: each 3&times;4 = 12&nbsp;&rArr;&nbsp;24
+            <div class="step-formula">SA = 30 + 40 + 24 = <span class="green">94 cm&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Check with the formula</strong> / 用公式核對<br>
+            <div class="step-formula">SA = 2(lw + lh + wh) = 2(15 + 20 + 12) = 2(47) = <span class="green">94 cm&sup2;</span> &check;</div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">Sketching the net always beats memorizing the formula &mdash; even works on weird shapes where no formula exists. / 畫展開圖比背公式好，遇到怪形狀也能做。</div>
+      </div>
+    </div>
+
+    <!-- Example 7.6 - 2 : Birdhouse (house-shaped prism) -->
+    <div class="shape-problem" data-problem="76_2">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F426;</div>
+        <div>
+          <div class="shape-title">Example 2: Birdhouse &mdash; Pentagon Prism / 五邊形柱屋</div>
+          <div class="shape-type">COMPOSITE BASE / 組合底面</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c76_2" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Given</strong> / 已知<br>
+            The base is a pentagon = rectangle (6 &times; 4) with a triangle on top (base 6, height 3). Prism length L = 10.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Base area (composite)</strong> / 底面積<br>
+            <div class="step-formula">A<sub>base</sub> = 6&times;4 + &frac12;&times;6&times;3 = 24 + 9 = <span class="green">33 cm&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Volume</strong> / 體積<br>
+            <div class="step-formula">V = 33 &times; 10 = <span class="green">330 cm&sup3;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Surface area</strong> / 表面積<br>
+            Two pentagon ends: 2 &times; 33 = 66<br>
+            Roof slant sides: slant = &radic;(3&sup2; + 3&sup2;) = &radic;18 &asymp; 4.24; two slanted rectangles 2 &times; 4.24 &times; 10 &asymp; 84.85<br>
+            Vertical walls (left &amp; right): 2 &times; 4 &times; 10 = 80<br>
+            Bottom: 6 &times; 10 = 60
+            <div class="step-formula">SA &asymp; 66 + 84.85 + 80 + 60 = <span class="green">290.85 cm&sup2;</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">For a prism, the side faces are always rectangles whose widths match each edge of the base &mdash; one rectangle per edge. Count edges to count rectangles. / 柱體的側面都是長方形，每個底邊對一個矩形。</div>
+      </div>
+    </div>
+
+    <!-- Example 7.6 - 3 : L-shape prism -->
+    <div class="shape-problem" data-problem="76_3">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F4D0;</div>
+        <div>
+          <div class="shape-title">Example 3: L-shaped Prism Volume / L形柱體積</div>
+          <div class="shape-type">SPLIT METHOD / 分割法</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c76_3" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Given</strong> / 已知<br>
+            An L-shaped base: big rectangle 10 &times; 6 with a 4 &times; 3 rectangle removed from the corner. Prism depth L = 5.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Base area by subtraction</strong> / 用減法求底面積<br>
+            <div class="step-formula">A<sub>base</sub> = 10&times;6 &minus; 4&times;3 = 60 &minus; 12 = <span class="green">48 cm&sup2;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Volume</strong> / 體積<br>
+            <div class="step-formula">V = 48 &times; 5 = <span class="green">240 cm&sup3;</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Check with split method</strong> / 用分割法核對<br>
+            Two rectangles: 10&times;3 (bottom strip) + 6&times;3 (side strip) = 30 + 18 = 48. &check;<br>
+            V = 48 &times; 5 = <span class="green">240 cm&sup3;</span>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">For any oddly-shaped prism, the game is always: find the base area (add or subtract simple shapes), then multiply by depth. / 奇形柱體：先求底面積，再乘以長度。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer style="text-align:center;padding:2rem 0 1rem;color:#6b5a85;font-size:.75rem">
+    Marshall Cavendish Course 2B &middot; Chapter 7 &middot; &copy; 2026
+  </footer>
+
+</div>
+
+<!-- step-click modal -->
+<div class="step-modal" id="stepModal">
+  <div class="step-modal-content">
+    <div class="step-modal-header">
+      <div class="step-modal-num" id="modalStepNum">1</div>
+      <div class="step-modal-title" id="modalStepTitle">Step Title</div>
+    </div>
+    <canvas class="step-modal-canvas" id="stepModalCanvas" width="560" height="300"></canvas>
+    <div class="step-modal-explanation" id="modalExplanation"></div>
+    <button class="step-modal-close" onclick="closeStepModal()">&check; Got it! / 明白了！</button>
+  </div>
+</div>
+
+<script>
+/* ===== background starfield ===== */
+const bg = document.getElementById('bgCanvas');
+const bgCtx = bg.getContext('2d');
+let stars = [];
+function initBg(){
+  bg.width = innerWidth; bg.height = innerHeight;
+  stars = Array.from({length:60},()=>({
+    x: Math.random()*bg.width, y: Math.random()*bg.height,
+    r: Math.random()*1.5 + .3, s: Math.random()*.3 + .05,
+    c: ['#ff6b9d','#7ecbf5','#c084fc','#ffe47a','#7ff5c3'][Math.floor(Math.random()*5)]
+  }));
+}
+function drawBg(){
+  bgCtx.fillStyle = '#1a1028';
+  bgCtx.fillRect(0,0,bg.width,bg.height);
+  stars.forEach(s=>{
+    s.y -= s.s;
+    if(s.y<0){s.y = bg.height; s.x = Math.random()*bg.width;}
+    bgCtx.fillStyle = s.c;
+    bgCtx.globalAlpha = .5;
+    bgCtx.fillRect(s.x, s.y, s.r, s.r);
+  });
+  bgCtx.globalAlpha = 1;
+  requestAnimationFrame(drawBg);
+}
+initBg(); drawBg();
+addEventListener('resize', initBg);
+
+/* ===== tabs ===== */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    drawAll();   /* re-render canvases when tab becomes visible */
+  });
+});
+
+/* ===== shared drawing helpers ===== */
+const COLORS = {
+  pink:'#ff6b9d', yellow:'#ffe47a', green:'#7ff5c3',
+  cyan:'#7ecbf5', purple:'#c084fc', orange:'#ffb27a',
+  grid:'#4a3660', fill:'rgba(255,107,157,.15)', fill2:'rgba(126,203,245,.15)',
+  text:'#e8dff5', dim:'#8b7ca0'
+};
+function setupCanvas(id){
+  const c = document.getElementById(id);
+  if(!c) return null;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  return {c, ctx};
+}
+function label(ctx, text, x, y, color, size=12, align='center'){
+  ctx.fillStyle = color || COLORS.text;
+  ctx.font = `600 ${size}px 'JetBrains Mono', monospace`;
+  ctx.textAlign = align;
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, x, y);
+}
+function titleLabel(ctx, text, x, y){
+  ctx.fillStyle = COLORS.yellow;
+  ctx.font = `700 11px 'Press Start 2P', monospace`;
+  ctx.textAlign = 'center';
+  ctx.fillText(text, x, y);
+}
+/* dimension arrow */
+function dimArrow(ctx, x1, y1, x2, y2, text, color, offset=0){
+  color = color || COLORS.yellow;
+  ctx.save();
+  ctx.strokeStyle = color; ctx.fillStyle = color;
+  ctx.lineWidth = 1.5;
+  /* perpendicular unit vector */
+  const dx = x2-x1, dy = y2-y1;
+  const len = Math.hypot(dx,dy);
+  const px = -dy/len * offset, py = dx/len * offset;
+  const ax1 = x1+px, ay1 = y1+py, ax2 = x2+px, ay2 = y2+py;
+  ctx.beginPath();
+  ctx.moveTo(ax1, ay1); ctx.lineTo(ax2, ay2);
+  ctx.stroke();
+  /* arrowheads */
+  const ang = Math.atan2(ay2-ay1, ax2-ax1);
+  [[ax1,ay1,ang+Math.PI],[ax2,ay2,ang]].forEach(([x,y,a])=>{
+    ctx.beginPath();
+    ctx.moveTo(x,y);
+    ctx.lineTo(x - Math.cos(a-.4)*6, y - Math.sin(a-.4)*6);
+    ctx.lineTo(x - Math.cos(a+.4)*6, y - Math.sin(a+.4)*6);
+    ctx.closePath();
+    ctx.fill();
+  });
+  /* tick marks at ends */
+  [[ax1,ay1],[ax2,ay2]].forEach(([x,y])=>{
+    const tx = -dy/len*4, ty = dx/len*4;
+    ctx.beginPath();
+    ctx.moveTo(x-tx, y-ty); ctx.lineTo(x+tx, y+ty);
+    ctx.stroke();
+  });
+  if(text){
+    const mx = (ax1+ax2)/2, my = (ay1+ay2)/2;
+    const lx = mx + (-dy/len)*10, ly = my + (dx/len)*10;
+    label(ctx, text, lx, ly, color, 12);
+  }
+  ctx.restore();
+}
+/* oblique 3D prism helper: front face is an array of [x,y] points; back is offset by (dx, dy) */
+function drawPrism(ctx, pts, dx, dy, opts={}){
+  const fill = opts.fill || COLORS.fill;
+  const stroke = opts.stroke || COLORS.pink;
+  const dashBack = opts.dashBack !== false;
+  /* back face points */
+  const back = pts.map(([x,y])=>[x+dx, y+dy]);
+
+  /* fill front + back shape (we fill side faces first, then front on top) */
+  ctx.save();
+  ctx.lineWidth = 2;
+  /* side faces: for each edge, build a parallelogram front→back */
+  ctx.fillStyle = opts.sideFill || 'rgba(192,132,252,.1)';
+  ctx.strokeStyle = stroke;
+  for(let i=0;i<pts.length;i++){
+    const [x1,y1] = pts[i], [x2,y2] = pts[(i+1)%pts.length];
+    ctx.beginPath();
+    ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+    ctx.lineTo(x2+dx,y2+dy); ctx.lineTo(x1+dx,y1+dy);
+    ctx.closePath();
+    ctx.fill();
+  }
+  /* hidden back edges (dashed) */
+  if(dashBack){
+    ctx.setLineDash([4,4]);
+    ctx.strokeStyle = COLORS.grid;
+    ctx.beginPath();
+    for(let i=0;i<back.length;i++){
+      const [x1,y1] = back[i], [x2,y2] = back[(i+1)%back.length];
+      ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  } else {
+    /* solid back */
+    ctx.strokeStyle = stroke;
+    ctx.beginPath();
+    for(let i=0;i<back.length;i++){
+      const [x1,y1] = back[i], [x2,y2] = back[(i+1)%back.length];
+      ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+    }
+    ctx.stroke();
+  }
+  /* solid connecting edges */
+  ctx.strokeStyle = stroke;
+  ctx.beginPath();
+  for(let i=0;i<pts.length;i++){
+    ctx.moveTo(pts[i][0], pts[i][1]);
+    ctx.lineTo(pts[i][0]+dx, pts[i][1]+dy);
+  }
+  ctx.stroke();
+  /* front face: opaque base so hidden edges don't leak through, then translucent tint */
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  pts.slice(1).forEach(([x,y])=>ctx.lineTo(x,y));
+  ctx.closePath();
+  ctx.fillStyle = '#1a1028';
+  ctx.fill();
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.strokeStyle = stroke;
+  ctx.stroke();
+  ctx.restore();
+}
+
+/* ============ 7.4 DRAWINGS ============ */
+
+/* 7.4 Example 1 : trapezoid + semicircle */
+function draw74_1(){
+  const s = setupCanvas('c74_1'); if(!s) return;
+  const {ctx} = s;
+  /* trapezoid: bottom 16, top 10, height 6 (scaled) */
+  const scale = 14;
+  const cx = 250, cy = 180;
+  const bot = 16*scale, top = 10*scale, h = 6*scale;
+  const bl = [cx - bot/2, cy],       br = [cx + bot/2, cy];
+  const tl = [cx - top/2, cy - h],   tr = [cx + top/2, cy - h];
+  /* trapezoid */
+  ctx.fillStyle = COLORS.fill;
+  ctx.strokeStyle = COLORS.pink; ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(...bl); ctx.lineTo(...br); ctx.lineTo(...tr); ctx.lineTo(...tl); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  /* semicircle on top-middle (sits on a 10-wide segment? Use r=5 -> 5*scale) */
+  const r = 5*scale;
+  ctx.fillStyle = COLORS.fill2;
+  ctx.strokeStyle = COLORS.cyan;
+  ctx.beginPath();
+  ctx.arc(cx, cy - h, r, Math.PI, 0, false);
+  ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  /* dimension labels */
+  label(ctx, '16 cm', cx, cy+18, COLORS.yellow);
+  label(ctx, '10 cm', cx, cy-h - 5, COLORS.yellow);
+  label(ctx, '6 cm', cx + bot/2 + 22, cy - h/2, COLORS.yellow);
+  label(ctx, 'r = 5', cx + r + 20, cy - h - r/2, COLORS.cyan);
+  /* title */
+  titleLabel(ctx, 'Trapezoid + Semicircle', cx, 30);
+}
+
+/* 7.4 Example 2 : running track field */
+function draw74_2(){
+  const s = setupCanvas('c74_2'); if(!s) return;
+  const {ctx} = s;
+  const scale = 4.5;
+  const cx = 250, cy = 140;
+  const L = 80*scale, H = 40*scale, r = H/2;
+  /* rectangle */
+  ctx.fillStyle = COLORS.fill;
+  ctx.strokeStyle = COLORS.pink; ctx.lineWidth = 2;
+  ctx.fillRect(cx - L/2, cy - H/2, L, H);
+  ctx.strokeRect(cx - L/2, cy - H/2, L, H);
+  /* left semicircle */
+  ctx.fillStyle = COLORS.fill2;
+  ctx.strokeStyle = COLORS.cyan;
+  ctx.beginPath();
+  ctx.arc(cx - L/2, cy, r, Math.PI/2, 3*Math.PI/2);
+  ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  /* right semicircle */
+  ctx.beginPath();
+  ctx.arc(cx + L/2, cy, r, -Math.PI/2, Math.PI/2);
+  ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  /* labels */
+  label(ctx, '80 m', cx, cy - H/2 - 14, COLORS.yellow);
+  label(ctx, '40 m', cx - L/2 - r - 22, cy, COLORS.yellow);
+  label(ctx, 'r = 20', cx + L/2 + 8, cy - r + 6, COLORS.cyan, 11, 'left');
+  titleLabel(ctx, 'Running Track Field', cx, 30);
+}
+
+/* 7.4 Example 3 : flag (square minus triangle) */
+function draw74_3(){
+  const s = setupCanvas('c74_3'); if(!s) return;
+  const {ctx} = s;
+  const scale = 14;
+  const cx = 250, cy = 140;
+  const side = 12*scale;
+  const sx = cx - side/2, sy = cy - side/2;
+  /* full square outline (dashed, as reference) */
+  ctx.save();
+  ctx.setLineDash([4,4]);
+  ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 1.5;
+  ctx.strokeRect(sx, sy, side, side);
+  ctx.restore();
+  /* the flag = square minus triangle cut from top-right corner (legs 5 and 12) */
+  const legA = 5*scale, legB = 12*scale;
+  ctx.fillStyle = COLORS.fill;
+  ctx.strokeStyle = COLORS.pink; ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(sx, sy);
+  ctx.lineTo(sx + side - legA, sy);
+  ctx.lineTo(sx + side, sy + legB);
+  ctx.lineTo(sx + side, sy + side);
+  ctx.lineTo(sx, sy + side);
+  ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  /* triangle cut-out outline */
+  ctx.strokeStyle = COLORS.cyan; ctx.setLineDash([3,3]); ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(sx + side - legA, sy);
+  ctx.lineTo(sx + side, sy);
+  ctx.lineTo(sx + side, sy + legB);
+  ctx.closePath();
+  ctx.stroke(); ctx.setLineDash([]);
+  /* labels */
+  label(ctx, '12 in', cx, sy + side + 16, COLORS.yellow);
+  label(ctx, '12 in', sx - 22, cy, COLORS.yellow);
+  label(ctx, '5 in', sx + side - legA/2, sy - 10, COLORS.cyan);
+  label(ctx, 'CUT', sx + side - legA/3, sy + legB/3, COLORS.cyan, 11);
+  titleLabel(ctx, 'Square minus Triangle', cx, 30);
+}
+
+/* 7.4 Example 4 : petal (two quarter circles in a square) */
+function draw74_4(){
+  const s = setupCanvas('c74_4'); if(!s) return;
+  const {ctx} = s;
+  const scale = 13;
+  const cx = 250, cy = 140;
+  const side = 14*scale;
+  const sx = cx - side/2, sy = cy - side/2;
+  /* square */
+  ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 2;
+  ctx.strokeRect(sx, sy, side, side);
+  /* quarter circle from top-left (center = sx,sy), r=side: arc sweeps bottom-right */
+  /* quarter circle from bottom-right (center = sx+side, sy+side): arc sweeps top-left */
+  /* Fill petal = intersection using "even-odd" via clipping */
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(sx, sy, side, 0, Math.PI/2);
+  ctx.lineTo(sx, sy);
+  ctx.closePath();
+  ctx.clip();
+  /* now draw second quarter filled */
+  ctx.fillStyle = COLORS.fill;
+  ctx.beginPath();
+  ctx.arc(sx+side, sy+side, side, Math.PI, 3*Math.PI/2);
+  ctx.lineTo(sx+side, sy+side);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+  /* arc outlines */
+  ctx.strokeStyle = COLORS.pink; ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(sx, sy, side, 0, Math.PI/2);
+  ctx.stroke();
+  ctx.strokeStyle = COLORS.cyan;
+  ctx.beginPath();
+  ctx.arc(sx+side, sy+side, side, Math.PI, 3*Math.PI/2);
+  ctx.stroke();
+  /* labels */
+  label(ctx, '14 cm', cx, sy + side + 16, COLORS.yellow);
+  label(ctx, '14 cm', sx - 22, cy, COLORS.yellow);
+  label(ctx, 'r=14', sx + side*.35, sy + side*.25, COLORS.pink, 10);
+  label(ctx, 'r=14', sx + side*.65, sy + side*.75, COLORS.cyan, 10);
+  label(ctx, 'PETAL', cx, cy, COLORS.green, 11);
+  titleLabel(ctx, 'Petal inside a Square', cx, 30);
+}
+
+/* ============ 7.5 DRAWINGS ============ */
+
+/* 7.5 Example 1 : rectangular prism */
+function draw75_1(){
+  const s = setupCanvas('c75_1'); if(!s) return;
+  const {ctx} = s;
+  /* front face: rectangle 8 × 6 (scaled) at (cx-w/2, cy-h/2) */
+  const scale = 18;
+  const w = 8*scale, h = 6*scale;
+  const cx = 200, cy = 170;
+  const fx = cx - w/2, fy = cy - h/2;
+  const front = [
+    [fx, fy], [fx+w, fy], [fx+w, fy+h], [fx, fy+h]
+  ];
+  /* depth = 5*scale */
+  const dx = 5*scale * 0.55, dy = -5*scale * 0.45;
+  drawPrism(ctx, front, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+  /* dimension labels */
+  label(ctx, '8 cm', cx, fy + h + 16, COLORS.yellow);
+  label(ctx, '6 cm', fx - 22, cy, COLORS.yellow);
+  label(ctx, '5 cm', fx + w + dx/2 + 14, fy + h + dy/2 + 6, COLORS.yellow);
+  titleLabel(ctx, 'Rectangular Prism 8 × 5 × 6', 250, 30);
+}
+
+/* 7.5 Example 2 : triangular prism */
+function draw75_2(){
+  const s = setupCanvas('c75_2'); if(!s) return;
+  const {ctx} = s;
+  const scale = 20;
+  /* right triangle: legs 4 × 3 */
+  const cx = 180, cy = 200;
+  const a = 4*scale, b = 3*scale;
+  const front = [
+    [cx, cy],
+    [cx + a, cy],
+    [cx, cy - b]
+  ];
+  const dx = 10*scale * 0.45, dy = -10*scale * 0.35;
+  drawPrism(ctx, front, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+  /* labels */
+  label(ctx, '4 cm', cx + a/2, cy + 16, COLORS.yellow);
+  label(ctx, '3 cm', cx - 22, cy - b/2, COLORS.yellow);
+  label(ctx, '10 cm', cx + a + dx/2 + 10, cy + dy/2 + 10, COLORS.yellow);
+  titleLabel(ctx, 'Triangular Prism (legs 4 × 3, L = 10)', 250, 30);
+}
+
+/* 7.5 Example 3 : trapezoidal prism */
+function draw75_3(){
+  const s = setupCanvas('c75_3'); if(!s) return;
+  const {ctx} = s;
+  const scale = 16;
+  const cx = 180, cy = 200;
+  /* trapezoid base: bottom 8, top 5, height 4 */
+  const B = 8*scale, T = 5*scale, H = 4*scale;
+  const offset = (B - T)/2;
+  const front = [
+    [cx, cy],
+    [cx + B, cy],
+    [cx + B - offset, cy - H],
+    [cx + offset, cy - H]
+  ];
+  const dx = 12*scale * 0.35, dy = -12*scale * 0.3;
+  drawPrism(ctx, front, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+  label(ctx, '8 in', cx + B/2, cy + 16, COLORS.yellow);
+  label(ctx, '5 in', cx + B/2, cy - H - 10, COLORS.yellow);
+  label(ctx, '4 in', cx - 16, cy - H/2, COLORS.yellow);
+  label(ctx, '12 in', cx + B + dx/2 + 12, cy + dy/2 + 12, COLORS.yellow);
+  titleLabel(ctx, 'Trapezoidal Prism', 250, 30);
+}
+
+/* 7.5 Example 4 : hexagonal prism with cross-section line */
+function draw75_4(){
+  const s = setupCanvas('c75_4'); if(!s) return;
+  const {ctx} = s;
+  /* hexagon base (side 30), prism stands upright (height axis = y) */
+  const cx = 180, cy = 180;
+  const R = 38;
+  const hex = [];
+  for(let i=0;i<6;i++){
+    const a = Math.PI/3 * i + Math.PI/6;
+    hex.push([cx + R*Math.cos(a), cy - R*Math.sin(a)]);
+  }
+  /* extrude downward (vertical prism) -> back face is hex shifted UP by H */
+  const H = 110;
+  /* we'll draw using drawPrism with dx=0, dy=-H (back face is "top") */
+  drawPrism(ctx, hex, 0, -H, {fill:COLORS.fill, stroke:COLORS.pink, dashBack:false});
+  /* cross-section indicator: horizontal plane midway */
+  const midY = cy - H/2;
+  ctx.save();
+  ctx.strokeStyle = COLORS.green; ctx.fillStyle = 'rgba(127,245,195,.18)';
+  ctx.lineWidth = 2; ctx.setLineDash([5,3]);
+  /* slightly offset hexagon at midY */
+  ctx.beginPath();
+  hex.forEach(([x,y], i)=>{
+    const [px, py] = [x, midY];
+    if(i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  });
+  ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+  /* arrow */
+  ctx.strokeStyle = COLORS.green;
+  ctx.fillStyle = COLORS.green;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(370, midY);
+  ctx.lineTo(cx + R + 4, midY);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx + R + 4, midY);
+  ctx.lineTo(cx + R + 12, midY - 4);
+  ctx.lineTo(cx + R + 12, midY + 4);
+  ctx.closePath(); ctx.fill();
+  label(ctx, 'cross-section', 430, midY, COLORS.green, 11);
+  label(ctx, '(parallel to base)', 430, midY + 14, COLORS.dim, 10);
+  titleLabel(ctx, 'Hexagonal Prism', 250, 30);
+}
+
+/* ============ 7.6 DRAWINGS ============ */
+
+/* 7.6 Example 1 : wooden block + simple net */
+function draw76_1(){
+  const s = setupCanvas('c76_1'); if(!s) return;
+  const {ctx} = s;
+  /* left: the block */
+  const scale = 16;
+  const w = 5*scale, h = 4*scale;
+  const cx = 140, cy = 180;
+  const fx = cx - w/2, fy = cy - h/2;
+  const front = [[fx,fy],[fx+w,fy],[fx+w,fy+h],[fx,fy+h]];
+  const dx = 3*scale * 0.6, dy = -3*scale * 0.5;
+  drawPrism(ctx, front, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+  label(ctx, '5', cx, fy + h + 14, COLORS.yellow);
+  label(ctx, '4', fx - 14, cy, COLORS.yellow);
+  label(ctx, '3', fx + w + dx/2 + 10, fy + h + dy/2 + 6, COLORS.yellow);
+  titleLabel(ctx, 'Block 5 × 3 × 4', 140, 30);
+
+  /* right: mini net schematic (six faces laid out as a cross with back on the side) */
+  titleLabel(ctx, 'Net (unfolded)', 380, 30);
+  const u = 11;
+  /* center front(5x4) at (px, py+3u). Top(5x3) above, bottom(5x3) below, left(3x4) & right(3x4) on sides, back(5x4) to the far right */
+  const px = 305, py = 60;
+  ctx.lineWidth = 2;
+  const draw = (x,y,w,h,tint,stroke,areaText)=>{
+    ctx.fillStyle = tint; ctx.strokeStyle = stroke;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeRect(x, y, w, h);
+    label(ctx, areaText, x + w/2, y + h/2, COLORS.text, 10);
+  };
+  /* front (5x4) */
+  draw(px, py + 3*u, 5*u, 4*u, COLORS.fill, COLORS.pink, '20');
+  /* top (5x3) */
+  draw(px, py, 5*u, 3*u, 'rgba(126,203,245,.18)', COLORS.cyan, '15');
+  /* bottom (5x3) */
+  draw(px, py + 7*u, 5*u, 3*u, 'rgba(126,203,245,.18)', COLORS.cyan, '15');
+  /* left (3x4) */
+  draw(px - 3*u, py + 3*u, 3*u, 4*u, 'rgba(192,132,252,.18)', COLORS.purple, '12');
+  /* right (3x4) */
+  draw(px + 5*u, py + 3*u, 3*u, 4*u, 'rgba(192,132,252,.18)', COLORS.purple, '12');
+  /* back (5x4) */
+  draw(px + 8*u, py + 3*u, 5*u, 4*u, COLORS.fill, COLORS.pink, '20');
+  /* formula below */
+  label(ctx, 'SA = 15+15 + 20+20 + 12+12 = 94', px + 4*u, py + 10*u + 18, COLORS.green, 10);
+}
+
+/* 7.6 Example 2 : pentagon-prism birdhouse */
+function draw76_2(){
+  const s = setupCanvas('c76_2'); if(!s) return;
+  const {ctx} = s;
+  const scale = 18;
+  /* pentagon: rectangle 6x4 with triangle on top (apex above midpoint, h=3) */
+  const W = 6*scale, Hrect = 4*scale, Htri = 3*scale;
+  const cx = 200, cy = 230;
+  const fx = cx - W/2, fy = cy - Hrect;
+  const front = [
+    [fx, cy],
+    [fx + W, cy],
+    [fx + W, fy],
+    [fx + W/2, fy - Htri],
+    [fx, fy]
+  ];
+  const dx = 10*scale * 0.35, dy = -10*scale * 0.3;
+  drawPrism(ctx, front, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+  label(ctx, '6', cx, cy + 14, COLORS.yellow);
+  label(ctx, '4', fx - 14, cy - Hrect/2, COLORS.yellow);
+  label(ctx, '3', fx + W/2 + 10, fy - Htri/2, COLORS.yellow);
+  label(ctx, '10', fx + W + dx/2 + 10, cy + dy/2 + 6, COLORS.yellow);
+  titleLabel(ctx, 'Birdhouse Pentagon Prism', 250, 30);
+}
+
+/* 7.6 Example 3 : L-shape prism */
+function draw76_3(){
+  const s = setupCanvas('c76_3'); if(!s) return;
+  const {ctx} = s;
+  const scale = 18;
+  const cx = 200, cy = 210;
+  /* L shape: big rect 10×6 minus 4×3 from top-right corner. */
+  const W = 10*scale, H = 6*scale;
+  const cutW = 4*scale, cutH = 3*scale;
+  const fx = cx - W/2, fy = cy - H;
+  /* L with the TOP-RIGHT corner removed — clockwise from top-left */
+  const L = [
+    [fx, fy],
+    [fx + W - cutW, fy],
+    [fx + W - cutW, fy + cutH],
+    [fx + W, fy + cutH],
+    [fx + W, fy + H],
+    [fx, fy + H]
+  ];
+  const dx = 5*scale * 0.55, dy = -5*scale * 0.45;
+  drawPrism(ctx, L, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+  /* dimension labels */
+  label(ctx, '10', cx, fy + H + 16, COLORS.yellow);
+  label(ctx, '6', fx - 14, fy + H/2, COLORS.yellow);
+  label(ctx, '4', fx + W - cutW/2, fy - 10, COLORS.yellow);
+  label(ctx, '3', fx + W + 12, fy + cutH/2, COLORS.yellow);
+  label(ctx, '5', fx + W + dx/2 + 10, fy + H + dy/2 + 6, COLORS.yellow);
+  titleLabel(ctx, 'L-shaped Prism', 250, 30);
+}
+
+/* ===== render everything once the panel is visible ===== */
+function drawAll(){
+  draw74_1(); draw74_2(); draw74_3(); draw74_4();
+  draw75_1(); draw75_2(); draw75_3(); draw75_4();
+  draw76_1(); draw76_2(); draw76_3();
+}
+drawAll();
+addEventListener('resize', ()=>setTimeout(drawAll, 50));
+
+/* ===================================================================
+ *  STEP-CLICK MODAL: per-step visual explanations
+ * =================================================================== */
+
+/* helpers that draw on a 560×300 modal canvas */
+function bigFormula(ctx, lines, cx, cy, color){
+  color = color || COLORS.green;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = color;
+  ctx.font = `700 22px 'JetBrains Mono', monospace`;
+  const lh = 32;
+  const startY = cy - ((lines.length-1)/2)*lh;
+  lines.forEach((line, i)=>ctx.fillText(line, cx, startY + i*lh));
+}
+function caption(ctx, txt, x, y, color, size){
+  label(ctx, txt, x, y, color || COLORS.yellow, size || 14, 'center');
+}
+function gridBg(ctx){
+  ctx.strokeStyle = '#2d1f42'; ctx.lineWidth = 1;
+  for(let x=0; x<560; x+=20){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,300); ctx.stroke(); }
+  for(let y=0; y<300; y+=20){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(560,y); ctx.stroke(); }
+}
+
+const stepExplanations = {
+  /* ================ 7.4 EXAMPLE 1: Trapezoid + Semicircle ================ */
+  '74_1s1': {
+    title: 'Identify the pieces / 找出各部分',
+    text: 'Break the composite into shapes you already know. Here it\'s a <strong>trapezoid</strong> (bases 10 &amp; 16, height 6) + a <strong>semicircle</strong> (radius 5) perched on the 10-cm top edge.',
+    draw: (ctx)=>{
+      const cx=280, cy=170, sc=11;
+      const bot=16*sc, top=10*sc, h=6*sc, r=5*sc;
+      const bl=[cx-bot/2,cy], br=[cx+bot/2,cy], tl=[cx-top/2,cy-h], tr=[cx+top/2,cy-h];
+      ctx.fillStyle=COLORS.fill; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(...bl); ctx.lineTo(...br); ctx.lineTo(...tr); ctx.lineTo(...tl); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle=COLORS.fill2; ctx.strokeStyle=COLORS.cyan;
+      ctx.beginPath(); ctx.arc(cx, cy-h, r, Math.PI, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
+      label(ctx, 'TRAPEZOID', cx, cy-h/2+8, COLORS.pink, 14);
+      label(ctx, 'SEMICIRCLE', cx, cy-h-r+20, COLORS.cyan, 12);
+      label(ctx, '= 2 pieces', cx, cy+50, COLORS.yellow, 13);
+    }
+  },
+  '74_1s2': {
+    title: 'Trapezoid area / 梯形面積',
+    text: 'Trapezoid formula: take the <strong>average</strong> of the two parallel sides, then multiply by the height between them.',
+    draw: (ctx)=>{
+      const cx=280, cy=170, sc=12;
+      const bot=16*sc, top=10*sc, h=6*sc;
+      ctx.fillStyle='rgba(255,107,157,.3)'; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(cx-bot/2, cy); ctx.lineTo(cx+bot/2, cy);
+      ctx.lineTo(cx+top/2, cy-h); ctx.lineTo(cx-top/2, cy-h);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      label(ctx, '10', cx, cy-h-10, COLORS.yellow);
+      label(ctx, '16', cx, cy+16, COLORS.yellow);
+      label(ctx, '6', cx+bot/2+14, cy-h/2, COLORS.yellow);
+      bigFormula(ctx, ['A = ½(10+16)·6', '   = ½·26·6 = 78'], cx, 35, COLORS.green);
+    }
+  },
+  '74_1s3': {
+    title: 'Semicircle area / 半圓面積',
+    text: 'A semicircle is <strong>half</strong> a full circle, so divide πr² by 2.',
+    draw: (ctx)=>{
+      const cx=280, cy=200, r=80;
+      ctx.fillStyle='rgba(126,203,245,.3)'; ctx.strokeStyle=COLORS.cyan; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(cx, cy, r, Math.PI, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
+      /* radius */
+      ctx.strokeStyle=COLORS.orange; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx+r, cy); ctx.stroke(); ctx.setLineDash([]);
+      label(ctx, 'r = 5', cx+r/2, cy-14, COLORS.orange);
+      bigFormula(ctx, ['A = ½·π·r²', '   = ½·3.14·25 = 39.25'], 280, 50, COLORS.green);
+    }
+  },
+  '74_1s4': {
+    title: 'Add them up / 相加',
+    text: 'Now combine. Since the pieces share only the flat top edge (no overlapping area), we just sum the two areas.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['78', '+', '39.25', '=', '117.25 cm²'], 280, 150, COLORS.green);
+      caption(ctx, 'trapezoid', 150, 70, COLORS.pink);
+      caption(ctx, 'semicircle', 150, 180, COLORS.cyan);
+      caption(ctx, 'TOTAL ✓', 440, 260, COLORS.yellow);
+    }
+  },
+
+  /* ================ 7.4 EXAMPLE 2: Running Track ================ */
+  '74_2s1': {
+    title: 'Break it down / 拆解',
+    text: 'A running-track field = rectangle in the middle + one semicircle on each short end. <strong>Two matching semicircles fuse into one full circle</strong> — that\'s the key simplification.',
+    draw: (ctx)=>{
+      const cx=280, cy=160, L=260, H=110, r=H/2;
+      ctx.fillStyle=COLORS.fill; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.fillRect(cx-L/2, cy-H/2, L, H); ctx.strokeRect(cx-L/2, cy-H/2, L, H);
+      ctx.fillStyle=COLORS.fill2; ctx.strokeStyle=COLORS.cyan;
+      ctx.beginPath(); ctx.arc(cx-L/2, cy, r, Math.PI/2, 3*Math.PI/2); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx+L/2, cy, r, -Math.PI/2, Math.PI/2); ctx.closePath(); ctx.fill(); ctx.stroke();
+      label(ctx, 'RECTANGLE', cx, cy+6, COLORS.pink, 14);
+      label(ctx, 'semi 1', cx-L/2-10, cy, COLORS.cyan, 11, 'right');
+      label(ctx, 'semi 2', cx+L/2+10, cy, COLORS.cyan, 11, 'left');
+      label(ctx, '  = full circle combined →', cx, 255, COLORS.yellow, 13);
+    }
+  },
+  '74_2s2': {
+    title: 'Rectangle area / 長方形面積',
+    text: 'Easiest piece: length × width.',
+    draw: (ctx)=>{
+      const cx=280, cy=170, L=280, H=130;
+      ctx.fillStyle='rgba(255,107,157,.3)'; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.fillRect(cx-L/2, cy-H/2, L, H); ctx.strokeRect(cx-L/2, cy-H/2, L, H);
+      label(ctx, '80 m', cx, cy-H/2-14, COLORS.yellow);
+      label(ctx, '40 m', cx-L/2-24, cy, COLORS.yellow);
+      bigFormula(ctx, ['80 × 40 = 3,200 m²'], 280, 40, COLORS.green);
+    }
+  },
+  '74_2s3': {
+    title: 'Two semicircles = one circle / 兩個半圓 = 一個圓',
+    text: 'Glue the two ends together (they have the same radius) and you get a complete circle of radius 20. Area = πr².',
+    draw: (ctx)=>{
+      const cx=280, cy=170, r=80;
+      ctx.fillStyle='rgba(126,203,245,.3)'; ctx.strokeStyle=COLORS.cyan; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle=COLORS.orange; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx+r, cy); ctx.stroke(); ctx.setLineDash([]);
+      label(ctx, 'r = 20', cx+r/2, cy-14, COLORS.orange);
+      bigFormula(ctx, ['π·20² = 3.14·400', '= 1,256 m²'], 280, 50, COLORS.green);
+    }
+  },
+  '74_2s4': {
+    title: 'Total field area / 總面積',
+    text: 'Sum the two pieces.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['3,200 + 1,256 = 4,456 m²'], 280, 150, COLORS.green);
+      caption(ctx, 'rectangle + circle', 280, 100, COLORS.yellow);
+      caption(ctx, 'About the size of a football field!', 280, 230, COLORS.dim, 12);
+    }
+  },
+
+  /* ================ 7.4 EXAMPLE 3: Flag (Square - Triangle) ================ */
+  '74_3s1': {
+    title: 'Big shape first / 先找大形狀',
+    text: 'When a shape has one straight corner cut off, pretend the corner is still there. Find the <strong>full rectangle/square area</strong> first, then subtract the missing triangle.',
+    draw: (ctx)=>{
+      const cx=280, cy=160, s=150;
+      const sx=cx-s/2, sy=cy-s/2;
+      ctx.setLineDash([5,4]); ctx.strokeStyle=COLORS.dim; ctx.lineWidth=1.5;
+      ctx.strokeRect(sx, sy, s, s); ctx.setLineDash([]);
+      const legA=s*5/12, legB=s;
+      ctx.fillStyle='rgba(255,107,157,.25)'; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy); ctx.lineTo(sx+s-legA, sy);
+      ctx.lineTo(sx+s, sy+legB); ctx.lineTo(sx, sy+s);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      label(ctx, 'FLAG (what we want)', cx, cy+40, COLORS.pink, 12);
+      label(ctx, 'pretend this is filled in', cx, sy-20, COLORS.dim, 11);
+    }
+  },
+  '74_3s2': {
+    title: 'Square area / 正方形面積',
+    text: 'A square is length × length. Easy.',
+    draw: (ctx)=>{
+      const cx=280, cy=180, s=160;
+      ctx.fillStyle='rgba(255,107,157,.3)'; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.fillRect(cx-s/2, cy-s/2, s, s); ctx.strokeRect(cx-s/2, cy-s/2, s, s);
+      label(ctx, '12 in', cx, cy-s/2-14, COLORS.yellow);
+      label(ctx, '12 in', cx-s/2-24, cy, COLORS.yellow);
+      bigFormula(ctx, ['12 × 12 = 144 in²'], cx, 40, COLORS.green);
+    }
+  },
+  '74_3s3': {
+    title: 'Triangle area / 三角形面積',
+    text: 'The cut-off triangle is a right triangle with legs 5 and 12. Triangle area = ½ × base × height.',
+    draw: (ctx)=>{
+      const cx=280, cy=200;
+      const a=120, b=180;
+      ctx.fillStyle='rgba(126,203,245,.3)'; ctx.strokeStyle=COLORS.cyan; ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(cx-a/2, cy-b/2); ctx.lineTo(cx+a/2, cy-b/2);
+      ctx.lineTo(cx+a/2, cy+b/2); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      label(ctx, '5 in', cx, cy-b/2-14, COLORS.yellow);
+      label(ctx, '12 in', cx+a/2+26, cy, COLORS.yellow);
+      bigFormula(ctx, ['½ × 5 × 12 = 30 in²'], cx, 50, COLORS.green);
+    }
+  },
+  '74_3s4': {
+    title: 'Subtract / 相減',
+    text: 'Big minus small. Done.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['144  –  30  =  114 in²'], 280, 150, COLORS.green);
+      caption(ctx, 'square', 180, 100, COLORS.pink);
+      caption(ctx, 'triangle', 280, 100, COLORS.cyan);
+      caption(ctx, 'FLAG', 420, 100, COLORS.yellow);
+    }
+  },
+
+  /* ================ 7.4 EXAMPLE 4: Petal ================ */
+  '74_4s1': {
+    title: 'See the trick / 看出巧思',
+    text: 'Two quarter-circles drawn from opposite corners of a 14×14 square overlap in the middle — the overlap is the <strong>petal</strong>.',
+    draw: (ctx)=>{
+      const cx=280, cy=170, s=180;
+      const sx=cx-s/2, sy=cy-s/2;
+      ctx.strokeStyle=COLORS.grid; ctx.lineWidth=2;
+      ctx.strokeRect(sx, sy, s, s);
+      ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(sx, sy, s, 0, Math.PI/2); ctx.stroke();
+      ctx.strokeStyle=COLORS.cyan;
+      ctx.beginPath(); ctx.arc(sx+s, sy+s, s, Math.PI, 3*Math.PI/2); ctx.stroke();
+      label(ctx, 'Q1', sx+20, sy+25, COLORS.pink);
+      label(ctx, 'Q2', sx+s-20, sy+s-25, COLORS.cyan);
+      label(ctx, 'PETAL', cx, cy, COLORS.green, 13);
+      label(ctx, '14 × 14 square', cx, sy+s+18, COLORS.yellow, 12);
+    }
+  },
+  '74_4s2': {
+    title: 'Area of one quarter-circle / 一個四分之一圓',
+    text: 'A quarter-circle is ¼ of a full circle. So divide πr² by 4.',
+    draw: (ctx)=>{
+      const cx=200, cy=220, r=180;
+      ctx.fillStyle='rgba(255,107,157,.3)'; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(cx, cy);
+      ctx.lineTo(cx+r, cy); ctx.arc(cx, cy, r, 0, -Math.PI/2, true);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle=COLORS.orange; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx+r, cy); ctx.stroke();
+      ctx.setLineDash([]);
+      label(ctx, 'r = 14', cx+r/2, cy-14, COLORS.orange);
+      bigFormula(ctx, ['¼·π·14²', '= ¼·615.44', '= 153.86'], 440, 140, COLORS.green);
+    }
+  },
+  '74_4s3': {
+    title: 'Inclusion-exclusion / 容斥原理',
+    text: 'When two regions overlap, <strong>Q1 + Q2 = union + intersection</strong>. Here the union is the whole square (r = 14 = side), and the intersection is the petal. So 2·Q = square + petal.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['2 · Q  =  square + petal', '2·153.86 = 196 + petal', 'petal = 307.72 – 196', '       = 111.72 cm²'], 280, 150, COLORS.green);
+    }
+  },
+  '74_4s4': {
+    title: 'Remaining paper / 剩餘部分',
+    text: 'After cutting out the petal, what\'s left of the square? Just subtract.',
+    draw: (ctx)=>{
+      const cx=280, cy=170, s=140;
+      const sx=cx-s/2, sy=cy-s/2;
+      ctx.fillStyle='rgba(127,245,195,.18)'; ctx.strokeStyle=COLORS.green; ctx.lineWidth=2;
+      ctx.fillRect(sx, sy, s, s); ctx.strokeRect(sx, sy, s, s);
+      /* cut out petal */
+      ctx.save();
+      ctx.beginPath(); ctx.arc(sx, sy, s, 0, Math.PI/2); ctx.closePath(); ctx.clip();
+      ctx.fillStyle = '#1a1028';
+      ctx.beginPath(); ctx.arc(sx+s, sy+s, s, Math.PI, 3*Math.PI/2); ctx.closePath(); ctx.fill();
+      ctx.restore();
+      label(ctx, 'crescents (remaining)', cx, cy+s/2+20, COLORS.green, 12);
+      bigFormula(ctx, ['196 – 111.72 = 84.28 cm²'], cx, 50, COLORS.green);
+    }
+  },
+
+  /* ================ 7.5 EXAMPLE 1: Rectangular Prism ================ */
+  '75_1s1': {
+    title: 'Given / 已知',
+    text: 'Write down the three dimensions clearly before computing anything. Label which is length, width, height — it prevents careless mistakes later.',
+    draw: (ctx)=>{
+      const sc=18;
+      const w=8*sc, h=6*sc;
+      const cx=200, cy=200, fx=cx-w/2, fy=cy-h/2;
+      const front=[[fx,fy],[fx+w,fy],[fx+w,fy+h],[fx,fy+h]];
+      const dx=5*sc*0.55, dy=-5*sc*0.45;
+      drawPrism(ctx, front, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+      label(ctx, '8 cm (length)', cx, fy+h+16, COLORS.yellow, 12);
+      label(ctx, '6 cm (height)', fx-48, cy, COLORS.yellow, 12);
+      label(ctx, '5 cm (width)', fx+w+dx+24, fy+h+dy/2+8, COLORS.yellow, 12);
+    }
+  },
+  '75_1s2': {
+    title: 'Area of base / 底面積',
+    text: 'Pick any face as the base. The rectangle on the ground (8 × 5) works perfectly. Multiply length × width.',
+    draw: (ctx)=>{
+      const cx=280, cy=200, w=240, h=150;
+      ctx.fillStyle='rgba(255,107,157,.35)'; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.fillRect(cx-w/2, cy-h/2, w, h); ctx.strokeRect(cx-w/2, cy-h/2, w, h);
+      label(ctx, '8 cm', cx, cy-h/2-14, COLORS.yellow);
+      label(ctx, '5 cm', cx-w/2-26, cy, COLORS.yellow);
+      bigFormula(ctx, ['8 × 5 = 40 cm²'], cx, 40, COLORS.green);
+    }
+  },
+  '75_1s3': {
+    title: 'Volume / 體積',
+    text: 'Multiply the base area by the height. The 40 cm² base is stacked up 6 cm tall — that\'s 6 identical layers of 40 cm² each.',
+    draw: (ctx)=>{
+      /* stack of 6 layers */
+      const cx=280, cy=280, w=200, layerH=28;
+      for(let i=0;i<6;i++){
+        const y=cy-20-i*layerH;
+        ctx.fillStyle = i%2===0 ? 'rgba(255,107,157,.25)' : 'rgba(127,245,195,.2)';
+        ctx.strokeStyle=COLORS.pink; ctx.lineWidth=1.5;
+        ctx.fillRect(cx-w/2, y-layerH, w, layerH);
+        ctx.strokeRect(cx-w/2, y-layerH, w, layerH);
+        label(ctx, `40 cm²`, cx, y-layerH/2, COLORS.text, 10);
+      }
+      label(ctx, '6 layers', cx+w/2+30, cy-3*layerH-20, COLORS.yellow, 12);
+      bigFormula(ctx, ['V = 40 × 6 = 240 cm³'], cx, 30, COLORS.green);
+    }
+  },
+
+  /* ================ 7.5 EXAMPLE 2: Triangular Prism ================ */
+  '75_2s1': {
+    title: 'Given / 已知',
+    text: 'The base is a right triangle (legs 4 and 3). The prism length is 10 — that\'s how far the triangle extends back into space.',
+    draw: (ctx)=>{
+      const sc=22;
+      const a=4*sc, b=3*sc;
+      const cx=180, cy=220;
+      const front=[[cx,cy],[cx+a,cy],[cx,cy-b]];
+      const dx=10*sc*0.4, dy=-10*sc*0.3;
+      drawPrism(ctx, front, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+      label(ctx, '4 cm', cx+a/2, cy+16, COLORS.yellow);
+      label(ctx, '3 cm', cx-22, cy-b/2, COLORS.yellow);
+      label(ctx, '10 cm', cx+a+dx/2+10, cy+dy/2+10, COLORS.yellow);
+    }
+  },
+  '75_2s2': {
+    title: 'Base area / 底面積',
+    text: 'For a right triangle, the two legs ARE the base and height. Multiply them and halve.',
+    draw: (ctx)=>{
+      const cx=280, cy=220;
+      const a=200, b=150;
+      ctx.fillStyle='rgba(255,107,157,.35)'; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(cx-a/2, cy); ctx.lineTo(cx+a/2, cy);
+      ctx.lineTo(cx-a/2, cy-b);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      label(ctx, '4 cm (base)', cx, cy+16, COLORS.yellow);
+      label(ctx, '3 cm (height)', cx-a/2-48, cy-b/2, COLORS.yellow);
+      /* right-angle marker */
+      ctx.strokeStyle=COLORS.yellow; ctx.lineWidth=1.5;
+      ctx.strokeRect(cx-a/2, cy-14, 14, 14);
+      bigFormula(ctx, ['½ × 4 × 3 = 6 cm²'], cx, 40, COLORS.green);
+    }
+  },
+  '75_2s3': {
+    title: 'Volume / 體積',
+    text: 'Base area × prism length. The tiny 6-cm² triangle swept 10 cm through space.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['V = (base) × length', '   = 6 × 10', '   = 60 cm³'], 280, 160, COLORS.green);
+    }
+  },
+
+  /* ================ 7.5 EXAMPLE 3: Trapezoidal Prism ================ */
+  '75_3s1': {
+    title: 'Given / 已知',
+    text: 'The base is a trapezoid. <strong>Watch out:</strong> the trapezoid has an internal height (between parallel sides) AND the prism has a length — they are different distances!',
+    draw: (ctx)=>{
+      const sc=18;
+      const B=8*sc, T=5*sc, H=4*sc;
+      const cx=180, cy=230;
+      const offset=(B-T)/2;
+      const front=[[cx,cy],[cx+B,cy],[cx+B-offset,cy-H],[cx+offset,cy-H]];
+      const dx=12*sc*0.33, dy=-12*sc*0.28;
+      drawPrism(ctx, front, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+      label(ctx, '8 in', cx+B/2, cy+16, COLORS.yellow);
+      label(ctx, '5 in', cx+B/2, cy-H-10, COLORS.yellow);
+      label(ctx, '4 in (trap h)', cx-52, cy-H/2, COLORS.yellow, 11);
+      label(ctx, '12 in (prism L)', cx+B+dx+20, cy+dy/2+10, COLORS.yellow, 11);
+    }
+  },
+  '75_3s2': {
+    title: 'Base area / 底面積',
+    text: 'Trapezoid = average of parallel sides × height between them.',
+    draw: (ctx)=>{
+      const cx=280, cy=220;
+      const B=260, T=170, H=140;
+      const off=(B-T)/2;
+      ctx.fillStyle='rgba(255,107,157,.35)'; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(cx-B/2, cy); ctx.lineTo(cx+B/2, cy);
+      ctx.lineTo(cx+B/2-off, cy-H); ctx.lineTo(cx-B/2+off, cy-H);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      label(ctx, '8', cx, cy+16, COLORS.yellow);
+      label(ctx, '5', cx, cy-H-12, COLORS.yellow);
+      label(ctx, '4', cx+B/2+18, cy-H/2, COLORS.yellow);
+      bigFormula(ctx, ['½·(5+8)·4 = 26 in²'], cx, 40, COLORS.green);
+    }
+  },
+  '75_3s3': {
+    title: 'Volume / 體積',
+    text: 'Base area × prism length.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['V = 26 × 12', '   = 312 in³'], 280, 150, COLORS.green);
+    }
+  },
+
+  /* ================ 7.5 EXAMPLE 4: Cross-Section ================ */
+  '75_4s1': {
+    title: 'Slice parallel to the base / 平行於底切開',
+    text: 'Picture cutting the hexagonal prism horizontally, all the way through, parallel to the hexagonal top and bottom. What does the cut surface look like?',
+    draw: (ctx)=>{
+      const cx=280, cy=180, R=50, H=120;
+      const hex=[];
+      for(let i=0;i<6;i++){
+        const a=Math.PI/3*i + Math.PI/6;
+        hex.push([cx+R*Math.cos(a), cy-R*Math.sin(a)]);
+      }
+      drawPrism(ctx, hex, 0, -H, {fill:COLORS.fill, stroke:COLORS.pink, dashBack:false});
+      /* slicing plane */
+      ctx.fillStyle='rgba(127,245,195,.25)'; ctx.strokeStyle=COLORS.green; ctx.lineWidth=2; ctx.setLineDash([5,3]);
+      ctx.beginPath();
+      hex.forEach(([x,y],i)=>{
+        if(i===0) ctx.moveTo(x, cy-H/2); else ctx.lineTo(x, cy-H/2);
+      }); ctx.closePath();
+      ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
+      label(ctx, 'slice here →', 450, cy-H/2, COLORS.green, 12);
+    }
+  },
+  '75_4s2': {
+    title: 'The prism rule / 柱體性質',
+    text: 'Every slice parallel to the base is <strong>congruent</strong> to the base — identical shape AND identical size. This is the DEFINING property of a prism.',
+    draw: (ctx)=>{
+      const drawHex=(cx,cy,R,color)=>{
+        ctx.fillStyle='rgba(127,245,195,.25)'; ctx.strokeStyle=color; ctx.lineWidth=2;
+        ctx.beginPath();
+        for(let i=0;i<6;i++){
+          const a=Math.PI/3*i + Math.PI/6;
+          const x=cx+R*Math.cos(a), y=cy-R*Math.sin(a);
+          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+      };
+      drawHex(130, 150, 50, COLORS.pink);
+      drawHex(280, 150, 50, COLORS.green);
+      drawHex(430, 150, 50, COLORS.cyan);
+      label(ctx, 'top', 130, 230, COLORS.pink);
+      label(ctx, 'middle', 280, 230, COLORS.green);
+      label(ctx, 'bottom', 430, 230, COLORS.cyan);
+      label(ctx, 'all CONGRUENT (identical)', 280, 275, COLORS.yellow, 13);
+    }
+  },
+  '75_4s3': {
+    title: 'Conclusion / 結論',
+    text: 'Whatever shape the base is, that\'s what every parallel slice looks like. For our hexagonal prism, every slice is a <strong>hexagon</strong> — same one.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['cross-section = hexagon', '  (congruent to the base)'], 280, 150, COLORS.green);
+      label(ctx, 'a.k.a. prism property', 280, 230, COLORS.dim, 12);
+    }
+  },
+
+  /* ================ 7.6 EXAMPLE 1: Wooden Block ================ */
+  '76_1s1': {
+    title: 'Given / 已知',
+    text: 'Three dimensions of a rectangular block. We need BOTH its volume (how much space it occupies) and its surface area (how much paint to cover it).',
+    draw: (ctx)=>{
+      const sc=24;
+      const w=5*sc, h=4*sc;
+      const cx=200, cy=200, fx=cx-w/2, fy=cy-h/2;
+      const front=[[fx,fy],[fx+w,fy],[fx+w,fy+h],[fx,fy+h]];
+      const dx=3*sc*0.55, dy=-3*sc*0.45;
+      drawPrism(ctx, front, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+      label(ctx, '5 cm', cx, fy+h+16, COLORS.yellow);
+      label(ctx, '4 cm', fx-28, cy, COLORS.yellow);
+      label(ctx, '3 cm', fx+w+dx/2+18, fy+h+dy/2+6, COLORS.yellow);
+    }
+  },
+  '76_1s2': {
+    title: 'Volume / 體積',
+    text: 'For a rectangular prism, just multiply all three dimensions.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['V = 5 × 3 × 4', '   = 60 cm³'], 280, 150, COLORS.green);
+    }
+  },
+  '76_1s3': {
+    title: 'Surface area from the net / 從展開圖',
+    text: 'Unfold the box like opening a cardboard package flat. You get six rectangles in three matching pairs. Add every piece.',
+    draw: (ctx)=>{
+      const u=18;
+      const px=170, py=60;
+      const draw=(x,y,w,h,color,text)=>{
+        ctx.fillStyle = color+'33'; ctx.strokeStyle = color; ctx.lineWidth=1.5;
+        ctx.fillRect(x,y,w,h); ctx.strokeRect(x,y,w,h);
+        label(ctx, text, x+w/2, y+h/2, COLORS.text, 10);
+      };
+      draw(px, py+3*u, 5*u, 4*u, '#ff6b9d', '20');
+      draw(px, py, 5*u, 3*u, '#7ecbf5', '15');
+      draw(px, py+7*u, 5*u, 3*u, '#7ecbf5', '15');
+      draw(px-3*u, py+3*u, 3*u, 4*u, '#c084fc', '12');
+      draw(px+5*u, py+3*u, 3*u, 4*u, '#c084fc', '12');
+      draw(px+8*u, py+3*u, 5*u, 4*u, '#ff6b9d', '20');
+      bigFormula(ctx, ['15+15+20+20+12+12 = 94 cm²'], 280, 265, COLORS.green);
+    }
+  },
+  '76_1s4': {
+    title: 'Check with the formula / 用公式核對',
+    text: 'For rectangular prisms, you can skip the net with SA = 2(lw + lh + wh). Three products, double each. Same answer.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['SA = 2(lw + lh + wh)', '   = 2(15 + 20 + 12)', '   = 2(47)', '   = 94 cm² ✓'], 280, 150, COLORS.green);
+    }
+  },
+
+  /* ================ 7.6 EXAMPLE 2: Birdhouse (Pentagon Prism) ================ */
+  '76_2s1': {
+    title: 'Given / 已知',
+    text: 'The end-face is a pentagon shaped like a house — a rectangle topped by a triangle. The prism is 10 cm long going back.',
+    draw: (ctx)=>{
+      const sc=22;
+      const W=6*sc, Hrect=4*sc, Htri=3*sc;
+      const cx=220, cy=230;
+      const fx=cx-W/2, fy=cy-Hrect;
+      const front=[[fx,cy],[fx+W,cy],[fx+W,fy],[fx+W/2,fy-Htri],[fx,fy]];
+      const dx=10*sc*0.3, dy=-10*sc*0.25;
+      drawPrism(ctx, front, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+      label(ctx, '6', cx, cy+14, COLORS.yellow);
+      label(ctx, '4', fx-12, cy-Hrect/2, COLORS.yellow);
+      label(ctx, '3', fx+W/2+8, fy-Htri/2, COLORS.yellow);
+      label(ctx, '10', fx+W+dx/2+8, cy+dy/2+6, COLORS.yellow);
+    }
+  },
+  '76_2s2': {
+    title: 'Base area (composite) / 底面積',
+    text: 'The pentagon = rectangle (6×4) + triangle (½·6·3). Treat them as two pieces and sum.',
+    draw: (ctx)=>{
+      const cx=280, cy=200;
+      const W=180, Hrect=120, Htri=90;
+      const fx=cx-W/2, fy=cy-Hrect/2;
+      /* rectangle */
+      ctx.fillStyle='rgba(255,107,157,.3)'; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.fillRect(fx, fy, W, Hrect); ctx.strokeRect(fx, fy, W, Hrect);
+      /* triangle on top */
+      ctx.fillStyle='rgba(126,203,245,.3)'; ctx.strokeStyle=COLORS.cyan;
+      ctx.beginPath();
+      ctx.moveTo(fx, fy); ctx.lineTo(fx+W, fy); ctx.lineTo(fx+W/2, fy-Htri);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      label(ctx, '6×4 = 24', cx, fy+Hrect/2, COLORS.text, 12);
+      label(ctx, '½·6·3 = 9', cx, fy-Htri/3, COLORS.text, 11);
+      bigFormula(ctx, ['24 + 9 = 33 cm²'], cx, 40, COLORS.green);
+    }
+  },
+  '76_2s3': {
+    title: 'Volume / 體積',
+    text: 'Standard prism formula: base × length.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['V = 33 × 10', '   = 330 cm³'], 280, 150, COLORS.green);
+    }
+  },
+  '76_2s4': {
+    title: 'Surface area / 表面積',
+    text: 'Two pentagon ends + one rectangle for each side of the pentagon (4 rectangles: bottom, 2 slanted roof pieces, 2 vertical walls). Slant length needs Pythagoras.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['2 × pentagon  = 66', '+ 2 slant rects = 84.85', '+ 2 side walls = 80', '+ 1 bottom  = 60', '──────────────', 'SA ≈ 290.85 cm²'], 280, 150, COLORS.green);
+    }
+  },
+
+  /* ================ 7.6 EXAMPLE 3: L-shape Prism ================ */
+  '76_3s1': {
+    title: 'Given / 已知',
+    text: 'The base is an L-shape. Imagine a 10×6 rectangle with a 4×3 piece bitten out of the top-right corner. Prism depth = 5 cm.',
+    draw: (ctx)=>{
+      const sc=20;
+      const W=10*sc, H=6*sc;
+      const cutW=4*sc, cutH=3*sc;
+      const cx=220, cy=240;
+      const fx=cx-W/2, fy=cy-H;
+      const L=[[fx,fy],[fx+W-cutW,fy],[fx+W-cutW,fy+cutH],[fx+W,fy+cutH],[fx+W,fy+H],[fx,fy+H]];
+      const dx=5*sc*0.5, dy=-5*sc*0.4;
+      drawPrism(ctx, L, dx, dy, {fill:COLORS.fill, stroke:COLORS.pink});
+      label(ctx, '10', cx, fy+H+16, COLORS.yellow);
+      label(ctx, '6', fx-14, fy+H/2, COLORS.yellow);
+      label(ctx, '4', fx+W-cutW/2, fy-10, COLORS.yellow);
+      label(ctx, '3', fx+W+12, fy+cutH/2, COLORS.yellow);
+      label(ctx, '5', fx+W+dx/2+12, fy+H+dy/2+6, COLORS.yellow);
+    }
+  },
+  '76_3s2': {
+    title: 'Subtract method / 減法法',
+    text: 'Pretend the full 10×6 rectangle is solid. Its area is 60. Now subtract the 4×3 bite (area 12) that isn\'t there.',
+    draw: (ctx)=>{
+      const cx=280, cy=200;
+      const W=240, H=140;
+      const cutW=96, cutH=70;
+      const fx=cx-W/2, fy=cy-H/2;
+      /* ghost full rectangle */
+      ctx.setLineDash([5,4]); ctx.strokeStyle=COLORS.dim; ctx.lineWidth=1.5;
+      ctx.strokeRect(fx, fy, W, H); ctx.setLineDash([]);
+      /* L shape */
+      ctx.fillStyle='rgba(255,107,157,.3)'; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(fx, fy); ctx.lineTo(fx+W-cutW, fy);
+      ctx.lineTo(fx+W-cutW, fy+cutH); ctx.lineTo(fx+W, fy+cutH);
+      ctx.lineTo(fx+W, fy+H); ctx.lineTo(fx, fy+H); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      /* cut shown */
+      ctx.fillStyle='rgba(126,203,245,.25)'; ctx.strokeStyle=COLORS.cyan;
+      ctx.fillRect(fx+W-cutW, fy, cutW, cutH); ctx.strokeRect(fx+W-cutW, fy, cutW, cutH);
+      label(ctx, 'bite out (4×3=12)', fx+W-cutW/2, fy+cutH/2, COLORS.cyan, 11);
+      bigFormula(ctx, ['60 – 12 = 48 cm²'], cx, 40, COLORS.green);
+    }
+  },
+  '76_3s3': {
+    title: 'Volume / 體積',
+    text: 'Base area × depth.',
+    draw: (ctx)=>{
+      bigFormula(ctx, ['V = 48 × 5', '   = 240 cm³'], 280, 150, COLORS.green);
+    }
+  },
+  '76_3s4': {
+    title: 'Check with split method / 用分割法核對',
+    text: 'Alternative: split the L into a 10×3 horizontal strip + a 6×3 vertical strip. They add to 48 — confirms the answer.',
+    draw: (ctx)=>{
+      const cx=280, cy=200;
+      const W=240, H=140;
+      const cutW=96, cutH=70;
+      const fx=cx-W/2, fy=cy-H/2;
+      /* horizontal bottom strip (10×3) */
+      ctx.fillStyle='rgba(255,107,157,.4)'; ctx.strokeStyle=COLORS.pink; ctx.lineWidth=2;
+      ctx.fillRect(fx, fy+cutH, W, H-cutH); ctx.strokeRect(fx, fy+cutH, W, H-cutH);
+      label(ctx, '10 × 3 = 30', fx+W/2, fy+cutH+(H-cutH)/2, COLORS.text, 13);
+      /* vertical left strip (6×3) */
+      ctx.fillStyle='rgba(126,203,245,.4)'; ctx.strokeStyle=COLORS.cyan;
+      ctx.fillRect(fx, fy, W-cutW, cutH); ctx.strokeRect(fx, fy, W-cutW, cutH);
+      label(ctx, '6 × 3 = 18', fx+(W-cutW)/2, fy+cutH/2, COLORS.text, 13);
+      bigFormula(ctx, ['30 + 18 = 48 ✓'], cx, 40, COLORS.green);
+    }
+  }
+};
+
+/* wire up click handlers */
+document.querySelectorAll('.step-item').forEach((step)=>{
+  const problem = step.closest('.shape-problem');
+  if(!problem) return;
+  const pid = problem.dataset.problem;
+  if(!pid) return;
+  const siblings = problem.querySelectorAll('.step-item');
+  const stepNum = Array.from(siblings).indexOf(step) + 1;
+  const key = `${pid}s${stepNum}`;
+  if(stepExplanations[key]){
+    step.dataset.stepKey = key;
+    step.addEventListener('click', ()=>showStepModal(key, stepNum));
+  } else {
+    /* step has no explanation — remove click cue */
+    step.style.cursor = 'default';
+    step.style.paddingRight = '.5rem';
+    const after = document.createElement('style');
+  }
+});
+
+function showStepModal(key, stepNum){
+  const data = stepExplanations[key];
+  if(!data) return;
+  document.getElementById('modalStepNum').textContent = stepNum;
+  document.getElementById('modalStepTitle').textContent = data.title;
+  document.getElementById('modalExplanation').innerHTML = data.text;
+  const canvas = document.getElementById('stepModalCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  gridBg(ctx);
+  if(data.draw) data.draw(ctx);
+  document.getElementById('stepModal').classList.add('active');
+}
+
+function closeStepModal(){
+  document.getElementById('stepModal').classList.remove('active');
+}
+
+document.getElementById('stepModal').addEventListener('click',(e)=>{
+  if(e.target.id === 'stepModal') closeStepModal();
+});
+/* Esc to close */
+addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape') closeStepModal();
+});
+</script>
+</body>
+</html>
