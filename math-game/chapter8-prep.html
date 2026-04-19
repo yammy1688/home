@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Chapter 8 Prep — Statistics</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Quicksand',system-ui,-apple-system,sans-serif;
+  background:#1a1028;color:#e8dff5;
+  min-height:100vh;min-height:100dvh;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:1.5rem}
+.back{display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.5rem;color:#7ecbf5;text-decoration:none;
+  font-family:'Press Start 2P',monospace;font-size:.55rem;
+  padding:.5rem .9rem;border:2px solid #7ecbf544;background:rgba(26,16,40,.6);
+  transition:all .25s;-webkit-touch-callout:none}
+.back:hover{border-color:#7ecbf5;background:rgba(26,16,40,.8)}
+
+header{text-align:center;padding:1.5rem 0 .5rem}
+header h1{font-family:'Press Start 2P',monospace;font-size:clamp(.95rem,3.2vw,1.4rem);
+  color:#ffb3d9;text-shadow:3px 3px 0 #6c3483,0 0 20px rgba(255,179,217,.3);
+  line-height:1.6;}
+header .subtitle{color:#b8a9cc;margin-top:.5rem;font-size:.85rem}
+header .emoji{font-size:1.3rem;display:inline-block;animation:bounce 1.2s steps(4) infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+.tabs{display:flex;gap:.3rem;margin:1.25rem 0;padding:3px;
+  background:#2d1f42;border:3px solid #4a3660;width:fit-content;margin-inline:auto;flex-wrap:wrap;justify-content:center}
+.tab{
+  padding:.55rem 1rem;border:none;
+  background:transparent;color:#b8a9cc;cursor:pointer;
+  font-family:'Press Start 2P',monospace;font-size:.5rem;
+  transition:all .2s;position:relative;user-select:none;
+}
+.tab:hover{color:#ffb3d9}
+.tab:active{transform:translateY(2px)}
+.tab.active{background:#ff6b9d;color:#1a1028;
+  box-shadow:0 4px 0 #c44d78,0 0 16px rgba(255,107,157,.3)}
+
+.panel{display:none;animation:fadeUp .4s ease}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.glass{
+  background:#2d1f42;border:3px solid #4a3660;
+  padding:1.5rem;margin-bottom:1.25rem;
+  box-shadow:4px 4px 0 #1a1028;
+}
+.section-title{font-family:'Press Start 2P',monospace;font-size:.75rem;color:#ffe47a;margin-bottom:1rem;line-height:1.5}
+.section-intro{color:#b8a9cc;font-size:.88rem;margin-bottom:1rem;line-height:1.6}
+
+.prep-formulas{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.prep-formula-card{background:#1a1028;border:2px solid #4a3660;padding:1rem;box-shadow:2px 2px 0 #0d0818}
+.prep-formula-card h4{font-family:'Press Start 2P',monospace;font-size:.5rem;color:#ff6b9d;margin-bottom:.5rem;line-height:1.5}
+.prep-formula-card .formula{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:#7ff5c3;margin:.3rem 0;word-break:break-word}
+.prep-formula-card .note{font-size:.75rem;color:#8bb8cc;line-height:1.5}
+@media(max-width:600px){.prep-formulas{grid-template-columns:1fr}}
+
+.shape-problem{
+  background:#2d1f42;border:3px solid #4a3660;
+  padding:1.5rem;margin-bottom:1.25rem;
+  box-shadow:4px 4px 0 #1a1028;
+}
+.shape-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.shape-icon{font-size:1.8rem}
+.shape-title{font-family:'Press Start 2P',monospace;font-size:.55rem;color:#ffb3d9;line-height:1.6}
+.shape-type{font-size:.7rem;color:#c084fc;font-weight:700;margin-top:.2rem}
+.shape-canvas{
+  width:100%;height:auto;border:2px solid #4a3660;
+  background:#1a1028;margin-bottom:1rem;display:block;
+}
+.solution-steps{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}
+.step-item{cursor:pointer;transition:all .2s;position:relative;display:flex;align-items:flex-start;gap:.6rem;padding:.5rem 2.5rem .5rem .5rem}
+.step-item:hover{background:rgba(255,107,157,.1);border-radius:4px}
+.step-item::after{content:'👆 click';font-size:.6rem;color:#ff6b9d;opacity:.6;position:absolute;right:8px;top:50%;transform:translateY(-50%)}
+
+.step-modal{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(26,16,40,.95);
+  display:none;align-items:center;justify-content:center;
+  padding:1rem;
+}
+.step-modal.active{display:flex}
+.step-modal-content{
+  background:#2d1f42;border:3px solid #4a3660;
+  max-width:620px;width:100%;max-height:90vh;
+  overflow-y:auto;padding:1.5rem;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  animation:modalPop .3s ease;
+}
+@keyframes modalPop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.step-modal-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;border-bottom:2px solid #4a3660;padding-bottom:.75rem}
+.step-modal-num{width:32px;height:32px;min-width:32px;background:#ff6b9d;color:#1a1028;display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:.6rem}
+.step-modal-title{font-size:1rem;font-weight:700;color:#ffe47a;line-height:1.4}
+.step-modal-canvas{width:100%;height:300px;border:2px solid #4a3660;background:#1a1028;margin:1rem 0}
+.step-modal-explanation{color:#b8a9cc;font-size:.9rem;line-height:1.7;margin:1rem 0}
+.step-modal-explanation strong{color:#7ecbf5}
+.step-modal-close{background:#ff6b9d;color:#1a1028;border:none;padding:.6rem 1.2rem;font-family:'Press Start 2P',monospace;font-size:.5rem;cursor:pointer;margin-top:1rem}
+.step-modal-close:hover{background:#ff8fab}
+.step-num{width:28px;height:28px;min-width:28px;background:#ff6b9d;color:#1a1028;display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:.5rem;font-weight:700}
+.step-content{font-size:.85rem;color:#e8dff5;line-height:1.6}
+.step-content strong{color:#7ecbf5}
+.step-formula{background:#1a1028;border-left:3px solid #ffe47a;padding:.4rem .7rem;margin:.4rem 0;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#e8dff5;overflow-x:auto}
+.green{color:#7ff5c3}
+.purple{color:#c084fc}
+.tip-box{background:#1a1028;border:2px solid #c084fc;padding:1rem;margin-top:.5rem;box-shadow:2px 2px 0 #1a1028}
+.tip-title{font-family:'Press Start 2P',monospace;font-size:.5rem;color:#c084fc;margin-bottom:.4rem}
+.tip-content{font-size:.82rem;color:#b8a9cc;line-height:1.6}
+.tip-content strong{color:#7ff5c3}
+.mini-label{font-family:'Press Start 2P',monospace;font-size:.45rem;color:#ffe47a;letter-spacing:1px;margin-bottom:.4rem;display:block}
+
+/* ===== TEST TAB STYLES ===== */
+.quiz-header{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;padding:1rem 1.25rem;margin-bottom:1rem}
+.quiz-header .streak{display:flex;gap:.15rem;flex-wrap:wrap}
+.streak-dot{width:20px;height:20px;border:2px solid #4a3660;display:grid;place-items:center;font-size:.6rem;transition:all .3s}
+.streak-dot.correct{border-color:#7ff5c3;background:#7ff5c320;color:#7ff5c3}
+.streak-dot.wrong{border-color:#ff6b9d;background:#ff6b9d20;color:#ff6b9d}
+.streak-dot.pending{border-color:#4a3660}
+.score-display{display:flex;align-items:baseline;gap:.3rem}
+.score-display .num{font-size:1.6rem;font-weight:700;font-family:'Press Start 2P',monospace;color:#ffe47a;text-shadow:2px 2px 0 #c4a030}
+.score-display .label{color:#b8a9cc;font-size:.7rem;font-weight:700;font-family:'Press Start 2P',monospace}
+.question{margin-bottom:1rem}
+.question h4{color:#e8dff5;font-size:1rem;margin-bottom:.75rem;font-weight:700;line-height:1.5}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.choice{padding:.75rem .8rem;border:2px solid #4a3660;background:#2d1f42;color:#e8dff5;cursor:pointer;text-align:center;transition:all .2s;font-size:.85rem;font-weight:600;font-family:'JetBrains Mono',monospace;position:relative;overflow:hidden;-webkit-touch-callout:none;user-select:none;box-shadow:3px 3px 0 #1a1028}
+.choice:active{transform:translateY(2px);box-shadow:1px 1px 0 #1a1028}
+.choice.correct{background:#1a3a28;border-color:#7ff5c3;color:#7ff5c3;box-shadow:3px 3px 0 #1a3a28,0 0 16px rgba(127,245,195,.2)}
+.choice.wrong{background:#3a1a28;border-color:#ff6b9d;color:#ff6b9d}
+.choice.disabled{pointer-events:none;opacity:.5}
+.btn{padding:.55rem 1.2rem;border:none;background:#ff6b9d;color:#1a1028;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.5rem;transition:all .2s;box-shadow:3px 3px 0 #c44d78}
+.btn:active{transform:translateY(2px);box-shadow:1px 1px 0 #c44d78}
+.feedback{padding:.75rem 1rem;margin-top:.75rem;font-size:.85rem;line-height:1.5;display:none;font-weight:600;border:2px solid}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.right{background:#1a3a28;border-color:#7ff5c3;color:#7ff5c3}
+.feedback.wrong-fb{background:#3a1a28;border-color:#ff6b9d;color:#ff6b9d}
+.feedback .explain{margin-top:.5rem;color:#e8dff5;font-size:.82rem;line-height:1.6;font-weight:500}
+.quiz-canvas-area{text-align:center;margin-bottom:1rem}
+.quiz-canvas-area canvas{border:2px solid #4a3660;width:100%;height:auto;max-width:500px;background:#1a1028}
+@media(max-width:500px){.choices{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="wrap">
+  <a href="index.html" class="back">&larr; Back to Math Games / 返回數學遊戲</a>
+  <header>
+    <h1><span class="emoji">&#x1F4CA;</span> Chapter 8 Prep</h1>
+    <p class="subtitle">Statistics &mdash; Data, Plots &amp; Measures / 統計學</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="s81">&#x1F4CF; 8.1 Center</button>
+    <button class="tab" data-tab="s82">&#x1F333; 8.2 Stem &amp; Dot</button>
+    <button class="tab" data-tab="s83">&#x1F4CA; 8.3 Histograms</button>
+    <button class="tab" data-tab="stest">&#x1F4DD; Test</button>
+  </div>
+
+  <!-- =================== 8.1 MEASURES OF CENTER =================== -->
+  <div class="panel active" id="s81">
+
+    <div class="glass">
+      <h2 class="section-title">&#x1F4D6; 8.1 &mdash; Measures of Central Tendency</h2>
+      <p class="section-intro">Three numbers can summarize a whole data set: <strong style="color:#7ff5c3">mean</strong> (average), <strong style="color:#7ecbf5">median</strong> (middle), <strong style="color:#c084fc">mode</strong> (most common). Pick the one that tells the clearest story about your data.</p>
+
+      <span class="mini-label">Key Formulas / 關鍵公式</span>
+      <div class="prep-formulas">
+        <div class="prep-formula-card">
+          <h4>Mean 平均數</h4>
+          <div class="formula">mean = &Sigma;x &divide; n</div>
+          <div class="note">Sum of values &divide; count</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Median 中位數</h4>
+          <div class="formula">middle value (sorted)</div>
+          <div class="note">Even n &rarr; average of two middles</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Mode 眾數</h4>
+          <div class="formula">most frequent value</div>
+          <div class="note">Can have 0, 1, or many modes</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Range 全距</h4>
+          <div class="formula">max &minus; min</div>
+          <div class="note">How spread out the data is</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Outlier 離群值</h4>
+          <div class="formula">value far from the rest</div>
+          <div class="note">Pulls the mean; median is safer</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Which to Use 怎麼選</h4>
+          <div class="formula">skewed &rarr; median</div>
+          <div class="note">Symmetric &rarr; mean works fine</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 8.1 - 1 : Mean -->
+    <div class="shape-problem" data-problem="81_1">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F4CA;</div>
+        <div>
+          <div class="shape-title">Example 1: Finding the Mean / 求平均數</div>
+          <div class="shape-type">MEAN / 平均數</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c81_1" width="500" height="260"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Given</strong> / 已知<br>
+            Kayla&rsquo;s quiz scores: 82, 90, 75, 88, 95. Find the mean.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Add all values</strong> / 加起來<br>
+            <div class="step-formula">&Sigma;x = 82 + 90 + 75 + 88 + 95 = <span class="green">430</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Divide by count</strong> / 除以個數<br>
+            <div class="step-formula">n = 5,&nbsp; mean = 430 &divide; 5 = <span class="green">86</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">Mean is the &ldquo;balance point&rdquo; of the data. One very high or very low value can tilt it way off &mdash; that&rsquo;s when the median becomes a better story. / 平均數容易被極端值拉走。</div>
+      </div>
+    </div>
+
+    <!-- Example 8.1 - 2 : Median odd & even -->
+    <div class="shape-problem" data-problem="81_2">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F3AF;</div>
+        <div>
+          <div class="shape-title">Example 2: Median &mdash; Odd vs Even / 中位數奇偶</div>
+          <div class="shape-type">MEDIAN / 中位數</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c81_2" width="500" height="260"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Sort first!</strong> / 先排序<br>
+            Data A (odd): 7, 3, 9, 5, 1 &rarr; sorted: 1, 3, 5, 7, 9.<br>
+            Data B (even): 4, 8, 2, 6 &rarr; sorted: 2, 4, 6, 8.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Odd count = pick the middle</strong> / 奇數取中間<br>
+            <div class="step-formula">Median<sub>A</sub> = <span class="green">5</span> (the 3rd of 5)</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Even count = average the two middles</strong> / 偶數取平均<br>
+            <div class="step-formula">Median<sub>B</sub> = (4 + 6) &divide; 2 = <span class="green">5</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">Always <strong>sort</strong> before finding the median. Forgetting this is the #1 mistake on tests. / 找中位數前一定要先排序！</div>
+      </div>
+    </div>
+
+    <!-- Example 8.1 - 3 : Mode -->
+    <div class="shape-problem" data-problem="81_3">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F3B2;</div>
+        <div>
+          <div class="shape-title">Example 3: Mode &mdash; The Most Frequent / 眾數</div>
+          <div class="shape-type">MODE / 眾數</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c81_3" width="500" height="260"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Count how many times each value appears</strong> / 數每個值的次數<br>
+            Data: 3, 7, 5, 3, 9, 7, 3, 5.<br>
+            Tally: 3 &rarr; 3 times, 5 &rarr; 2, 7 &rarr; 2, 9 &rarr; 1.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Pick the highest count</strong> / 最高次數<br>
+            <div class="step-formula">Mode = <span class="green">3</span> (appears 3 times)</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Multi-mode or no mode</strong> / 雙眾數或無眾數<br>
+            If two values tie for the top count, there are <strong>two modes</strong> (bimodal). If every value appears once, there&rsquo;s <strong>no mode</strong>.
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">Mode is the only measure that works for non-numeric data too &mdash; e.g., the most common eye color in a class. / 眾數是唯一可用於非數字資料的量數。</div>
+      </div>
+    </div>
+
+    <!-- Example 8.1 - 4 : Outlier effect -->
+    <div class="shape-problem" data-problem="81_4">
+      <div class="shape-header">
+        <div class="shape-icon">&#x26A0;&#xFE0F;</div>
+        <div>
+          <div class="shape-title">Example 4: Outlier Effect / 離群值的影響</div>
+          <div class="shape-type">MEAN vs MEDIAN / 平均與中位</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c81_4" width="500" height="260"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Data</strong> / 資料<br>
+            Salaries ($1000s): 30, 32, 35, 36, 40, 42, 300 (last is the boss).
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Mean gets pulled up</strong> / 平均被拉高<br>
+            <div class="step-formula">mean = 515 &divide; 7 &asymp; <span class="green">73.6</span></div>
+            Nobody except the boss earns that much.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Median stays realistic</strong> / 中位數較真實<br>
+            <div class="step-formula">sorted middle (4th of 7) = <span class="green">36</span></div>
+            Median ignores how extreme the outlier is.
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; When to Pick</div>
+        <div class="tip-content">If the data is <strong>skewed</strong> or has outliers, the <strong>median</strong> summarizes the &ldquo;typical&rdquo; value better. For roughly symmetric data, the mean is fine. / 資料偏斜用中位數，對稱用平均數。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== 8.2 STEM-LEAF & DOT PLOTS =================== -->
+  <div class="panel" id="s82">
+
+    <div class="glass">
+      <h2 class="section-title">&#x1F333; 8.2 &mdash; Stem-and-Leaf &amp; Dot Plots</h2>
+      <p class="section-intro">Two quick ways to picture small data sets. <strong style="color:#7ff5c3">Stem-leaf</strong> keeps every original value; <strong style="color:#7ecbf5">dot plots</strong> stack a dot per value over a number line.</p>
+
+      <span class="mini-label">Key Ideas / 關鍵概念</span>
+      <div class="prep-formulas">
+        <div class="prep-formula-card">
+          <h4>Stem | Leaf 莖 | 葉</h4>
+          <div class="formula">stem = tens, leaf = ones</div>
+          <div class="note">e.g. 47 &rarr; stem 4, leaf 7</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Key 圖例</h4>
+          <div class="formula">4 | 7 means 47</div>
+          <div class="note">Always include a key!</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Sorted Leaves 排序</h4>
+          <div class="formula">smallest &rarr; largest</div>
+          <div class="note">Within each stem row</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Dot Plot 點圖</h4>
+          <div class="formula">&bull; per data point</div>
+          <div class="note">Stacked over the value</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Reading Shape 判斷分佈</h4>
+          <div class="formula">peak, cluster, gap</div>
+          <div class="note">Find mode, spread visually</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Good For 適用情境</h4>
+          <div class="formula">small sets (&lt; 50)</div>
+          <div class="note">Big data &rarr; use a histogram</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 8.2 - 1 : Build stem-leaf -->
+    <div class="shape-problem" data-problem="82_1">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F3AF;</div>
+        <div>
+          <div class="shape-title">Example 1: Build a Stem-and-Leaf Plot / 製作莖葉圖</div>
+          <div class="shape-type">CONSTRUCTION / 製圖</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c82_1" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Raw data</strong> / 原始資料<br>
+            Test scores: 72, 79, 91, 78, 85, 67, 94, 72, 83, 79, 85, 85.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Split each number into stem &amp; leaf</strong> / 拆成莖與葉<br>
+            72 &rarr; 7 | 2, 85 &rarr; 8 | 5, 91 &rarr; 9 | 1, &hellip;
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Group by stem, sort leaves</strong> / 依莖分組、葉排序<br>
+            <div class="step-formula">6 | 7<br>7 | 2 2 8 9 9<br>8 | 3 5 5 5<br>9 | 1 4</div>
+            Key: 6 | 7 means 67.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Read info straight off the plot</strong> / 直接讀出資訊<br>
+            Mode = <span class="green">85</span> (appears 3 times). Most scores cluster in the 70s &amp; 80s.
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">The leaves <strong>keep the original data</strong> &mdash; you can always reconstruct every score. Histograms and dot plots lose that detail. / 莖葉圖保留原始資料。</div>
+      </div>
+    </div>
+
+    <!-- Example 8.2 - 2 : Median from stem-leaf -->
+    <div class="shape-problem" data-problem="82_2">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F50D;</div>
+        <div>
+          <div class="shape-title">Example 2: Median from a Stem-Leaf / 從莖葉找中位數</div>
+          <div class="shape-type">READING / 讀圖</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c82_2" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Plot</strong> / 圖<br>
+            <div class="step-formula">6 | 7<br>7 | 2 2 8 9 9<br>8 | 3 5 5 5<br>9 | 1 4</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Count total values</strong> / 總個數<br>
+            n = 1 + 5 + 4 + 2 = 12 (even).
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Middle two values</strong> / 中間兩個<br>
+            The 6th &amp; 7th values when sorted are 79 and 83.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Average them</strong> / 取平均<br>
+            <div class="step-formula">median = (79 + 83) &divide; 2 = <span class="green">81</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">Since the leaves are already sorted within each stem, finding the median is just counting. / 葉已排序，找中位數只需計數。</div>
+      </div>
+    </div>
+
+    <!-- Example 8.2 - 3 : Dot plot -->
+    <div class="shape-problem" data-problem="82_3">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F535;</div>
+        <div>
+          <div class="shape-title">Example 3: Dot Plot / 點圖</div>
+          <div class="shape-type">CONSTRUCTION / 製圖</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c82_3" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Data</strong> / 資料<br>
+            Number of pets: 0, 1, 2, 1, 3, 2, 1, 0, 4, 1.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Draw a number line</strong> / 畫數線<br>
+            Range from 0 to 4. For each value, stack one dot above its position.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Dot counts</strong> / 點數統計<br>
+            0 &rarr; 2, 1 &rarr; 4, 2 &rarr; 2, 3 &rarr; 1, 4 &rarr; 1. Total = 10. Tallest column = <span class="green">1 pet</span> (the mode).
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">The <strong>tallest stack</strong> is always the mode; a wide spread of stacks &rarr; more variation. / 最高的一疊就是眾數。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== 8.3 HISTOGRAMS =================== -->
+  <div class="panel" id="s83">
+
+    <div class="glass">
+      <h2 class="section-title">&#x1F4CA; 8.3 &mdash; Frequency Tables &amp; Histograms</h2>
+      <p class="section-intro">When data has lots of values, group them into <strong style="color:#7ff5c3">class intervals</strong> and count how many fall in each. A <strong style="color:#7ecbf5">histogram</strong> is a bar chart of those counts &mdash; no gaps between bars.</p>
+
+      <span class="mini-label">Key Ideas / 關鍵概念</span>
+      <div class="prep-formulas">
+        <div class="prep-formula-card">
+          <h4>Class Interval 組距</h4>
+          <div class="formula">equal width groups</div>
+          <div class="note">e.g. 10&ndash;19, 20&ndash;29, &hellip;</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Frequency 頻率</h4>
+          <div class="formula">count per interval</div>
+          <div class="note">Tally marks &rarr; numbers</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Histogram 直方圖</h4>
+          <div class="formula">bars touch (no gaps)</div>
+          <div class="note">Because data is continuous</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Bar Chart 長條圖</h4>
+          <div class="formula">bars have gaps</div>
+          <div class="note">Categorical data (words)</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Modal Class 眾數組</h4>
+          <div class="formula">tallest bar</div>
+          <div class="note">Interval with most values</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Relative Frequency 相對頻率</h4>
+          <div class="formula">freq &divide; total</div>
+          <div class="note">Expressed as % or fraction</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 8.3 - 1 : Build frequency table -->
+    <div class="shape-problem" data-problem="83_1">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F4CB;</div>
+        <div>
+          <div class="shape-title">Example 1: Build a Frequency Table / 製作頻率表</div>
+          <div class="shape-type">TALLY / 劃記</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c83_1" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Data</strong> / 資料<br>
+            Heights (cm): 142, 151, 138, 160, 155, 147, 133, 168, 159, 144, 152, 146, 139, 162, 150.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Choose equal intervals</strong> / 選擇組距<br>
+            Min 133, Max 168 &rarr; use 10-cm groups: 130&ndash;139, 140&ndash;149, 150&ndash;159, 160&ndash;169.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Tally each value</strong> / 劃記<br>
+            <div class="step-formula">130&ndash;139: 3<br>140&ndash;149: 4<br>150&ndash;159: 5<br>160&ndash;169: 3</div>
+            Check: 3 + 4 + 5 + 3 = 15 &check;
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Modal class</strong> / 眾數組<br>
+            Tallest bar &rarr; <span class="green">150&ndash;159 cm</span> (5 students).
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">Use 5&ndash;10 intervals of <strong>equal width</strong>. Fewer &rarr; loses detail; more &rarr; bars too thin. / 5 到 10 組剛剛好。</div>
+      </div>
+    </div>
+
+    <!-- Example 8.3 - 2 : Draw histogram -->
+    <div class="shape-problem" data-problem="83_2">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F4CA;</div>
+        <div>
+          <div class="shape-title">Example 2: Draw the Histogram / 畫直方圖</div>
+          <div class="shape-type">GRAPHING / 繪圖</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c83_2" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Axes</strong> / 座標軸<br>
+            x-axis: class intervals. y-axis: frequency (count). Label both!
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Bars touch</strong> / 長條相鄰<br>
+            No gaps between bars &mdash; data is continuous.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Bar heights</strong> / 長條高度<br>
+            Match each interval&rsquo;s frequency. Tallest bar = modal class.
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Bar vs Histogram</div>
+        <div class="tip-content">Bar chart bars have <strong>gaps</strong> (categories). Histogram bars <strong>touch</strong> (continuous). / 長條圖有空隙，直方圖相鄰。</div>
+      </div>
+    </div>
+
+    <!-- Example 8.3 - 3 : Interpret histogram -->
+    <div class="shape-problem" data-problem="83_3">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F50E;</div>
+        <div>
+          <div class="shape-title">Example 3: Interpret the Histogram / 解讀直方圖</div>
+          <div class="shape-type">READING / 讀圖</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c83_3" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Scenario</strong> / 情境<br>
+            A histogram of daily steps shows intervals 0&ndash;2k, 2&ndash;4k, 4&ndash;6k, 6&ndash;8k, 8&ndash;10k with frequencies 2, 5, 8, 6, 4 (total = 25 people).
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>How many walked &ge; 6k steps?</strong> / 六千步以上？<br>
+            <div class="step-formula">6 + 4 = <span class="green">10 people</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Fraction &ge; 6k</strong> / 佔比<br>
+            <div class="step-formula">10 &divide; 25 = <span class="green">40%</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Modal class</strong> / 眾數組<br>
+            Tallest bar = <span class="green">4&ndash;6k steps</span> (frequency 8).
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">You <strong>can&rsquo;t</strong> recover exact values from a histogram &mdash; only counts per interval. That&rsquo;s the trade-off for handling big data. / 直方圖看不到個別資料。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== TEST =================== -->
+  <div class="panel" id="stest">
+    <div class="glass quiz-header">
+      <div class="score-display"><span class="num" id="score">0</span><span class="label" id="scoreLabel">/ 12</span></div>
+      <div class="streak" id="streak"></div>
+      <button class="btn" id="newQuiz" style="margin-left:auto">&#x1F504; New Test 新測驗</button>
+    </div>
+    <div class="glass" style="padding:1rem 1.25rem;font-size:.82rem;color:#b8a9cc">
+      Test yourself on Chapter 8 topics: <strong style="color:#7ff5c3">measures of center</strong>, <strong style="color:#7ecbf5">stem-leaf &amp; dot plots</strong>, and <strong style="color:#c084fc">histograms</strong>. Fresh questions every time. / 隨機題目，每次都不同。
+    </div>
+    <div id="quizArea"></div>
+  </div>
+
+  <footer style="text-align:center;padding:2rem 0 1rem;color:#6b5a85;font-size:.75rem">
+    Marshall Cavendish Course 2B &middot; Chapter 8 &middot; &copy; 2026
+  </footer>
+
+</div>
+
+<!-- step-click modal -->
+<div class="step-modal" id="stepModal">
+  <div class="step-modal-content">
+    <div class="step-modal-header">
+      <div class="step-modal-num" id="modalStepNum">1</div>
+      <div class="step-modal-title" id="modalStepTitle">Step Title</div>
+    </div>
+    <canvas class="step-modal-canvas" id="stepModalCanvas" width="560" height="300"></canvas>
+    <div class="step-modal-explanation" id="modalExplanation"></div>
+    <button class="step-modal-close" onclick="closeStepModal()">&check; Got it! / 明白了！</button>
+  </div>
+</div>
+
+<script>
+/* ===== background starfield ===== */
+const bg = document.getElementById('bgCanvas');
+const bgCtx = bg.getContext('2d');
+let stars = [];
+function initBg(){
+  bg.width = innerWidth; bg.height = innerHeight;
+  stars = Array.from({length:60},()=>({
+    x: Math.random()*bg.width, y: Math.random()*bg.height,
+    r: Math.random()*1.5 + .3, s: Math.random()*.3 + .05,
+    c: ['#ff6b9d','#7ecbf5','#c084fc','#ffe47a','#7ff5c3'][Math.floor(Math.random()*5)]
+  }));
+}
+function drawBg(){
+  bgCtx.fillStyle = '#1a1028';
+  bgCtx.fillRect(0,0,bg.width,bg.height);
+  stars.forEach(s=>{
+    s.y -= s.s;
+    if(s.y<0){s.y = bg.height; s.x = Math.random()*bg.width;}
+    bgCtx.fillStyle = s.c;
+    bgCtx.globalAlpha = .5;
+    bgCtx.fillRect(s.x, s.y, s.r, s.r);
+  });
+  bgCtx.globalAlpha = 1;
+  requestAnimationFrame(drawBg);
+}
+initBg(); drawBg();
+addEventListener('resize', initBg);
+
+/* ===== tabs ===== */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    drawAll();
+  });
+});
+
+/* ===== shared drawing helpers ===== */
+const COLORS = {
+  pink:'#ff6b9d', yellow:'#ffe47a', green:'#7ff5c3',
+  cyan:'#7ecbf5', purple:'#c084fc', orange:'#ffb27a',
+  grid:'#4a3660', fill:'rgba(255,107,157,.15)', fill2:'rgba(126,203,245,.15)',
+  text:'#e8dff5', dim:'#8b7ca0'
+};
+function setupCanvas(id){
+  const c = document.getElementById(id);
+  if(!c) return null;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  return {c, ctx};
+}
+function label(ctx, text, x, y, color, size=12, align='center'){
+  ctx.fillStyle = color || COLORS.text;
+  ctx.font = `600 ${size}px 'JetBrains Mono', monospace`;
+  ctx.textAlign = align;
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, x, y);
+}
+function titleLabel(ctx, text, x, y){
+  ctx.fillStyle = COLORS.yellow;
+  ctx.font = `700 11px 'Press Start 2P', monospace`;
+  ctx.textAlign = 'center';
+  ctx.fillText(text, x, y);
+}
+
+/* ============ 8.1 DRAWINGS ============ */
+function draw81_1(){
+  const s = setupCanvas('c81_1'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Quiz Scores: 82, 90, 75, 88, 95', 250, 28);
+  /* bar chart of the 5 values */
+  const vals = [82,90,75,88,95];
+  const names = ['Q1','Q2','Q3','Q4','Q5'];
+  const maxV = 100;
+  const bw = 50, gap = 20, baseY = 220;
+  const startX = 60;
+  vals.forEach((v,i)=>{
+    const x = startX + i*(bw+gap);
+    const h = (v/maxV) * 150;
+    ctx.fillStyle = COLORS.fill;
+    ctx.strokeStyle = COLORS.pink; ctx.lineWidth = 2;
+    ctx.fillRect(x, baseY - h, bw, h);
+    ctx.strokeRect(x, baseY - h, bw, h);
+    label(ctx, String(v), x + bw/2, baseY - h - 10, COLORS.yellow);
+    label(ctx, names[i], x + bw/2, baseY + 14, COLORS.dim);
+  });
+  /* mean line */
+  const mean = 86;
+  const mY = baseY - (mean/maxV)*150;
+  ctx.strokeStyle = COLORS.green; ctx.lineWidth = 2; ctx.setLineDash([6,4]);
+  ctx.beginPath(); ctx.moveTo(40, mY); ctx.lineTo(460, mY); ctx.stroke(); ctx.setLineDash([]);
+  label(ctx, 'mean = 86', 420, mY - 10, COLORS.green, 12, 'right');
+}
+
+function draw81_2(){
+  const s = setupCanvas('c81_2'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Sorted Data & Median Picks', 250, 28);
+  /* Data A: 1 3 5 7 9 (odd) */
+  const aVals = [1,3,5,7,9];
+  label(ctx, 'A (odd n = 5):', 60, 90, COLORS.cyan, 13, 'left');
+  aVals.forEach((v,i)=>{
+    const x = 80 + i*55;
+    const isMid = i===2;
+    ctx.fillStyle = isMid ? 'rgba(127,245,195,.35)' : COLORS.fill;
+    ctx.strokeStyle = isMid ? COLORS.green : COLORS.pink;
+    ctx.lineWidth = isMid ? 3 : 2;
+    ctx.fillRect(x, 105, 40, 40);
+    ctx.strokeRect(x, 105, 40, 40);
+    label(ctx, String(v), x+20, 125, COLORS.text, 16);
+  });
+  label(ctx, 'median = 5', 390, 125, COLORS.green, 13, 'left');
+  /* Data B: 2 4 6 8 (even) */
+  const bVals = [2,4,6,8];
+  label(ctx, 'B (even n = 4):', 60, 190, COLORS.cyan, 13, 'left');
+  bVals.forEach((v,i)=>{
+    const x = 80 + i*55;
+    const isMid = i===1 || i===2;
+    ctx.fillStyle = isMid ? 'rgba(127,245,195,.35)' : COLORS.fill;
+    ctx.strokeStyle = isMid ? COLORS.green : COLORS.pink;
+    ctx.lineWidth = isMid ? 3 : 2;
+    ctx.fillRect(x, 205, 40, 40);
+    ctx.strokeRect(x, 205, 40, 40);
+    label(ctx, String(v), x+20, 225, COLORS.text, 16);
+  });
+  label(ctx, 'avg(4,6) = 5', 320, 225, COLORS.green, 13, 'left');
+}
+
+function draw81_3(){
+  const s = setupCanvas('c81_3'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Frequency Tally: 3,7,5,3,9,7,3,5', 250, 28);
+  const counts = [[3,3],[5,2],[7,2],[9,1]];
+  const baseY = 220;
+  counts.forEach(([v,c],i)=>{
+    const x = 110 + i*80;
+    const h = c*40;
+    const isMode = v===3;
+    ctx.fillStyle = isMode ? 'rgba(127,245,195,.35)' : COLORS.fill;
+    ctx.strokeStyle = isMode ? COLORS.green : COLORS.pink;
+    ctx.lineWidth = isMode ? 3 : 2;
+    ctx.fillRect(x-30, baseY - h, 60, h);
+    ctx.strokeRect(x-30, baseY - h, 60, h);
+    label(ctx, String(c), x, baseY - h - 10, COLORS.yellow);
+    label(ctx, String(v), x, baseY + 14, COLORS.text);
+  });
+  /* axis */
+  ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(60, baseY); ctx.lineTo(460, baseY); ctx.stroke();
+  label(ctx, 'value', 250, baseY + 34, COLORS.dim, 11);
+  label(ctx, 'count', 70, 80, COLORS.dim, 11);
+  label(ctx, 'MODE = 3', 380, 100, COLORS.green, 13);
+}
+
+function draw81_4(){
+  const s = setupCanvas('c81_4'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Salaries ($1000): outlier impact', 250, 28);
+  const vals = [30,32,35,36,40,42,300];
+  /* squish 300 into plot with a break */
+  const baseY = 220;
+  const maxShown = 60;
+  vals.forEach((v,i)=>{
+    const x = 70 + i*55;
+    const shown = v > maxShown;
+    const h = shown ? 170 : (v/maxShown)*170;
+    ctx.fillStyle = shown ? 'rgba(255,107,157,.35)' : COLORS.fill2;
+    ctx.strokeStyle = shown ? COLORS.pink : COLORS.cyan;
+    ctx.lineWidth = 2;
+    ctx.fillRect(x, baseY - h, 40, h);
+    ctx.strokeRect(x, baseY - h, 40, h);
+    if(shown){
+      /* break marks */
+      ctx.strokeStyle = '#1a1028'; ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(x-3, baseY - h + 40); ctx.lineTo(x+43, baseY - h + 30); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x-3, baseY - h + 50); ctx.lineTo(x+43, baseY - h + 40); ctx.stroke();
+      label(ctx, '300!', x+20, baseY - h - 12, COLORS.pink);
+    } else {
+      label(ctx, String(v), x+20, baseY - h - 10, COLORS.yellow);
+    }
+  });
+  /* mean line ≈ 73.6 (off the chart) */
+  const meanY = baseY - (73.6/maxShown)*170;
+  ctx.strokeStyle = COLORS.green; ctx.setLineDash([6,4]); ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(40, meanY); ctx.lineTo(470, meanY); ctx.stroke(); ctx.setLineDash([]);
+  label(ctx, 'mean ≈ 73.6', 380, meanY - 10, COLORS.green, 12);
+  /* median = 36 */
+  const medY = baseY - (36/maxShown)*170;
+  ctx.strokeStyle = COLORS.purple; ctx.setLineDash([3,3]); ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(40, medY); ctx.lineTo(470, medY); ctx.stroke(); ctx.setLineDash([]);
+  label(ctx, 'median = 36', 380, medY - 10, COLORS.purple, 12);
+}
+
+/* ============ 8.2 DRAWINGS ============ */
+function draw82_1(){
+  const s = setupCanvas('c82_1'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Stem | Leaf Plot (Key: 6|7 = 67)', 250, 28);
+  const rows = [
+    ['6', ['7']],
+    ['7', ['2','2','8','9','9']],
+    ['8', ['3','5','5','5']],
+    ['9', ['1','4']]
+  ];
+  const stemX = 150, leafStart = 180, leafStep = 32;
+  ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(stemX, 65); ctx.lineTo(stemX, 250); ctx.stroke();
+  label(ctx, 'Stem', stemX - 40, 60, COLORS.cyan, 12);
+  label(ctx, 'Leaf', leafStart, 60, COLORS.pink, 12, 'left');
+  let y = 85;
+  rows.forEach(([stem, leaves])=>{
+    label(ctx, stem, stemX - 40, y, COLORS.cyan, 18);
+    leaves.forEach((l,i)=>{
+      label(ctx, l, leafStart + i*leafStep, y, COLORS.pink, 18, 'left');
+    });
+    y += 34;
+  });
+}
+
+function draw82_2(){
+  const s = setupCanvas('c82_2'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Median: count to positions 6 & 7', 250, 28);
+  const rows = [
+    ['6', ['7']],
+    ['7', ['2','2','8','9','9']],
+    ['8', ['3','5','5','5']],
+    ['9', ['1','4']]
+  ];
+  const stemX = 150, leafStart = 180, leafStep = 32;
+  ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(stemX, 65); ctx.lineTo(stemX, 250); ctx.stroke();
+  let y = 85, idx = 0;
+  rows.forEach(([stem, leaves])=>{
+    label(ctx, stem, stemX - 40, y, COLORS.cyan, 18);
+    leaves.forEach((l,i)=>{
+      idx++;
+      const hi = (idx === 6 || idx === 7);
+      const lx = leafStart + i*leafStep;
+      if(hi){
+        ctx.fillStyle = 'rgba(127,245,195,.35)';
+        ctx.fillRect(lx - 4, y - 12, 22, 24);
+      }
+      label(ctx, l, lx, y, hi ? COLORS.green : COLORS.pink, 18, 'left');
+    });
+    y += 34;
+  });
+  label(ctx, '6th = 79, 7th = 83 → median = 81', 250, 255, COLORS.green, 13);
+}
+
+function draw82_3(){
+  const s = setupCanvas('c82_3'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Dot Plot: Number of Pets', 250, 28);
+  const counts = {0:2, 1:4, 2:2, 3:1, 4:1};
+  const baseY = 230;
+  const startX = 100;
+  const step = 70;
+  /* axis */
+  ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(60, baseY); ctx.lineTo(440, baseY); ctx.stroke();
+  Object.entries(counts).forEach(([v,c])=>{
+    const x = startX + (+v)*step;
+    /* tick */
+    ctx.beginPath(); ctx.moveTo(x, baseY); ctx.lineTo(x, baseY + 5); ctx.stroke();
+    label(ctx, v, x, baseY + 16, COLORS.text, 14);
+    /* dots stacked */
+    for(let i=0;i<c;i++){
+      const dy = baseY - 18 - i*22;
+      ctx.fillStyle = (+v === 1) ? COLORS.green : COLORS.cyan;
+      ctx.beginPath(); ctx.arc(x, dy, 9, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#1a1028'; ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  });
+  label(ctx, 'Mode = 1 pet (tallest stack)', 250, 60, COLORS.green, 13);
+}
+
+/* ============ 8.3 DRAWINGS ============ */
+function draw83_1(){
+  const s = setupCanvas('c83_1'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Frequency Table: Heights', 250, 28);
+  /* draw table */
+  const headers = ['Interval (cm)', 'Tally', 'Freq'];
+  const rows = [
+    ['130–139', '|||', '3'],
+    ['140–149', '||||', '4'],
+    ['150–159', '||||  |', '5'],
+    ['160–169', '|||', '3']
+  ];
+  const cols = [80, 260, 380];
+  const startY = 70;
+  ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 1.5;
+  ctx.fillStyle = 'rgba(255,228,122,.15)';
+  ctx.fillRect(60, startY - 10, 380, 30);
+  ctx.strokeRect(60, startY - 10, 380, 30);
+  headers.forEach((h,i)=>label(ctx, h, cols[i], startY + 5, COLORS.yellow, 13, 'left'));
+  rows.forEach((r, i)=>{
+    const y = startY + 30 + i*38;
+    ctx.strokeRect(60, y - 10, 380, 38);
+    r.forEach((v,j)=>label(ctx, v, cols[j], y + 9, j===2 && i===2 ? COLORS.green : COLORS.text, 14, 'left'));
+  });
+  label(ctx, 'Total = 15. Modal class = 150–159.', 250, 252, COLORS.green, 12);
+}
+
+function draw83_2(){
+  const s = setupCanvas('c83_2'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Histogram: Bars Touch!', 250, 28);
+  const data = [
+    ['130–139', 3], ['140–149', 4], ['150–159', 5], ['160–169', 3]
+  ];
+  const baseY = 230;
+  const bw = 80, startX = 80;
+  /* axes */
+  ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(startX, 70); ctx.lineTo(startX, baseY); ctx.lineTo(startX + bw*4, baseY); ctx.stroke();
+  data.forEach(([lbl,c],i)=>{
+    const x = startX + i*bw;
+    const h = c * 28;
+    const isMax = c === 5;
+    ctx.fillStyle = isMax ? 'rgba(127,245,195,.35)' : COLORS.fill;
+    ctx.strokeStyle = isMax ? COLORS.green : COLORS.pink;
+    ctx.lineWidth = 2;
+    ctx.fillRect(x, baseY - h, bw, h);
+    ctx.strokeRect(x, baseY - h, bw, h);
+    label(ctx, String(c), x + bw/2, baseY - h - 10, COLORS.yellow);
+    label(ctx, lbl, x + bw/2, baseY + 14, COLORS.dim, 11);
+  });
+  label(ctx, 'Frequency', startX - 10, 65, COLORS.dim, 11, 'right');
+  label(ctx, 'Height (cm)', startX + bw*2, baseY + 38, COLORS.dim, 11);
+}
+
+function draw83_3(){
+  const s = setupCanvas('c83_3'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Daily Steps Histogram (n = 25)', 250, 28);
+  const data = [
+    ['0–2k', 2], ['2–4k', 5], ['4–6k', 8], ['6–8k', 6], ['8–10k', 4]
+  ];
+  const baseY = 230;
+  const bw = 70, startX = 70;
+  ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(startX, 70); ctx.lineTo(startX, baseY); ctx.lineTo(startX + bw*5, baseY); ctx.stroke();
+  data.forEach(([lbl,c],i)=>{
+    const x = startX + i*bw;
+    const h = c * 18;
+    const isMax = c === 8;
+    const hi6 = i >= 3;
+    ctx.fillStyle = isMax ? 'rgba(127,245,195,.35)' :
+                    hi6 ? 'rgba(192,132,252,.3)' : COLORS.fill;
+    ctx.strokeStyle = isMax ? COLORS.green : hi6 ? COLORS.purple : COLORS.pink;
+    ctx.lineWidth = 2;
+    ctx.fillRect(x, baseY - h, bw, h);
+    ctx.strokeRect(x, baseY - h, bw, h);
+    label(ctx, String(c), x + bw/2, baseY - h - 10, COLORS.yellow);
+    label(ctx, lbl, x + bw/2, baseY + 14, COLORS.dim, 11);
+  });
+  label(ctx, '≥ 6k highlighted: 6 + 4 = 10 (40%)', 260, 65, COLORS.purple, 12);
+}
+
+/* ===== render everything once the panel is visible ===== */
+function drawAll(){
+  draw81_1(); draw81_2(); draw81_3(); draw81_4();
+  draw82_1(); draw82_2(); draw82_3();
+  draw83_1(); draw83_2(); draw83_3();
+}
+drawAll();
+addEventListener('resize', ()=>setTimeout(drawAll, 50));
+
+/* ===== STEP MODAL ===== */
+function bigFormula(ctx, lines, cx, cy, color){
+  color = color || COLORS.green;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = color;
+  ctx.font = `700 22px 'JetBrains Mono', monospace`;
+  const lh = 32;
+  const startY = cy - ((lines.length-1)/2)*lh;
+  lines.forEach((line, i)=>ctx.fillText(line, cx, startY + i*lh));
+}
+function gridBg(ctx){
+  ctx.strokeStyle = '#2d1f42'; ctx.lineWidth = 1;
+  for(let x=0; x<560; x+=20){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,300); ctx.stroke(); }
+  for(let y=0; y<300; y+=20){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(560,y); ctx.stroke(); }
+}
+
+const stepExplanations = {
+  '81_1s2': {
+    title: 'Add all values / 加總',
+    text: 'Treat the sum as a single pile. Order doesn\'t matter for addition, so you can add smallest-to-largest, easiest pairs first (82+88=170), or left-to-right.',
+    draw: (ctx)=>{ bigFormula(ctx, ['82 + 90 + 75 + 88 + 95', '= 430'], 280, 150, COLORS.green); }
+  },
+  '81_1s3': {
+    title: 'Divide by count / 除以個數',
+    text: 'Mean = total ÷ count. Here count = 5 quizzes. Keep the unit the same — since scores are points, the mean is in points.',
+    draw: (ctx)=>{ bigFormula(ctx, ['430 ÷ 5 = 86 points'], 280, 150, COLORS.green); }
+  },
+  '81_2s2': {
+    title: 'Odd count: pick the middle / 奇數',
+    text: 'With n = 5, the middle position is (n+1)/2 = 3rd. After sorting 1, 3, <strong>5</strong>, 7, 9 the 3rd value is 5.',
+    draw: (ctx)=>{ bigFormula(ctx, ['position = (5+1)/2 = 3', 'median = 5'], 280, 150, COLORS.green); }
+  },
+  '81_2s3': {
+    title: 'Even count: average two middles / 偶數',
+    text: 'With n = 4, positions 2 and 3 are the middle pair. Average them to get the median.',
+    draw: (ctx)=>{ bigFormula(ctx, ['middles: 4 & 6', '(4 + 6) / 2 = 5'], 280, 150, COLORS.green); }
+  },
+  '81_3s2': {
+    title: 'Highest count wins / 最高次數',
+    text: 'Frequency tally: 3→3, 5→2, 7→2, 9→1. The value 3 appears most often, so mode = 3.',
+    draw: (ctx)=>{ bigFormula(ctx, ['3 appears 3 times', 'mode = 3'], 280, 150, COLORS.green); }
+  },
+  '81_4s2': {
+    title: 'One outlier pulls the mean / 離群值拉高平均',
+    text: 'The 300 alone contributes about 43 to the mean — more than every other salary combined! That\'s why the mean is not a "typical" value here.',
+    draw: (ctx)=>{ bigFormula(ctx, ['Σ = 515, n = 7', 'mean ≈ 73.6'], 280, 150, COLORS.green); }
+  },
+  '81_4s3': {
+    title: 'Median ignores extremes / 中位數不受影響',
+    text: 'Sort: 30, 32, 35, <strong>36</strong>, 40, 42, 300. The 4th value (middle of 7) is 36, regardless of how huge the outlier is.',
+    draw: (ctx)=>{ bigFormula(ctx, ['median = 36', '(much more "typical")'], 280, 150, COLORS.green); }
+  },
+  '82_1s3': {
+    title: 'Sort leaves within each stem / 葉要排序',
+    text: 'Each row\'s leaves go smallest → largest. This makes reading medians and quartiles as easy as counting positions.',
+    draw: (ctx)=>{
+      ctx.fillStyle = COLORS.yellow; ctx.font = `700 18px 'JetBrains Mono', monospace`;
+      ctx.textAlign = 'center';
+      ['6 | 7','7 | 2 2 8 9','8 | 3 5 5 8','9 | 0 1 4'].forEach((row,i)=>ctx.fillText(row, 280, 110 + i*32));
+    }
+  },
+  '82_2s3': {
+    title: 'Count to positions 6 & 7 / 數到第 6 與 7',
+    text: 'Reading row by row in order: 67 (1), 72, 72, 78, 79, <strong>79</strong> (positions 2–6), <strong>83</strong>, 85, 85, 85 (7–10), 91, 94 (11–12). Middles of a 12-value set are positions 6 &amp; 7, so 79 and 83.',
+    draw: (ctx)=>{ bigFormula(ctx, ['n = 12 → middles at pos 6, 7', '(79 + 83) / 2 = 81'], 280, 150, COLORS.green); }
+  },
+  '82_3s2': {
+    title: 'One dot per value / 每個值一個點',
+    text: 'For each data point, place a dot above its position on the number line. If a value repeats, stack the dots on top of each other.',
+    draw: (ctx)=>{
+      const baseY = 220, startX = 130, step = 75;
+      ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(100, baseY); ctx.lineTo(460, baseY); ctx.stroke();
+      const counts = {0:2,1:4,2:2,3:1,4:1};
+      Object.entries(counts).forEach(([v,c])=>{
+        const x = startX + (+v)*step;
+        ctx.beginPath(); ctx.moveTo(x, baseY); ctx.lineTo(x, baseY + 5); ctx.stroke();
+        ctx.fillStyle = COLORS.yellow; ctx.font = `700 14px monospace`; ctx.textAlign='center';
+        ctx.fillText(v, x, baseY + 20);
+        for(let i=0;i<c;i++){
+          ctx.fillStyle = COLORS.cyan;
+          ctx.beginPath(); ctx.arc(x, baseY - 18 - i*22, 9, 0, Math.PI*2); ctx.fill();
+        }
+      });
+    }
+  },
+  '83_1s2': {
+    title: 'Equal intervals matter / 相等組距',
+    text: 'Unequal intervals make the histogram misleading. Rule of thumb: range ÷ 5 to ÷ 10 gives a good class width.',
+    draw: (ctx)=>{ bigFormula(ctx, ['range = 168 − 133 = 35', 'width 10 → 4 intervals'], 280, 150, COLORS.green); }
+  },
+  '83_1s4': {
+    title: 'Modal class / 眾數組',
+    text: 'The interval with the highest frequency. Here 150–159 has 5 values — the peak of the distribution.',
+    draw: (ctx)=>{ bigFormula(ctx, ['tallest bar = 150–159', '(5 students)'], 280, 150, COLORS.green); }
+  },
+  '83_3s2': {
+    title: 'Sum frequencies ≥ 6k / 加總',
+    text: 'The "6k+" region includes two intervals: 6–8k and 8–10k. Add their frequencies.',
+    draw: (ctx)=>{ bigFormula(ctx, ['6 + 4 = 10 people'], 280, 150, COLORS.green); }
+  },
+  '83_3s3': {
+    title: 'Relative frequency / 相對頻率',
+    text: 'Part / total, then multiply by 100 to get a percent.',
+    draw: (ctx)=>{ bigFormula(ctx, ['10 / 25 = 0.40', '= 40%'], 280, 150, COLORS.green); }
+  }
+};
+
+/* wire up click handlers */
+document.querySelectorAll('.step-item').forEach((step)=>{
+  const problem = step.closest('.shape-problem');
+  if(!problem) return;
+  const pid = problem.dataset.problem;
+  if(!pid) return;
+  const siblings = problem.querySelectorAll('.step-item');
+  const stepNum = Array.from(siblings).indexOf(step) + 1;
+  const key = `${pid}s${stepNum}`;
+  if(stepExplanations[key]){
+    step.dataset.stepKey = key;
+    step.addEventListener('click', ()=>showStepModal(key, stepNum));
+  } else {
+    step.style.cursor = 'default';
+    step.style.paddingRight = '.5rem';
+    const after = step.querySelector('::after');
+    step.style.setProperty('--hide-after', '1');
+    step.classList.add('no-click');
+  }
+});
+/* hide ::after for non-clickable */
+const hideStyle = document.createElement('style');
+hideStyle.textContent = '.step-item.no-click::after{display:none}';
+document.head.appendChild(hideStyle);
+
+function showStepModal(key, stepNum){
+  const data = stepExplanations[key];
+  if(!data) return;
+  document.getElementById('modalStepNum').textContent = stepNum;
+  document.getElementById('modalStepTitle').textContent = data.title;
+  document.getElementById('modalExplanation').innerHTML = data.text;
+  const canvas = document.getElementById('stepModalCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  gridBg(ctx);
+  if(data.draw) data.draw(ctx);
+  document.getElementById('stepModal').classList.add('active');
+}
+function closeStepModal(){
+  document.getElementById('stepModal').classList.remove('active');
+}
+document.getElementById('stepModal').addEventListener('click',(e)=>{
+  if(e.target.id === 'stepModal') closeStepModal();
+});
+addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeStepModal(); });
+
+/* =====================================================================
+ *  TEST: randomized multi-question quiz
+ * ===================================================================== */
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}
+function pick(arr){return arr[rnd(0,arr.length-1)]}
+function mean(arr){return arr.reduce((a,b)=>a+b,0)/arr.length}
+function sorted(arr){return arr.slice().sort((a,b)=>a-b)}
+function median(arr){const s=sorted(arr),n=s.length;return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2}
+function modeOf(arr){
+  const f={}; arr.forEach(v=>f[v]=(f[v]||0)+1);
+  let m=-1,val=arr[0];
+  for(const k in f){ if(f[k]>m){m=f[k];val=+k;} }
+  return val;
+}
+function rangeOf(arr){return Math.max(...arr)-Math.min(...arr)}
+
+/* build 4 unique choices around correct answer */
+function mcChoices(correct, spread=5){
+  const set=new Set([String(correct)]);
+  let tries=0;
+  while(set.size<4 && tries<40){
+    const d=rnd(-spread,spread);
+    if(d!==0){
+      const v = Number.isInteger(correct) ? correct+d : +(correct+d*.5).toFixed(1);
+      if(v>=0) set.add(String(v));
+    }
+    tries++;
+  }
+  while(set.size<4){ set.add(String(rnd(1,99))); }
+  return shuffle([...set]);
+}
+
+const QB = [
+  /* --- mean --- */
+  ()=>{ const a=[rnd(5,20),rnd(5,20),rnd(5,20),rnd(5,20),rnd(5,20)]; const m=mean(a);
+    return {q:`Find the mean of: ${a.join(', ')}`, correct:String(m), choices:mcChoices(m,4),
+      explain:`Sum = ${a.reduce((x,y)=>x+y)}; ÷ 5 = <strong>${m}</strong>.`}; },
+  ()=>{ const a=[rnd(60,100),rnd(60,100),rnd(60,100),rnd(60,100)]; const m=mean(a);
+    return {q:`Four quiz scores: ${a.join(', ')}. Mean?`, correct:String(m), choices:mcChoices(m,4),
+      explain:`Sum = ${a.reduce((x,y)=>x+y)}; ÷ 4 = <strong>${m}</strong>.`}; },
+  ()=>{ const a=[rnd(1,10),rnd(1,10),rnd(1,10)]; const m=+(mean(a).toFixed(1));
+    return {q:`Mean of ${a.join(', ')} (1 decimal):`, correct:String(m), choices:mcChoices(m,2),
+      explain:`Sum = ${a.reduce((x,y)=>x+y)}; ÷ 3 ≈ <strong>${m}</strong>.`}; },
+  /* --- median --- */
+  ()=>{ const a=sorted([rnd(1,50),rnd(1,50),rnd(1,50),rnd(1,50),rnd(1,50)]); const m=median(a);
+    return {q:`Median of: ${a.join(', ')}`, correct:String(m), choices:mcChoices(m,5),
+      explain:`Sorted middle (3rd of 5) = <strong>${m}</strong>.`}; },
+  ()=>{ const raw=[rnd(1,50),rnd(1,50),rnd(1,50),rnd(1,50)]; const m=median(raw);
+    return {q:`Median of: ${raw.join(', ')}`, correct:String(m), choices:mcChoices(m,5),
+      explain:`Sort → ${sorted(raw).join(', ')}. Middle two avg = <strong>${m}</strong>.`}; },
+  ()=>{ const a=sorted([rnd(10,30),rnd(10,30),rnd(10,30),rnd(10,30),rnd(10,30),rnd(10,30),rnd(10,30)]); const m=a[3];
+    return {q:`Median of sorted: ${a.join(', ')}`, correct:String(m), choices:mcChoices(m,3),
+      explain:`n=7 (odd), middle = 4th value = <strong>${m}</strong>.`}; },
+  /* --- mode --- */
+  ()=>{ const m=rnd(1,9); const a=[m,m,m,rnd(1,9),rnd(1,9)].filter(x=>x!==undefined); shuffle(a);
+    return {q:`Mode of: ${a.join(', ')}`, correct:String(m), choices:mcChoices(m,3),
+      explain:`<strong>${m}</strong> appears most often.`}; },
+  ()=>{ const arr=[rnd(1,5),rnd(1,5),rnd(1,5),rnd(1,5),rnd(1,5),rnd(1,5)]; const m=modeOf(arr);
+    return {q:`Most frequent value in: ${arr.join(', ')}`, correct:String(m), choices:mcChoices(m,3),
+      explain:`Tally shows <strong>${m}</strong> appears the most.`}; },
+  /* --- range --- */
+  ()=>{ const a=[rnd(1,30),rnd(31,60),rnd(1,30),rnd(31,60),rnd(1,60)]; const r=rangeOf(a);
+    return {q:`Range of: ${a.join(', ')}`, correct:String(r), choices:mcChoices(r,5),
+      explain:`Max ${Math.max(...a)} − Min ${Math.min(...a)} = <strong>${r}</strong>.`}; },
+  /* --- concept --- */
+  ()=>({q:'Which measure is LEAST affected by an extreme outlier?',
+    correct:'Median', choices:shuffle(['Median','Mean','Sum','Range']),
+    explain:'Median cares only about middle position, not extreme values.'}),
+  ()=>({q:'A histogram differs from a bar chart because histogram bars…',
+    correct:'touch (no gaps)', choices:shuffle(['touch (no gaps)','have gaps','are horizontal','are dotted']),
+    explain:'Histograms show continuous data, so bars touch. Bar charts show categories and have gaps.'}),
+  ()=>({q:'Which works for non-numeric data (like favorite color)?',
+    correct:'Mode', choices:shuffle(['Mode','Mean','Median','Range']),
+    explain:'Mean, median, range need numbers. Mode = most common category.'}),
+  ()=>({q:'In the key "5 | 3 = 53", the 5 is the…',
+    correct:'Stem (tens)', choices:shuffle(['Stem (tens)','Leaf (ones)','Mode','Mean']),
+    explain:'Stems hold the tens (or higher) digits; leaves hold the ones.'}),
+  ()=>({q:'Tallest stack on a dot plot represents the…',
+    correct:'Mode', choices:shuffle(['Mode','Mean','Median','Range']),
+    explain:'Most-stacked value = value that appears most often = mode.'}),
+  ()=>({q:'For data 4, 4, 4, 10, 10 — which is biggest?',
+    correct:'Mean', choices:shuffle(['Mean','Median','Mode','All equal']),
+    explain:'Mean = 6.4, median = 4, mode = 4 → mean wins.'}),
+  /* --- histogram reading --- */
+  ()=>{ const freqs=[rnd(2,5),rnd(3,8),rnd(5,10),rnd(3,7),rnd(2,5)]; const total=freqs.reduce((a,b)=>a+b);
+    const modal = freqs.indexOf(Math.max(...freqs));
+    const labels=['0–10','10–20','20–30','30–40','40–50'];
+    const correct = labels[modal];
+    const others = labels.filter(l=>l!==correct);
+    shuffle(others);
+    const picks = shuffle([correct, others[0], others[1], others[2]]);
+    return {q:`Histogram bars (0–10,10–20,…,40–50) have freq ${freqs.join(', ')}. Modal class?`,
+      correct, choices:picks,
+      explain:`Tallest bar = <strong>${correct}</strong> (freq ${freqs[modal]}).`}; },
+  ()=>{ const freqs=[2,3,8,5,2]; const greater = freqs[3]+freqs[4];
+    return {q:`Histogram intervals 0–10, 10–20, 20–30, 30–40, 40–50 have freq 2, 3, 8, 5, 2. How many values ≥ 30?`,
+      correct:String(greater), choices:mcChoices(greater,3),
+      explain:`≥ 30 covers 30–40 and 40–50: 5 + 2 = <strong>${greater}</strong>.`}; }
+];
+
+let quizTotal=12, quizScore=0, quizQ=0;
+let streakData=[], quizQuestions=[];
+
+function initStreak(){
+  streakData = Array(quizTotal).fill('pending');
+  renderStreak();
+}
+function renderStreak(){
+  document.getElementById('streak').innerHTML =
+    streakData.map(s=>{
+      const icon = s==='correct'?'✓':s==='wrong'?'✗':'';
+      return `<div class="streak-dot ${s}">${icon}</div>`;
+    }).join('');
+}
+
+function renderQuiz(){
+  const area = document.getElementById('quizArea');
+  quizScore = 0; quizQ = 0;
+  document.getElementById('score').textContent = '0';
+  document.getElementById('scoreLabel').textContent = '/ ' + quizTotal;
+  quizQuestions = [];
+  const pool = shuffle(QB.slice());
+  for(let i=0;i<quizTotal;i++) quizQuestions.push(pool[i % pool.length]());
+  let html = '';
+  quizQuestions.forEach((qd,i)=>{
+    html += `<div class="glass question" id="q${i}" style="scroll-margin-top:1rem">`;
+    html += `<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">`;
+    html += `<span style="font-family:'Press Start 2P',monospace;font-size:.55rem;color:#ff6b9d;background:#ff6b9d20;padding:.3rem .5rem;min-width:28px;text-align:center">${i+1}</span>`;
+    html += `<span class="streak-dot pending" id="dot${i}" style="width:16px;height:16px;font-size:.5rem"></span>`;
+    html += `</div>`;
+    html += `<h4>${qd.q}</h4><div class="choices" id="choices${i}">`;
+    qd.choices.forEach(ch=>{ html += `<div class="choice" data-qi="${i}" data-val="${ch}">${ch}</div>`; });
+    html += `</div><div class="feedback" id="fb${i}"></div></div>`;
+  });
+  html += `<div class="glass" id="quizSummary" style="display:none;text-align:center;padding:2.5rem"></div>`;
+  area.innerHTML = html;
+  area.querySelectorAll('.choice').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const i = +el.dataset.qi;
+      const wrap = document.getElementById('choices'+i);
+      if(wrap.classList.contains('answered')) return;
+      wrap.classList.add('answered');
+      wrap.querySelectorAll('.choice').forEach(c=>c.classList.add('disabled'));
+      const qd = quizQuestions[i];
+      const fb = document.getElementById('fb'+i);
+      const dot = document.getElementById('dot'+i);
+      if(el.dataset.val === qd.correct){
+        el.classList.add('correct');
+        quizScore++; streakData[i]='correct';
+        fb.className='feedback show right';
+        fb.innerHTML = `✓ Correct! / 正確！<div class="explain">${qd.explain}</div>`;
+        dot.className='streak-dot correct'; dot.textContent='✓';
+      } else {
+        el.classList.add('wrong'); streakData[i]='wrong';
+        wrap.querySelector(`.choice[data-val="${CSS.escape(qd.correct)}"]`)?.classList.add('correct');
+        fb.className='feedback show wrong-fb';
+        fb.innerHTML = `✗ Not quite. / 再想想。<div class="explain">${qd.explain}</div>`;
+        dot.className='streak-dot wrong'; dot.textContent='✗';
+      }
+      quizQ++;
+      document.getElementById('score').textContent = quizScore;
+      renderStreak();
+      if(quizQ >= quizTotal) showQuizSummary();
+    });
+  });
+  initStreak();
+}
+
+function showQuizSummary(){
+  const el = document.getElementById('quizSummary');
+  const pct = Math.round(quizScore/quizTotal*100);
+  const msg = pct>=90?'Statistics star! / 統計之星！' : pct>=70?'Solid work! / 做得好！' : pct>=50?'Keep practicing! / 繼續練習！' : 'Review the lessons! / 回去複習吧！';
+  el.style.display='block';
+  el.innerHTML = `
+    <div style="font-family:'Press Start 2P',monospace;font-size:1rem;color:#ffe47a;margin-bottom:1rem">${pct}% / ${quizScore} of ${quizTotal}</div>
+    <div style="color:#e8dff5;font-size:.95rem;margin-bottom:1rem">${msg}</div>
+    <button class="btn" onclick="renderQuiz();document.getElementById('quizArea').scrollIntoView({behavior:'smooth'})">🔄 Try Again / 再試一次</button>
+  `;
+}
+
+document.getElementById('newQuiz').addEventListener('click',()=>{
+  renderQuiz();
+  document.getElementById('quizArea').scrollIntoView({behavior:'smooth'});
+});
+renderQuiz();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Chapter 9 Prep — Probability</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Quicksand',system-ui,-apple-system,sans-serif;
+  background:#1a1028;color:#e8dff5;
+  min-height:100vh;min-height:100dvh;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:1.5rem}
+.back{display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.5rem;color:#7ecbf5;text-decoration:none;
+  font-family:'Press Start 2P',monospace;font-size:.55rem;
+  padding:.5rem .9rem;border:2px solid #7ecbf544;background:rgba(26,16,40,.6);
+  transition:all .25s;-webkit-touch-callout:none}
+.back:hover{border-color:#7ecbf5;background:rgba(26,16,40,.8)}
+
+header{text-align:center;padding:1.5rem 0 .5rem}
+header h1{font-family:'Press Start 2P',monospace;font-size:clamp(.95rem,3.2vw,1.4rem);
+  color:#ffb3d9;text-shadow:3px 3px 0 #6c3483,0 0 20px rgba(255,179,217,.3);
+  line-height:1.6;}
+header .subtitle{color:#b8a9cc;margin-top:.5rem;font-size:.85rem}
+header .emoji{font-size:1.3rem;display:inline-block;animation:bounce 1.2s steps(4) infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+.tabs{display:flex;gap:.3rem;margin:1.25rem 0;padding:3px;
+  background:#2d1f42;border:3px solid #4a3660;width:fit-content;margin-inline:auto;flex-wrap:wrap;justify-content:center}
+.tab{padding:.55rem 1rem;border:none;background:transparent;color:#b8a9cc;cursor:pointer;
+  font-family:'Press Start 2P',monospace;font-size:.5rem;transition:all .2s;position:relative;user-select:none}
+.tab:hover{color:#ffb3d9}
+.tab:active{transform:translateY(2px)}
+.tab.active{background:#ff6b9d;color:#1a1028;box-shadow:0 4px 0 #c44d78,0 0 16px rgba(255,107,157,.3)}
+
+.panel{display:none;animation:fadeUp .4s ease}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.glass{background:#2d1f42;border:3px solid #4a3660;padding:1.5rem;margin-bottom:1.25rem;box-shadow:4px 4px 0 #1a1028}
+.section-title{font-family:'Press Start 2P',monospace;font-size:.75rem;color:#ffe47a;margin-bottom:1rem;line-height:1.5}
+.section-intro{color:#b8a9cc;font-size:.88rem;margin-bottom:1rem;line-height:1.6}
+
+.prep-formulas{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.prep-formula-card{background:#1a1028;border:2px solid #4a3660;padding:1rem;box-shadow:2px 2px 0 #0d0818}
+.prep-formula-card h4{font-family:'Press Start 2P',monospace;font-size:.5rem;color:#ff6b9d;margin-bottom:.5rem;line-height:1.5}
+.prep-formula-card .formula{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:#7ff5c3;margin:.3rem 0;word-break:break-word}
+.prep-formula-card .note{font-size:.75rem;color:#8bb8cc;line-height:1.5}
+@media(max-width:600px){.prep-formulas{grid-template-columns:1fr}}
+
+.shape-problem{background:#2d1f42;border:3px solid #4a3660;padding:1.5rem;margin-bottom:1.25rem;box-shadow:4px 4px 0 #1a1028}
+.shape-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.shape-icon{font-size:1.8rem}
+.shape-title{font-family:'Press Start 2P',monospace;font-size:.55rem;color:#ffb3d9;line-height:1.6}
+.shape-type{font-size:.7rem;color:#c084fc;font-weight:700;margin-top:.2rem}
+.shape-canvas{width:100%;height:auto;border:2px solid #4a3660;background:#1a1028;margin-bottom:1rem;display:block}
+.solution-steps{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}
+.step-item{cursor:pointer;transition:all .2s;position:relative;display:flex;align-items:flex-start;gap:.6rem;padding:.5rem 2.5rem .5rem .5rem}
+.step-item:hover{background:rgba(255,107,157,.1);border-radius:4px}
+.step-item::after{content:'👆 click';font-size:.6rem;color:#ff6b9d;opacity:.6;position:absolute;right:8px;top:50%;transform:translateY(-50%)}
+.step-item.no-click::after{display:none}
+
+.step-modal{position:fixed;inset:0;z-index:1000;background:rgba(26,16,40,.95);display:none;align-items:center;justify-content:center;padding:1rem}
+.step-modal.active{display:flex}
+.step-modal-content{background:#2d1f42;border:3px solid #4a3660;max-width:620px;width:100%;max-height:90vh;overflow-y:auto;padding:1.5rem;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:modalPop .3s ease}
+@keyframes modalPop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.step-modal-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;border-bottom:2px solid #4a3660;padding-bottom:.75rem}
+.step-modal-num{width:32px;height:32px;min-width:32px;background:#ff6b9d;color:#1a1028;display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:.6rem}
+.step-modal-title{font-size:1rem;font-weight:700;color:#ffe47a;line-height:1.4}
+.step-modal-canvas{width:100%;height:300px;border:2px solid #4a3660;background:#1a1028;margin:1rem 0}
+.step-modal-explanation{color:#b8a9cc;font-size:.9rem;line-height:1.7;margin:1rem 0}
+.step-modal-explanation strong{color:#7ecbf5}
+.step-modal-close{background:#ff6b9d;color:#1a1028;border:none;padding:.6rem 1.2rem;font-family:'Press Start 2P',monospace;font-size:.5rem;cursor:pointer;margin-top:1rem}
+.step-modal-close:hover{background:#ff8fab}
+.step-num{width:28px;height:28px;min-width:28px;background:#ff6b9d;color:#1a1028;display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:.5rem;font-weight:700}
+.step-content{font-size:.85rem;color:#e8dff5;line-height:1.6}
+.step-content strong{color:#7ecbf5}
+.step-formula{background:#1a1028;border-left:3px solid #ffe47a;padding:.4rem .7rem;margin:.4rem 0;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#e8dff5;overflow-x:auto}
+.green{color:#7ff5c3}
+.purple{color:#c084fc}
+.tip-box{background:#1a1028;border:2px solid #c084fc;padding:1rem;margin-top:.5rem;box-shadow:2px 2px 0 #1a1028}
+.tip-title{font-family:'Press Start 2P',monospace;font-size:.5rem;color:#c084fc;margin-bottom:.4rem}
+.tip-content{font-size:.82rem;color:#b8a9cc;line-height:1.6}
+.tip-content strong{color:#7ff5c3}
+.mini-label{font-family:'Press Start 2P',monospace;font-size:.45rem;color:#ffe47a;letter-spacing:1px;margin-bottom:.4rem;display:block}
+
+/* TEST */
+.quiz-header{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;padding:1rem 1.25rem;margin-bottom:1rem}
+.quiz-header .streak{display:flex;gap:.15rem;flex-wrap:wrap}
+.streak-dot{width:20px;height:20px;border:2px solid #4a3660;display:grid;place-items:center;font-size:.6rem;transition:all .3s}
+.streak-dot.correct{border-color:#7ff5c3;background:#7ff5c320;color:#7ff5c3}
+.streak-dot.wrong{border-color:#ff6b9d;background:#ff6b9d20;color:#ff6b9d}
+.streak-dot.pending{border-color:#4a3660}
+.score-display{display:flex;align-items:baseline;gap:.3rem}
+.score-display .num{font-size:1.6rem;font-weight:700;font-family:'Press Start 2P',monospace;color:#ffe47a;text-shadow:2px 2px 0 #c4a030}
+.score-display .label{color:#b8a9cc;font-size:.7rem;font-weight:700;font-family:'Press Start 2P',monospace}
+.question{margin-bottom:1rem}
+.question h4{color:#e8dff5;font-size:1rem;margin-bottom:.75rem;font-weight:700;line-height:1.5}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.choice{padding:.75rem .8rem;border:2px solid #4a3660;background:#2d1f42;color:#e8dff5;cursor:pointer;text-align:center;transition:all .2s;font-size:.85rem;font-weight:600;font-family:'JetBrains Mono',monospace;position:relative;overflow:hidden;-webkit-touch-callout:none;user-select:none;box-shadow:3px 3px 0 #1a1028}
+.choice:active{transform:translateY(2px);box-shadow:1px 1px 0 #1a1028}
+.choice.correct{background:#1a3a28;border-color:#7ff5c3;color:#7ff5c3;box-shadow:3px 3px 0 #1a3a28,0 0 16px rgba(127,245,195,.2)}
+.choice.wrong{background:#3a1a28;border-color:#ff6b9d;color:#ff6b9d}
+.choice.disabled{pointer-events:none;opacity:.5}
+.btn{padding:.55rem 1.2rem;border:none;background:#ff6b9d;color:#1a1028;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.5rem;transition:all .2s;box-shadow:3px 3px 0 #c44d78}
+.btn:active{transform:translateY(2px);box-shadow:1px 1px 0 #c44d78}
+.feedback{padding:.75rem 1rem;margin-top:.75rem;font-size:.85rem;line-height:1.5;display:none;font-weight:600;border:2px solid}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.right{background:#1a3a28;border-color:#7ff5c3;color:#7ff5c3}
+.feedback.wrong-fb{background:#3a1a28;border-color:#ff6b9d;color:#ff6b9d}
+.feedback .explain{margin-top:.5rem;color:#e8dff5;font-size:.82rem;line-height:1.6;font-weight:500}
+@media(max-width:500px){.choices{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="wrap">
+  <a href="index.html" class="back">&larr; Back to Math Games / 返回數學遊戲</a>
+  <header>
+    <h1><span class="emoji">&#x1F3B2;</span> Chapter 9 Prep</h1>
+    <p class="subtitle">Probability &mdash; Chance &amp; Events / 機率</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="s91">&#x1F3B2; 9.1 Simple Events</button>
+    <button class="tab" data-tab="s92">&#x1F52C; 9.2 Theo vs Exp</button>
+    <button class="tab" data-tab="s93">&#x1F333; 9.3 Compound</button>
+    <button class="tab" data-tab="stest">&#x1F4DD; Test</button>
+  </div>
+
+  <!-- =================== 9.1 SIMPLE EVENTS =================== -->
+  <div class="panel active" id="s91">
+    <div class="glass">
+      <h2 class="section-title">&#x1F3B2; 9.1 &mdash; Probability of Simple Events</h2>
+      <p class="section-intro">Probability measures how likely an event is. Every probability lives in <strong style="color:#7ff5c3">[0, 1]</strong>: 0 = impossible, 1 = certain. For equally likely outcomes:</p>
+
+      <span class="mini-label">Key Formulas / 關鍵公式</span>
+      <div class="prep-formulas">
+        <div class="prep-formula-card">
+          <h4>Probability 機率</h4>
+          <div class="formula">P(E) = favorable &divide; total</div>
+          <div class="note">How many good ÷ how many total</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Range 範圍</h4>
+          <div class="formula">0 &le; P(E) &le; 1</div>
+          <div class="note">0 = never, 1 = always</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Complement 互補事件</h4>
+          <div class="formula">P(not E) = 1 &minus; P(E)</div>
+          <div class="note">Everything NOT in E</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Sample Space 樣本空間</h4>
+          <div class="formula">S = {all outcomes}</div>
+          <div class="note">Die: S = {1,2,3,4,5,6}</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Sum = 1 總和為 1</h4>
+          <div class="formula">&Sigma; P(outcomes) = 1</div>
+          <div class="note">All possibilities together</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Percent / Decimal 形式</h4>
+          <div class="formula">1/4 = 0.25 = 25%</div>
+          <div class="note">Three ways to write the same P</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9.1 Example 1: die roll -->
+    <div class="shape-problem" data-problem="91_1">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F3B2;</div>
+        <div>
+          <div class="shape-title">Example 1: Rolling a Fair Die / 擲公平骰子</div>
+          <div class="shape-type">SIMPLE EVENT / 簡單事件</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c91_1" width="500" height="260"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Sample space</strong> / 樣本空間<br>
+            S = {1, 2, 3, 4, 5, 6}. Six equally likely outcomes.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>P(rolling a 4)</strong> / 擲出 4 的機率<br>
+            <div class="step-formula">P(4) = 1 &divide; 6 = <span class="green">1/6</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>P(rolling an even number)</strong> / 擲出偶數<br>
+            Favorable = {2, 4, 6}. That&rsquo;s 3 outcomes.
+            <div class="step-formula">P(even) = 3 &divide; 6 = <span class="green">1/2 = 0.5 = 50%</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>P(NOT a 4) &mdash; complement</strong> / 不是 4<br>
+            <div class="step-formula">P(not 4) = 1 &minus; 1/6 = <span class="green">5/6</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">When computing a probability, always write down the sample space first. <strong>Favorable over total</strong> is only that simple when outcomes are equally likely. / 事件等機率時才能這樣算。</div>
+      </div>
+    </div>
+
+    <!-- 9.1 Example 2: marbles -->
+    <div class="shape-problem" data-problem="91_2">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F534;</div>
+        <div>
+          <div class="shape-title">Example 2: Marble Draw / 抽彈珠</div>
+          <div class="shape-type">SINGLE DRAW / 單次抽取</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c91_2" width="500" height="260"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Bag contents</strong> / 袋內<br>
+            5 red, 3 blue, 2 green marbles. Total = 10.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>P(red)</strong> / 抽到紅<br>
+            <div class="step-formula">P(red) = 5/10 = <span class="green">1/2</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>P(blue OR green)</strong> / 藍或綠<br>
+            Favorable = 3 + 2 = 5.
+            <div class="step-formula">P(B or G) = 5/10 = <span class="green">1/2</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Check with complement</strong> / 用互補驗算<br>
+            <div class="step-formula">P(not red) = 1 &minus; 1/2 = <span class="green">1/2</span> &check;</div>
+            Same as P(blue or green) &mdash; nice consistency.
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">When an event means &ldquo;anything BUT X&rdquo;, computing <strong>1 &minus; P(X)</strong> is usually faster than adding up the rest. / &lsquo;不是 X&rsquo; 用互補最快。</div>
+      </div>
+    </div>
+
+    <!-- 9.1 Example 3: spinner -->
+    <div class="shape-problem" data-problem="91_3">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F300;</div>
+        <div>
+          <div class="shape-title">Example 3: Uneven Spinner / 不均等轉盤</div>
+          <div class="shape-type">NON-UNIFORM / 非均等</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c91_3" width="500" height="260"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Spinner sectors</strong> / 扇形比例<br>
+            Red covers 180&deg;, Blue 90&deg;, Yellow 60&deg;, Green 30&deg;. Total = 360&deg;.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Probability = fraction of circle</strong> / 機率 = 圓的比例<br>
+            <div class="step-formula">P(red) = 180/360 = <span class="green">1/2</span><br>P(blue) = 90/360 = <span class="green">1/4</span><br>P(yellow) = 60/360 = <span class="green">1/6</span><br>P(green) = 30/360 = <span class="green">1/12</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Check sum = 1</strong> / 總和驗算<br>
+            <div class="step-formula">1/2 + 1/4 + 1/6 + 1/12 = 6/12 + 3/12 + 2/12 + 1/12 = 12/12 = <span class="green">1</span> &check;</div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">When outcomes are <strong>not</strong> equally likely, probabilities must come from measurable shares (angles, areas, counts). Then verify: they must sum to 1. / 非等機率時要用面積/比例，總和必為 1。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== 9.2 THEO vs EXP =================== -->
+  <div class="panel" id="s92">
+    <div class="glass">
+      <h2 class="section-title">&#x1F52C; 9.2 &mdash; Theoretical vs Experimental</h2>
+      <p class="section-intro"><strong style="color:#7ff5c3">Theoretical</strong> probability comes from the math of a fair setup. <strong style="color:#7ecbf5">Experimental</strong> probability comes from what actually happened in trials. More trials &rarr; experimental gets closer to theoretical.</p>
+
+      <span class="mini-label">Key Ideas / 關鍵概念</span>
+      <div class="prep-formulas">
+        <div class="prep-formula-card">
+          <h4>Theoretical 理論</h4>
+          <div class="formula">P = favorable &divide; total</div>
+          <div class="note">From the structure (fair coin = 1/2)</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Experimental 實驗</h4>
+          <div class="formula">P = successes &divide; trials</div>
+          <div class="note">From data collected</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Relative Frequency 相對頻率</h4>
+          <div class="formula">count &divide; n</div>
+          <div class="note">Another name for experimental P</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Law of Large Numbers 大數法則</h4>
+          <div class="formula">n &rarr; &infin; &rArr; exp &rarr; theo</div>
+          <div class="note">Many trials &rarr; they agree</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Expected Count 期望次數</h4>
+          <div class="formula">n &times; P(E)</div>
+          <div class="note">How many hits in n trials</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Fair vs Biased 公平與偏差</h4>
+          <div class="formula">exp &ne; theo &rArr; suspect</div>
+          <div class="note">Big gap over many trials</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9.2 Example 1: coin experiment -->
+    <div class="shape-problem" data-problem="92_1">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1FA99;</div>
+        <div>
+          <div class="shape-title">Example 1: Coin Flips &mdash; Theo vs Exp / 擲硬幣</div>
+          <div class="shape-type">COMPARISON / 比較</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c92_1" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Theoretical</strong> / 理論<br>
+            A fair coin has two equally likely outcomes.
+            <div class="step-formula">P(H) = 1/2 = <span class="green">0.5</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Experimental (20 flips)</strong> / 實驗 (20 次)<br>
+            Observed: 12 heads, 8 tails.
+            <div class="step-formula">P<sub>exp</sub>(H) = 12/20 = <span class="green">0.6</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Experimental (200 flips)</strong> / 實驗 (200 次)<br>
+            Observed: 96 heads, 104 tails.
+            <div class="step-formula">P<sub>exp</sub>(H) = 96/200 = <span class="green">0.48</span></div>
+            Closer to 0.5 &mdash; big samples trend toward theoretical.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Expected count</strong> / 期望次數<br>
+            <div class="step-formula">In 300 flips, expect 300 &times; 0.5 = <span class="green">150 heads</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Law of Large Numbers</div>
+        <div class="tip-content">A short run can be wildly off theoretical. The Law of Large Numbers says the gap shrinks as trials grow. / 次數多，實驗越接近理論。</div>
+      </div>
+    </div>
+
+    <!-- 9.2 Example 2: biased spinner -->
+    <div class="shape-problem" data-problem="92_2">
+      <div class="shape-header">
+        <div class="shape-icon">&#x2696;&#xFE0F;</div>
+        <div>
+          <div class="shape-title">Example 2: Biased Spinner? / 轉盤有偏？</div>
+          <div class="shape-type">INFERENCE / 推論</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c92_2" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Looks like a fair 4-color spinner</strong> / 看似公平<br>
+            Theoretical: P(each) = 1/4 = 0.25. After 200 spins, expect each color 50 times.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Observed</strong> / 觀察<br>
+            Red 88, Blue 42, Green 38, Yellow 32. Total = 200.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Experimental probabilities</strong> / 實驗機率<br>
+            <div class="step-formula">P(red) = 88/200 = <span class="green">0.44</span><br>P(blue) = 0.21, P(green) = 0.19, P(yellow) = 0.16</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Inference</strong> / 推論<br>
+            Red&rsquo;s experimental P (0.44) is way above theoretical 0.25 &mdash; with 200 trials, this gap suggests the spinner is <span class="green">biased toward red</span>.
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">A small gap across many trials = likely random noise. A <strong>big</strong> gap across many trials = real bias. More trials sharpen the signal. / 多次實驗有差距才算偏。</div>
+      </div>
+    </div>
+
+    <!-- 9.2 Example 3: expected count word problem -->
+    <div class="shape-problem" data-problem="92_3">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F3C1;</div>
+        <div>
+          <div class="shape-title">Example 3: Expected Wins / 預期贏的次數</div>
+          <div class="shape-type">WORD PROBLEM / 文字題</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c92_3" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Game P(win)</strong> / 遊戲贏的機率<br>
+            In a carnival game, the theoretical probability of winning is 1/5.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Kayla plays 60 times</strong> / 玩 60 次<br>
+            <div class="step-formula">Expected wins = 60 &times; 1/5 = <span class="green">12</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>She actually wins 18 times</strong> / 實際贏 18 次<br>
+            <div class="step-formula">P<sub>exp</sub>(win) = 18/60 = <span class="green">0.30</span></div>
+            That&rsquo;s higher than 0.20 &mdash; lucky streak or the game is easier than advertised?
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">Expected count = n &times; P. It&rsquo;s an average, not a guarantee. 12 expected wins could show up as 8 or 16 in a real session. / 期望次數是平均，不一定剛好。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== 9.3 COMPOUND =================== -->
+  <div class="panel" id="s93">
+    <div class="glass">
+      <h2 class="section-title">&#x1F333; 9.3 &mdash; Compound Events</h2>
+      <p class="section-intro">Two events at once. <strong style="color:#7ff5c3">Independent</strong>: one doesn&rsquo;t affect the other (two dice, coin + spinner). <strong style="color:#7ecbf5">Dependent</strong>: first event changes the setup for the second (draw 2 marbles without replacement).</p>
+
+      <span class="mini-label">Key Rules / 關鍵規則</span>
+      <div class="prep-formulas">
+        <div class="prep-formula-card">
+          <h4>Independent AND 獨立 &amp;</h4>
+          <div class="formula">P(A and B) = P(A) &times; P(B)</div>
+          <div class="note">Multiply when both must happen</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Dependent AND 相依 &amp;</h4>
+          <div class="formula">P(A) &times; P(B | A)</div>
+          <div class="note">2nd probability uses new total</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Mutually Exclusive OR 互斥 或</h4>
+          <div class="formula">P(A or B) = P(A) + P(B)</div>
+          <div class="note">Can&rsquo;t both happen (heads OR tails)</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>General OR 一般或</h4>
+          <div class="formula">P(A) + P(B) &minus; P(A&cap;B)</div>
+          <div class="note">Subtract the overlap once</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>Tree Diagram 樹狀圖</h4>
+          <div class="formula">branch = &times;, leaves = +</div>
+          <div class="note">Multiply along path, add paths</div>
+        </div>
+        <div class="prep-formula-card">
+          <h4>With/Without Replacement 放回與否</h4>
+          <div class="formula">replaced &rarr; independent</div>
+          <div class="note">Not replaced &rarr; dependent</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9.3 Example 1: two dice -->
+    <div class="shape-problem" data-problem="93_1">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F3B2;&#x1F3B2;</div>
+        <div>
+          <div class="shape-title">Example 1: Two Dice (Independent) / 兩顆骰子</div>
+          <div class="shape-type">INDEPENDENT AND / 獨立 且</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c93_1" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Two dice, each independent</strong> / 獨立<br>
+            P(6 on die 1) = 1/6, P(6 on die 2) = 1/6.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>P(both are 6)</strong> / 兩個都 6<br>
+            <div class="step-formula">P(6 and 6) = 1/6 &times; 1/6 = <span class="green">1/36</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>P(sum = 7)</strong> / 加總為 7<br>
+            Sample space has 36 pairs; sum-7 pairs: (1,6),(2,5),(3,4),(4,3),(5,2),(6,1) = 6.
+            <div class="step-formula">P(sum = 7) = 6/36 = <span class="green">1/6</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>P(at least one 6)</strong> / 至少一個 6<br>
+            Complement is easier! P(no 6 on either) = 5/6 &times; 5/6 = 25/36.
+            <div class="step-formula">P(&ge; 1 six) = 1 &minus; 25/36 = <span class="green">11/36</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">For &ldquo;at least one&rdquo; questions, computing the <strong>complement</strong> (&ldquo;none of them&rdquo;) is almost always easier. / 至少一個 → 用互補。</div>
+      </div>
+    </div>
+
+    <!-- 9.3 Example 2: dependent marbles -->
+    <div class="shape-problem" data-problem="93_2">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F534;</div>
+        <div>
+          <div class="shape-title">Example 2: Marbles, No Replacement / 不放回</div>
+          <div class="shape-type">DEPENDENT AND / 相依 且</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c93_2" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Setup</strong> / 設定<br>
+            Bag: 4 red, 6 blue (total 10). Draw 2 marbles WITHOUT replacement.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>P(first red)</strong> / 第一顆紅<br>
+            <div class="step-formula">P(R<sub>1</sub>) = 4/10 = <span class="green">2/5</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>P(second red | first red)</strong> / 條件機率<br>
+            After taking 1 red, bag has 3 red &amp; 6 blue = 9 total.
+            <div class="step-formula">P(R<sub>2</sub> | R<sub>1</sub>) = 3/9 = <span class="green">1/3</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>P(both red)</strong> / 兩顆都紅<br>
+            <div class="step-formula">P(R &amp; R) = 2/5 &times; 1/3 = <span class="green">2/15</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">&ldquo;Without replacement&rdquo; = <strong>dependent</strong>. The 2nd draw&rsquo;s denominator drops by 1, and the numerator drops by 1 if the first event succeeded. / 不放回就變相依。</div>
+      </div>
+    </div>
+
+    <!-- 9.3 Example 3: tree diagram -->
+    <div class="shape-problem" data-problem="93_3">
+      <div class="shape-header">
+        <div class="shape-icon">&#x1F333;</div>
+        <div>
+          <div class="shape-title">Example 3: Tree Diagram / 樹狀圖</div>
+          <div class="shape-type">VISUAL / 圖解</div>
+        </div>
+      </div>
+      <canvas class="shape-canvas" id="c93_3" width="500" height="280"></canvas>
+      <div class="solution-steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Two-stage experiment</strong> / 兩階段<br>
+            Flip a coin, then spin a 3-color spinner (Red, Blue, Green &mdash; equally likely).
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Total outcomes</strong> / 總結果<br>
+            2 coin &times; 3 spinner = 6 equally likely paths: HR, HB, HG, TR, TB, TG.
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>P(Heads AND Red)</strong> / 頭且紅<br>
+            <div class="step-formula">P(H and R) = 1/2 &times; 1/3 = <span class="green">1/6</span></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>P(Heads OR Red)</strong> / 頭或紅<br>
+            <div class="step-formula">P(H or R) = 1/2 + 1/3 &minus; 1/6 = 3/6 + 2/6 &minus; 1/6 = <span class="green">4/6 = 2/3</span></div>
+            Subtract the overlap (HR) because it&rsquo;s counted in both halves.
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">&#x1F4A1; Pro Tip</div>
+        <div class="tip-content">Along a tree path, <strong>multiply</strong>. Across different leaves, <strong>add</strong>. The tree makes compound events impossible to mess up. / 路上乘，葉間加。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== TEST =================== -->
+  <div class="panel" id="stest">
+    <div class="glass quiz-header">
+      <div class="score-display"><span class="num" id="score">0</span><span class="label" id="scoreLabel">/ 12</span></div>
+      <div class="streak" id="streak"></div>
+      <button class="btn" id="newQuiz" style="margin-left:auto">&#x1F504; New Test 新測驗</button>
+    </div>
+    <div class="glass" style="padding:1rem 1.25rem;font-size:.82rem;color:#b8a9cc">
+      Test yourself on Chapter 9 topics: <strong style="color:#7ff5c3">simple events</strong>, <strong style="color:#7ecbf5">theoretical vs experimental</strong>, and <strong style="color:#c084fc">compound events</strong>. Fresh questions every time. / 隨機題目，每次都不同。
+    </div>
+    <div id="quizArea"></div>
+  </div>
+
+  <footer style="text-align:center;padding:2rem 0 1rem;color:#6b5a85;font-size:.75rem">
+    Marshall Cavendish Course 2B &middot; Chapter 9 &middot; &copy; 2026
+  </footer>
+
+</div>
+
+<!-- step-click modal -->
+<div class="step-modal" id="stepModal">
+  <div class="step-modal-content">
+    <div class="step-modal-header">
+      <div class="step-modal-num" id="modalStepNum">1</div>
+      <div class="step-modal-title" id="modalStepTitle">Step Title</div>
+    </div>
+    <canvas class="step-modal-canvas" id="stepModalCanvas" width="560" height="300"></canvas>
+    <div class="step-modal-explanation" id="modalExplanation"></div>
+    <button class="step-modal-close" onclick="closeStepModal()">&check; Got it! / 明白了！</button>
+  </div>
+</div>
+
+<script>
+/* ===== starfield ===== */
+const bg = document.getElementById('bgCanvas');
+const bgCtx = bg.getContext('2d');
+let stars = [];
+function initBg(){
+  bg.width = innerWidth; bg.height = innerHeight;
+  stars = Array.from({length:60},()=>({
+    x: Math.random()*bg.width, y: Math.random()*bg.height,
+    r: Math.random()*1.5 + .3, s: Math.random()*.3 + .05,
+    c: ['#ff6b9d','#7ecbf5','#c084fc','#ffe47a','#7ff5c3'][Math.floor(Math.random()*5)]
+  }));
+}
+function drawBg(){
+  bgCtx.fillStyle = '#1a1028'; bgCtx.fillRect(0,0,bg.width,bg.height);
+  stars.forEach(s=>{
+    s.y -= s.s;
+    if(s.y<0){s.y = bg.height; s.x = Math.random()*bg.width;}
+    bgCtx.fillStyle = s.c; bgCtx.globalAlpha = .5;
+    bgCtx.fillRect(s.x, s.y, s.r, s.r);
+  });
+  bgCtx.globalAlpha = 1;
+  requestAnimationFrame(drawBg);
+}
+initBg(); drawBg();
+addEventListener('resize', initBg);
+
+/* ===== tabs ===== */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    drawAll();
+  });
+});
+
+const COLORS = {
+  pink:'#ff6b9d', yellow:'#ffe47a', green:'#7ff5c3',
+  cyan:'#7ecbf5', purple:'#c084fc', orange:'#ffb27a',
+  grid:'#4a3660', fill:'rgba(255,107,157,.15)', fill2:'rgba(126,203,245,.15)',
+  text:'#e8dff5', dim:'#8b7ca0'
+};
+function setupCanvas(id){
+  const c = document.getElementById(id);
+  if(!c) return null;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  return {c, ctx};
+}
+function label(ctx, text, x, y, color, size=12, align='center'){
+  ctx.fillStyle = color || COLORS.text;
+  ctx.font = `600 ${size}px 'JetBrains Mono', monospace`;
+  ctx.textAlign = align; ctx.textBaseline = 'middle';
+  ctx.fillText(text, x, y);
+}
+function titleLabel(ctx, text, x, y){
+  ctx.fillStyle = COLORS.yellow;
+  ctx.font = `700 11px 'Press Start 2P', monospace`;
+  ctx.textAlign = 'center';
+  ctx.fillText(text, x, y);
+}
+
+/* die helper */
+function drawDie(ctx, cx, cy, size, n, fill, stroke){
+  const s = size/2;
+  ctx.fillStyle = fill || COLORS.fill;
+  ctx.strokeStyle = stroke || COLORS.pink;
+  ctx.lineWidth = 2.5;
+  const r = 8;
+  const x=cx-s, y=cy-s, w=size, h=size;
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  const dots = {
+    1:[[0,0]], 2:[[-.5,-.5],[.5,.5]], 3:[[-.5,-.5],[0,0],[.5,.5]],
+    4:[[-.5,-.5],[.5,-.5],[-.5,.5],[.5,.5]],
+    5:[[-.5,-.5],[.5,-.5],[0,0],[-.5,.5],[.5,.5]],
+    6:[[-.5,-.5],[.5,-.5],[-.5,0],[.5,0],[-.5,.5],[.5,.5]]
+  };
+  ctx.fillStyle = COLORS.text;
+  dots[n].forEach(([dx,dy])=>{
+    ctx.beginPath();
+    ctx.arc(cx + dx*s*.9, cy + dy*s*.9, 4, 0, Math.PI*2);
+    ctx.fill();
+  });
+}
+
+/* ============ 9.1 DRAWINGS ============ */
+function draw91_1(){
+  const s = setupCanvas('c91_1'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Sample Space: {1, 2, 3, 4, 5, 6}', 250, 30);
+  /* 6 dice showing all faces */
+  const size = 50, gap = 15;
+  const totalW = 6*size + 5*gap;
+  const startX = 250 - totalW/2 + size/2;
+  const cy = 150;
+  for(let n=1;n<=6;n++){
+    const cx = startX + (n-1)*(size+gap);
+    const isEven = n%2 === 0;
+    drawDie(ctx, cx, cy,  size, n,
+      isEven ? 'rgba(127,245,195,.22)' : COLORS.fill,
+      isEven ? COLORS.green : COLORS.pink);
+  }
+  label(ctx, 'Even (favorable) = {2, 4, 6}', 250, 215, COLORS.green, 13);
+  label(ctx, 'P(even) = 3 / 6 = 1/2', 250, 235, COLORS.yellow, 14);
+}
+
+function draw91_2(){
+  const s = setupCanvas('c91_2'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Bag: 5 Red, 3 Blue, 2 Green', 250, 30);
+  /* draw bag outline */
+  ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(120, 80); ctx.lineTo(380, 80);
+  ctx.lineTo(400, 230); ctx.lineTo(100, 230); ctx.closePath();
+  ctx.stroke();
+  /* marbles */
+  const marbles = [
+    ...Array(5).fill().map((_,i)=>({c:'#ff6b6b',i})),
+    ...Array(3).fill().map((_,i)=>({c:'#5ec4d4',i})),
+    ...Array(2).fill().map((_,i)=>({c:'#7ff5c3',i}))
+  ];
+  const cols = 5, sp = 45;
+  const startX = 145, startY = 110;
+  marbles.forEach((m,k)=>{
+    const col = k % cols, row = Math.floor(k / cols);
+    const x = startX + col*sp, y = startY + row*sp;
+    const grd = ctx.createRadialGradient(x-5,y-5,2,x,y,18);
+    grd.addColorStop(0, '#ffffff88'); grd.addColorStop(.6, m.c); grd.addColorStop(1, '#00000022');
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(x, y, 17, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#1a1028'; ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+  label(ctx, 'P(red) = 5/10 = 1/2', 250, 250, COLORS.yellow, 14);
+}
+
+function draw91_3(){
+  const s = setupCanvas('c91_3'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Non-Uniform Spinner (360° total)', 250, 30);
+  const cx = 250, cy = 145, r = 85;
+  const sectors = [
+    {deg:180, color:'rgba(255,107,157,.5)', stroke:'#ff6b9d', label:'Red 180°', p:'1/2'},
+    {deg:90,  color:'rgba(94,196,212,.5)',  stroke:'#5ec4d4', label:'Blue 90°', p:'1/4'},
+    {deg:60,  color:'rgba(255,228,122,.5)', stroke:'#ffe47a', label:'Yel 60°',  p:'1/6'},
+    {deg:30,  color:'rgba(127,245,195,.5)', stroke:'#7ff5c3', label:'Grn 30°',  p:'1/12'}
+  ];
+  let a0 = -Math.PI/2;
+  sectors.forEach(sc=>{
+    const a1 = a0 + sc.deg * Math.PI/180;
+    ctx.fillStyle = sc.color;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, a0, a1); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = sc.stroke; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, a0, a1); ctx.closePath(); ctx.stroke();
+    /* label outside */
+    const mid = (a0 + a1)/2;
+    const lx = cx + Math.cos(mid)*(r + 35);
+    const ly = cy + Math.sin(mid)*(r + 35);
+    label(ctx, sc.p, lx, ly, sc.stroke, 13);
+    a0 = a1;
+  });
+  /* pointer */
+  ctx.fillStyle = COLORS.text;
+  ctx.beginPath(); ctx.moveTo(cx, cy - r - 10); ctx.lineTo(cx - 8, cy - r - 25); ctx.lineTo(cx + 8, cy - r - 25); ctx.closePath(); ctx.fill();
+  label(ctx, '1/2 + 1/4 + 1/6 + 1/12 = 1', 250, 250, COLORS.green, 13);
+}
+
+/* ============ 9.2 DRAWINGS ============ */
+function draw92_1(){
+  const s = setupCanvas('c92_1'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Coin Flips: Exp → Theo as n grows', 250, 30);
+  /* 3 bars: theo 0.5, 20-flip 0.6, 200-flip 0.48 */
+  const data = [
+    {n:'Theo', v:0.5, c:COLORS.green},
+    {n:'20 flips', v:0.6, c:COLORS.cyan},
+    {n:'200 flips', v:0.48, c:COLORS.purple}
+  ];
+  const baseY = 230;
+  const bw = 90, gap = 35;
+  const totalW = 3*bw + 2*gap;
+  const startX = 250 - totalW/2;
+  data.forEach((d,i)=>{
+    const x = startX + i*(bw+gap);
+    const h = d.v * 170;
+    ctx.fillStyle = d.c + '55';
+    ctx.strokeStyle = d.c; ctx.lineWidth = 2;
+    ctx.fillRect(x, baseY - h, bw, h);
+    ctx.strokeRect(x, baseY - h, bw, h);
+    label(ctx, d.v.toFixed(2), x + bw/2, baseY - h - 10, d.c, 14);
+    label(ctx, d.n, x + bw/2, baseY + 14, COLORS.dim, 11);
+  });
+  /* theoretical reference line */
+  const refY = baseY - 0.5*170;
+  ctx.strokeStyle = COLORS.yellow; ctx.setLineDash([5,4]); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(50, refY); ctx.lineTo(450, refY); ctx.stroke(); ctx.setLineDash([]);
+  label(ctx, 'theoretical = 0.5', 75, refY - 10, COLORS.yellow, 11, 'left');
+}
+
+function draw92_2(){
+  const s = setupCanvas('c92_2'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Biased Spinner? Counts over 200 spins', 250, 30);
+  const data = [
+    {n:'Red', c:88, color:'#ff6b6b'},
+    {n:'Blue', c:42, color:'#5ec4d4'},
+    {n:'Green', c:38, color:'#7ff5c3'},
+    {n:'Yellow', c:32, color:'#ffe47a'}
+  ];
+  const baseY = 230;
+  const bw = 70, gap = 25;
+  const totalW = 4*bw + 3*gap;
+  const startX = 250 - totalW/2;
+  /* expected line: 50 each */
+  const expH = 50 * 1.8;
+  data.forEach((d,i)=>{
+    const x = startX + i*(bw+gap);
+    const h = d.c * 1.8;
+    ctx.fillStyle = d.color + '55';
+    ctx.strokeStyle = d.color; ctx.lineWidth = 2;
+    ctx.fillRect(x, baseY - h, bw, h);
+    ctx.strokeRect(x, baseY - h, bw, h);
+    label(ctx, String(d.c), x + bw/2, baseY - h - 10, d.color, 14);
+    label(ctx, d.n, x + bw/2, baseY + 14, COLORS.dim, 11);
+  });
+  /* expected line */
+  ctx.strokeStyle = COLORS.yellow; ctx.setLineDash([5,4]); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(50, baseY - expH); ctx.lineTo(450, baseY - expH); ctx.stroke(); ctx.setLineDash([]);
+  label(ctx, 'expected = 50 each', 75, baseY - expH - 10, COLORS.yellow, 11, 'left');
+}
+
+function draw92_3(){
+  const s = setupCanvas('c92_3'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Expected vs Actual Wins', 250, 30);
+  /* show n · P calc visually */
+  ctx.fillStyle = COLORS.yellow;
+  ctx.font = `700 20px 'JetBrains Mono', monospace`;
+  ctx.textAlign = 'center';
+  ctx.fillText('60 plays × 1/5 = 12 expected wins', 250, 100);
+  /* two bars */
+  const baseY = 230, bw = 100, gap = 60;
+  const startX = 250 - bw - gap/2;
+  const expH = 12 * 10;
+  const actH = 18 * 10;
+  ctx.fillStyle = 'rgba(255,228,122,.35)'; ctx.strokeStyle = COLORS.yellow; ctx.lineWidth = 2;
+  ctx.fillRect(startX, baseY - expH, bw, expH);
+  ctx.strokeRect(startX, baseY - expH, bw, expH);
+  label(ctx, '12', startX + bw/2, baseY - expH - 10, COLORS.yellow, 15);
+  label(ctx, 'Expected', startX + bw/2, baseY + 14, COLORS.dim, 12);
+  const x2 = startX + bw + gap;
+  ctx.fillStyle = 'rgba(127,245,195,.35)'; ctx.strokeStyle = COLORS.green;
+  ctx.fillRect(x2, baseY - actH, bw, actH);
+  ctx.strokeRect(x2, baseY - actH, bw, actH);
+  label(ctx, '18', x2 + bw/2, baseY - actH - 10, COLORS.green, 15);
+  label(ctx, 'Actual', x2 + bw/2, baseY + 14, COLORS.dim, 12);
+}
+
+/* ============ 9.3 DRAWINGS ============ */
+function draw93_1(){
+  const s = setupCanvas('c93_1'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Two Dice: 36 Equally Likely Pairs', 250, 28);
+  /* 6x6 grid, highlight sum=7 diagonal */
+  const cell = 32, startX = 250 - 3*cell, startY = 60;
+  ctx.font = `600 13px 'JetBrains Mono', monospace`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for(let a=1;a<=6;a++){
+    for(let b=1;b<=6;b++){
+      const x = startX + (b-1)*cell;
+      const y = startY + (a-1)*cell;
+      const sum7 = (a+b) === 7;
+      const both6 = a===6 && b===6;
+      ctx.fillStyle = both6 ? 'rgba(127,245,195,.45)' :
+                      sum7 ? 'rgba(192,132,252,.3)' : 'rgba(255,107,157,.08)';
+      ctx.strokeStyle = both6 ? COLORS.green : sum7 ? COLORS.purple : COLORS.grid;
+      ctx.lineWidth = both6 || sum7 ? 2 : 1;
+      ctx.fillRect(x, y, cell, cell);
+      ctx.strokeRect(x, y, cell, cell);
+      ctx.fillStyle = both6 ? COLORS.green : sum7 ? COLORS.purple : COLORS.dim;
+      ctx.fillText(`${a},${b}`, x + cell/2, y + cell/2);
+    }
+  }
+  label(ctx, 'Purple: sum = 7 (6 pairs)', 370, 90, COLORS.purple, 11, 'left');
+  label(ctx, 'Green: both 6 (1 pair)', 370, 110, COLORS.green, 11, 'left');
+  label(ctx, 'P(6 & 6) = 1/36', 370, 150, COLORS.yellow, 12, 'left');
+  label(ctx, 'P(sum=7) = 6/36 = 1/6', 370, 170, COLORS.yellow, 12, 'left');
+}
+
+function draw93_2(){
+  const s = setupCanvas('c93_2'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Bag: 4 Red, 6 Blue — draw 2 without replacement', 250, 28);
+  /* two-step visual: before and after */
+  /* Step 1 bag: 4R 6B */
+  const drawBag = (x, vals, labelText) => {
+    const bw = 180, bh = 110;
+    ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x+12, 75); ctx.lineTo(x+bw-12, 75);
+    ctx.lineTo(x+bw, 75+bh); ctx.lineTo(x, 75+bh); ctx.closePath();
+    ctx.stroke();
+    /* marbles */
+    const cols = 5, sp = 28, startX = x + 20, startY = 90;
+    let k = 0;
+    vals.forEach(({c, n})=>{
+      for(let i=0;i<n;i++){
+        const col = k % cols, row = Math.floor(k / cols);
+        const mx = startX + col*sp, my = startY + row*sp;
+        const grd = ctx.createRadialGradient(mx-3,my-3,2,mx,my,11);
+        grd.addColorStop(0,'#ffffff88'); grd.addColorStop(.6, c); grd.addColorStop(1,'#00000022');
+        ctx.fillStyle = grd;
+        ctx.beginPath(); ctx.arc(mx, my, 10, 0, Math.PI*2); ctx.fill();
+        k++;
+      }
+    });
+    label(ctx, labelText, x + bw/2, 75+bh+14, COLORS.cyan, 12);
+  };
+  drawBag(40, [{c:'#ff6b6b', n:4}, {c:'#5ec4d4', n:6}], 'Before: 4R + 6B = 10');
+  drawBag(280, [{c:'#ff6b6b', n:3}, {c:'#5ec4d4', n:6}], 'After 1 red: 3R + 6B = 9');
+  /* arrow */
+  ctx.strokeStyle = COLORS.yellow; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(228, 130); ctx.lineTo(270, 130); ctx.stroke();
+  ctx.fillStyle = COLORS.yellow;
+  ctx.beginPath(); ctx.moveTo(270, 130); ctx.lineTo(262, 125); ctx.lineTo(262, 135); ctx.closePath(); ctx.fill();
+  label(ctx, 'P(R&R) = 4/10 × 3/9 = 2/15', 250, 250, COLORS.green, 13);
+}
+
+function draw93_3(){
+  const s = setupCanvas('c93_3'); if(!s) return;
+  const {ctx} = s;
+  titleLabel(ctx, 'Tree Diagram: Coin × Spinner (3 colors)', 250, 28);
+  /* root -> H, T -> 3 colors each */
+  const rootX = 80, rootY = 145;
+  ctx.fillStyle = COLORS.yellow;
+  ctx.beginPath(); ctx.arc(rootX, rootY, 6, 0, Math.PI*2); ctx.fill();
+  const midX = 210, midYs = [80, 210];
+  const midLabels = ['H (1/2)', 'T (1/2)'];
+  midYs.forEach((my,i)=>{
+    ctx.strokeStyle = COLORS.cyan; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(rootX + 6, rootY); ctx.lineTo(midX - 6, my); ctx.stroke();
+    ctx.fillStyle = COLORS.cyan;
+    ctx.beginPath(); ctx.arc(midX, my, 5, 0, Math.PI*2); ctx.fill();
+    label(ctx, midLabels[i], (rootX+midX)/2, (rootY+my)/2 - 10, COLORS.cyan, 11);
+  });
+  const leafX = 360;
+  const colors = [['R','#ff6b6b'],['B','#5ec4d4'],['G','#7ff5c3']];
+  midYs.forEach((my,i)=>{
+    const yTop = my - 50;
+    colors.forEach((col,j)=>{
+      const ly = yTop + j*35;
+      ctx.strokeStyle = col[1]; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(midX + 6, my); ctx.lineTo(leafX - 6, ly); ctx.stroke();
+      ctx.fillStyle = col[1];
+      ctx.beginPath(); ctx.arc(leafX, ly, 5, 0, Math.PI*2); ctx.fill();
+      const flag = i===0 ? 'H' : 'T';
+      const path = flag + col[0];
+      const hi = (flag === 'H' && col[0] === 'R');
+      label(ctx, `${path} (1/6)`, leafX + 14, ly, hi ? COLORS.green : col[1], 11, 'left');
+    });
+  });
+  label(ctx, 'P(H & R) = 1/2 × 1/3 = 1/6', 250, 260, COLORS.green, 13);
+}
+
+function drawAll(){
+  draw91_1(); draw91_2(); draw91_3();
+  draw92_1(); draw92_2(); draw92_3();
+  draw93_1(); draw93_2(); draw93_3();
+}
+drawAll();
+addEventListener('resize', ()=>setTimeout(drawAll, 50));
+
+/* ===== STEP MODAL ===== */
+function bigFormula(ctx, lines, cx, cy, color){
+  color = color || COLORS.green;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = color;
+  ctx.font = `700 22px 'JetBrains Mono', monospace`;
+  const lh = 32;
+  const startY = cy - ((lines.length-1)/2)*lh;
+  lines.forEach((line, i)=>ctx.fillText(line, cx, startY + i*lh));
+}
+function gridBg(ctx){
+  ctx.strokeStyle = '#2d1f42'; ctx.lineWidth = 1;
+  for(let x=0; x<560; x+=20){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,300); ctx.stroke(); }
+  for(let y=0; y<300; y+=20){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(560,y); ctx.stroke(); }
+}
+
+const stepExplanations = {
+  '91_1s2': {
+    title: 'P(4) for a fair die / 擲出 4',
+    text: 'Only one of six faces is a 4, and all faces are equally likely. So the probability is just 1 out of 6.',
+    draw: (ctx)=>{ bigFormula(ctx, ['P(4) = 1 / 6', '≈ 0.167 ≈ 16.7%'], 280, 150, COLORS.green); }
+  },
+  '91_1s3': {
+    title: 'P(even) / 擲出偶數',
+    text: 'Three of the six faces are even: 2, 4, 6. With equally likely outcomes, count favorable over total.',
+    draw: (ctx)=>{ bigFormula(ctx, ['favorable = {2, 4, 6} → 3', 'P(even) = 3/6 = 1/2 = 50%'], 280, 150, COLORS.green); }
+  },
+  '91_1s4': {
+    title: 'Complement / 互補',
+    text: 'P(not 4) covers all five non-4 outcomes: {1,2,3,5,6}. That\'s 5/6 — and also equals 1 − P(4).',
+    draw: (ctx)=>{ bigFormula(ctx, ['P(not 4) = 1 − 1/6', '= 5/6'], 280, 150, COLORS.green); }
+  },
+  '91_2s3': {
+    title: 'OR across colors / 或',
+    text: 'Blue and green are disjoint (a marble can\'t be both). Add their counts, then divide by total.',
+    draw: (ctx)=>{ bigFormula(ctx, ['3 + 2 = 5', 'P(B or G) = 5/10 = 1/2'], 280, 150, COLORS.green); }
+  },
+  '91_3s2': {
+    title: 'Fraction of 360° / 角度的比例',
+    text: 'When a spinner has unequal sectors, P(color) = sector-angle ÷ 360°. It\'s the fraction of the dial that color covers.',
+    draw: (ctx)=>{ bigFormula(ctx, ['P = angle / 360°', 'Red: 180/360 = 1/2'], 280, 150, COLORS.green); }
+  },
+  '91_3s3': {
+    title: 'Sum check / 總和為 1',
+    text: 'All probabilities across a complete sample space must add to 1. If they don\'t, you missed an outcome or miscounted.',
+    draw: (ctx)=>{ bigFormula(ctx, ['6/12 + 3/12 + 2/12 + 1/12', '= 12/12 = 1 ✓'], 280, 150, COLORS.green); }
+  },
+  '92_1s3': {
+    title: 'Law of Large Numbers / 大數法則',
+    text: 'Short runs wobble a lot. The more trials you run, the closer the experimental P gets to the theoretical P.',
+    draw: (ctx)=>{ bigFormula(ctx, ['96 / 200 = 0.48', 'closer to 0.5'], 280, 150, COLORS.green); }
+  },
+  '92_1s4': {
+    title: 'Expected count / 期望次數',
+    text: 'Expected = n × P. In 300 fair flips, we expect half heads and half tails — 150 each — on average.',
+    draw: (ctx)=>{ bigFormula(ctx, ['300 × 0.5', '= 150 heads'], 280, 150, COLORS.green); }
+  },
+  '92_2s3': {
+    title: 'Experimental Ps / 實驗機率',
+    text: 'For each color, divide its count by the total 200 trials. Compare the result to the theoretical 0.25.',
+    draw: (ctx)=>{ bigFormula(ctx, ['Red: 88/200 = 0.44', '(theo was 0.25)'], 280, 150, COLORS.pink); }
+  },
+  '92_2s4': {
+    title: 'Big gap → real bias / 差距大有偏',
+    text: 'Red is almost double its theoretical share after many trials. That\'s strong evidence the spinner favors red.',
+    draw: (ctx)=>{ bigFormula(ctx, ['0.44 vs 0.25 (200 trials)', '→ biased toward red'], 280, 150, COLORS.pink); }
+  },
+  '92_3s2': {
+    title: 'n × P formula / 次數乘機率',
+    text: 'Expected wins in 60 games is just 60 × 1/5 = 12. This is the average over many such sessions.',
+    draw: (ctx)=>{ bigFormula(ctx, ['60 × (1/5) = 12 wins'], 280, 150, COLORS.green); }
+  },
+  '92_3s3': {
+    title: 'Exp > theo / 實際 > 理論',
+    text: 'Actual 18 wins out of 60 is P_exp = 0.30 — 50% higher than theoretical. In a single session, lucky streaks can easily cause this. Track many sessions to tell.',
+    draw: (ctx)=>{ bigFormula(ctx, ['18 / 60 = 0.30', '> 0.20 theoretical'], 280, 150, COLORS.green); }
+  },
+  '93_1s2': {
+    title: 'Independent AND / 獨立相乘',
+    text: 'Dice don\'t influence each other. Multiply their individual probabilities.',
+    draw: (ctx)=>{ bigFormula(ctx, ['P(6) × P(6)', '= 1/6 × 1/6 = 1/36'], 280, 150, COLORS.green); }
+  },
+  '93_1s4': {
+    title: 'Complement trick / 互補捷徑',
+    text: '"At least one 6" is the opposite of "no 6 at all". P(no 6 on either die) = 5/6 × 5/6, then 1 − that.',
+    draw: (ctx)=>{ bigFormula(ctx, ['P(no 6) = 25/36', 'P(≥1 six) = 11/36'], 280, 150, COLORS.green); }
+  },
+  '93_2s3': {
+    title: 'Conditional probability / 條件機率',
+    text: 'After drawing one red, the bag has one fewer red AND one fewer marble total. Both change.',
+    draw: (ctx)=>{ bigFormula(ctx, ['3 reds left / 9 total', 'P(R₂ | R₁) = 1/3'], 280, 150, COLORS.green); }
+  },
+  '93_2s4': {
+    title: 'Multiply dependent / 相依相乘',
+    text: 'Chain-rule: P(A AND B) = P(A) × P(B given A). Always multiply dependent branches along the tree.',
+    draw: (ctx)=>{ bigFormula(ctx, ['2/5 × 1/3 = 2/15'], 280, 150, COLORS.green); }
+  },
+  '93_3s3': {
+    title: 'Multiply along path / 路上相乘',
+    text: 'On a tree diagram, follow the edge for H then the edge for R. Multiply P(H) × P(R) along the path.',
+    draw: (ctx)=>{ bigFormula(ctx, ['1/2 × 1/3 = 1/6'], 280, 150, COLORS.green); }
+  },
+  '93_3s4': {
+    title: 'Inclusion-Exclusion / 容斥原理',
+    text: 'P(A or B) = P(A) + P(B) − P(A and B). Otherwise you count the overlap (HR) twice.',
+    draw: (ctx)=>{ bigFormula(ctx, ['1/2 + 1/3 − 1/6', '= 3/6 + 2/6 − 1/6 = 2/3'], 280, 150, COLORS.green); }
+  }
+};
+
+document.querySelectorAll('.step-item').forEach((step)=>{
+  const problem = step.closest('.shape-problem');
+  if(!problem) return;
+  const pid = problem.dataset.problem;
+  if(!pid) return;
+  const siblings = problem.querySelectorAll('.step-item');
+  const stepNum = Array.from(siblings).indexOf(step) + 1;
+  const key = `${pid}s${stepNum}`;
+  if(stepExplanations[key]){
+    step.addEventListener('click', ()=>showStepModal(key, stepNum));
+  } else {
+    step.style.cursor = 'default';
+    step.style.paddingRight = '.5rem';
+    step.classList.add('no-click');
+  }
+});
+
+function showStepModal(key, stepNum){
+  const data = stepExplanations[key];
+  if(!data) return;
+  document.getElementById('modalStepNum').textContent = stepNum;
+  document.getElementById('modalStepTitle').textContent = data.title;
+  document.getElementById('modalExplanation').innerHTML = data.text;
+  const canvas = document.getElementById('stepModalCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  gridBg(ctx);
+  if(data.draw) data.draw(ctx);
+  document.getElementById('stepModal').classList.add('active');
+}
+function closeStepModal(){
+  document.getElementById('stepModal').classList.remove('active');
+}
+document.getElementById('stepModal').addEventListener('click',(e)=>{
+  if(e.target.id === 'stepModal') closeStepModal();
+});
+addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeStepModal(); });
+
+/* ===================================================================
+ *  TEST
+ * =================================================================== */
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}
+function gcd(a,b){return b?gcd(b,a%b):a}
+function simp(n,d){const g=gcd(n,d);return [n/g, d/g]}
+function frac(n,d){const [a,b]=simp(n,d); return b===1?String(a):`${a}/${b}`}
+function mcChoices(correct){
+  /* correct is a string; fabricate plausible distractors */
+  const out = new Set([correct]);
+  /* try some close numerators/denominators if it's a fraction */
+  if(/^\d+\/\d+$/.test(correct)){
+    const [n,d] = correct.split('/').map(Number);
+    [[n+1,d],[n,d+1],[n-1,d],[n,d-1],[n+1,d+1],[n+2,d],[1,d]].forEach(([a,b])=>{
+      if(a>0 && b>0 && a<b*2){ out.add(`${a}/${b}`); }
+    });
+  } else if(/^\d+\.?\d*$/.test(correct)){
+    const v = +correct;
+    [v+0.1, v-0.1, v+0.25, v-0.25, v*2, v/2, 0.5, 0.25].forEach(x=>{
+      if(x>=0 && x<=1) out.add(String(+x.toFixed(2)));
+    });
+  } else {
+    return shuffle([correct]);
+  }
+  const arr = [...out].slice(0,4);
+  while(arr.length<4){ arr.push(String(rnd(1,9)) + '/' + String(rnd(2,20))); }
+  return shuffle(arr);
+}
+function mcInt(correct, spread=5){
+  const out = new Set([String(correct)]);
+  let tries=0;
+  while(out.size<4 && tries<30){
+    const d = rnd(-spread, spread);
+    if(d!==0 && correct+d>=0) out.add(String(correct+d));
+    tries++;
+  }
+  while(out.size<4){ out.add(String(rnd(1,99))); }
+  return shuffle([...out]);
+}
+
+const QB = [
+  /* --- die / coin simple --- */
+  ()=>({q:'Roll a fair die. P(rolling a 3)?', correct:'1/6',
+    choices:mcChoices('1/6'),
+    explain:'One favorable (3) ÷ six outcomes = <strong>1/6</strong>.'}),
+  ()=>({q:'Roll a fair die. P(odd number)?', correct:'1/2',
+    choices:mcChoices('1/2'),
+    explain:'Odds: {1,3,5} → 3/6 = <strong>1/2</strong>.'}),
+  ()=>({q:'Roll a fair die. P(number greater than 4)?', correct:'1/3',
+    choices:mcChoices('1/3'),
+    explain:'{5,6} → 2/6 = <strong>1/3</strong>.'}),
+  ()=>({q:'Flip a fair coin twice. P(two heads)?', correct:'1/4',
+    choices:mcChoices('1/4'),
+    explain:'1/2 × 1/2 = <strong>1/4</strong> (independent).'}),
+  ()=>({q:'Flip a fair coin 3 times. P(all three heads)?', correct:'1/8',
+    choices:mcChoices('1/8'),
+    explain:'(1/2)³ = <strong>1/8</strong>.'}),
+  /* --- marbles --- */
+  ()=>{ const r=rnd(2,5), b=rnd(2,5), g=rnd(1,4); const tot=r+b+g;
+    const [a,d]=simp(r,tot);
+    return {q:`Bag: ${r} red, ${b} blue, ${g} green. P(red)?`,
+      correct:frac(r,tot), choices:mcChoices(frac(r,tot)),
+      explain:`${r}/${tot} = <strong>${frac(r,tot)}</strong>.`}; },
+  ()=>{ const r=4, b=6;
+    return {q:`Bag: 4 red, 6 blue. Draw 2 without replacement. P(both red)?`,
+      correct:'2/15', choices:mcChoices('2/15'),
+      explain:'4/10 × 3/9 = 12/90 = <strong>2/15</strong>.'}; },
+  ()=>({q:'Bag: 3 red, 7 blue. Draw 2 WITH replacement. P(both red)?',
+    correct:'9/100', choices:mcChoices('9/100'),
+    explain:'3/10 × 3/10 = <strong>9/100</strong> (independent).'}),
+  /* --- spinner --- */
+  ()=>({q:'A spinner has Red 180°, Blue 90°, Green 90°. P(Blue)?',
+    correct:'1/4', choices:mcChoices('1/4'),
+    explain:'90/360 = <strong>1/4</strong>.'}),
+  ()=>({q:'Fair 4-color spinner. In 80 spins, expected count for each color?',
+    correct:'20', choices:mcInt(20,5),
+    explain:'80 × 1/4 = <strong>20</strong>.'}),
+  /* --- complement --- */
+  ()=>({q:'P(event) = 3/8. What is P(not event)?',
+    correct:'5/8', choices:mcChoices('5/8'),
+    explain:'1 − 3/8 = <strong>5/8</strong>.'}),
+  ()=>({q:'Roll 2 dice. P(at least one 6)?',
+    correct:'11/36', choices:mcChoices('11/36'),
+    explain:'1 − P(no 6 on either) = 1 − (5/6)² = 1 − 25/36 = <strong>11/36</strong>.'}),
+  /* --- two dice --- */
+  ()=>({q:'Roll 2 dice. P(sum = 7)?', correct:'1/6',
+    choices:mcChoices('1/6'),
+    explain:'6 pairs out of 36 sum to 7 → 6/36 = <strong>1/6</strong>.'}),
+  ()=>({q:'Roll 2 dice. P(sum = 12)?', correct:'1/36',
+    choices:mcChoices('1/36'),
+    explain:'Only (6,6) gives 12 → <strong>1/36</strong>.'}),
+  /* --- theoretical vs experimental --- */
+  ()=>{ const heads=rnd(40,60);
+    return {q:`Flipped a coin 100 times; got ${heads} heads. Experimental P(H)?`,
+      correct:String(heads/100), choices:mcChoices(String(heads/100)),
+      explain:`${heads}/100 = <strong>${heads/100}</strong>.`}; },
+  ()=>({q:'Rolled a die 120 times. Expected count of 5s?',
+    correct:'20', choices:mcInt(20,6),
+    explain:'120 × 1/6 = <strong>20</strong>.'}),
+  /* --- compound OR --- */
+  ()=>({q:'Flip coin, spin 3-color spinner. P(H or Red)?',
+    correct:'2/3', choices:mcChoices('2/3'),
+    explain:'1/2 + 1/3 − 1/6 = <strong>2/3</strong> (subtract overlap).'}),
+  ()=>({q:'Roll a die. P(even OR > 4)?',
+    correct:'2/3', choices:mcChoices('2/3'),
+    explain:'Even {2,4,6} ∪ >4 {5,6} = {2,4,5,6} → 4/6 = <strong>2/3</strong>.'}),
+  /* --- concept --- */
+  ()=>({q:'Probability must satisfy which range?',
+    correct:'0 ≤ P ≤ 1', choices:shuffle(['0 ≤ P ≤ 1','0 < P < 100','−1 ≤ P ≤ 1','any real number']),
+    explain:'All probabilities are between 0 (impossible) and 1 (certain).'}),
+  ()=>({q:'Drawing "without replacement" creates which kind of events?',
+    correct:'Dependent', choices:shuffle(['Dependent','Independent','Mutually exclusive','Impossible']),
+    explain:'The first draw changes the sample space for the second — dependent.'}),
+  ()=>({q:'In many trials, experimental probability tends to…',
+    correct:'approach theoretical', choices:shuffle(['approach theoretical','move away','stay random','become zero']),
+    explain:'Law of Large Numbers.'}),
+];
+
+let quizTotal=12, quizScore=0, quizQ=0;
+let streakData=[], quizQuestions=[];
+
+function initStreak(){ streakData = Array(quizTotal).fill('pending'); renderStreak(); }
+function renderStreak(){
+  document.getElementById('streak').innerHTML =
+    streakData.map(s=>{
+      const icon = s==='correct'?'✓':s==='wrong'?'✗':'';
+      return `<div class="streak-dot ${s}">${icon}</div>`;
+    }).join('');
+}
+
+function renderQuiz(){
+  const area = document.getElementById('quizArea');
+  quizScore = 0; quizQ = 0;
+  document.getElementById('score').textContent = '0';
+  document.getElementById('scoreLabel').textContent = '/ ' + quizTotal;
+  quizQuestions = [];
+  const pool = shuffle(QB.slice());
+  for(let i=0;i<quizTotal;i++) quizQuestions.push(pool[i % pool.length]());
+  let html = '';
+  quizQuestions.forEach((qd,i)=>{
+    html += `<div class="glass question" id="q${i}" style="scroll-margin-top:1rem">`;
+    html += `<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">`;
+    html += `<span style="font-family:'Press Start 2P',monospace;font-size:.55rem;color:#ff6b9d;background:#ff6b9d20;padding:.3rem .5rem;min-width:28px;text-align:center">${i+1}</span>`;
+    html += `<span class="streak-dot pending" id="dot${i}" style="width:16px;height:16px;font-size:.5rem"></span>`;
+    html += `</div>`;
+    html += `<h4>${qd.q}</h4><div class="choices" id="choices${i}">`;
+    qd.choices.forEach(ch=>{ html += `<div class="choice" data-qi="${i}" data-val="${ch}">${ch}</div>`; });
+    html += `</div><div class="feedback" id="fb${i}"></div></div>`;
+  });
+  html += `<div class="glass" id="quizSummary" style="display:none;text-align:center;padding:2.5rem"></div>`;
+  area.innerHTML = html;
+  area.querySelectorAll('.choice').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const i = +el.dataset.qi;
+      const wrap = document.getElementById('choices'+i);
+      if(wrap.classList.contains('answered')) return;
+      wrap.classList.add('answered');
+      wrap.querySelectorAll('.choice').forEach(c=>c.classList.add('disabled'));
+      const qd = quizQuestions[i];
+      const fb = document.getElementById('fb'+i);
+      const dot = document.getElementById('dot'+i);
+      if(el.dataset.val === qd.correct){
+        el.classList.add('correct');
+        quizScore++; streakData[i]='correct';
+        fb.className='feedback show right';
+        fb.innerHTML = `✓ Correct! / 正確！<div class="explain">${qd.explain}</div>`;
+        dot.className='streak-dot correct'; dot.textContent='✓';
+      } else {
+        el.classList.add('wrong'); streakData[i]='wrong';
+        wrap.querySelector(`.choice[data-val="${CSS.escape(qd.correct)}"]`)?.classList.add('correct');
+        fb.className='feedback show wrong-fb';
+        fb.innerHTML = `✗ Not quite. / 再想想。<div class="explain">${qd.explain}</div>`;
+        dot.className='streak-dot wrong'; dot.textContent='✗';
+      }
+      quizQ++;
+      document.getElementById('score').textContent = quizScore;
+      renderStreak();
+      if(quizQ >= quizTotal) showQuizSummary();
+    });
+  });
+  initStreak();
+}
+
+function showQuizSummary(){
+  const el = document.getElementById('quizSummary');
+  const pct = Math.round(quizScore/quizTotal*100);
+  const msg = pct>=90?'Probability pro! / 機率達人！' : pct>=70?'Solid work! / 做得好！' : pct>=50?'Keep practicing! / 繼續練習！' : 'Review the lessons! / 回去複習吧！';
+  el.style.display='block';
+  el.innerHTML = `
+    <div style="font-family:'Press Start 2P',monospace;font-size:1rem;color:#ffe47a;margin-bottom:1rem">${pct}% / ${quizScore} of ${quizTotal}</div>
+    <div style="color:#e8dff5;font-size:.95rem;margin-bottom:1rem">${msg}</div>
+    <button class="btn" onclick="renderQuiz();document.getElementById('quizArea').scrollIntoView({behavior:'smooth'})">🔄 Try Again / 再試一次</button>
+  `;
+}
+
+document.getElementById('newQuiz').addEventListener('click',()=>{
+  renderQuiz();
+  document.getElementById('quizArea').scrollIntoView({behavior:'smooth'});
+});
+renderQuiz();
+
+</script>
+</body>
+</html>

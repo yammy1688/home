@@ -10,7 +10,11 @@ Interactive circle geometry learning for 8th graders. Self-contained HTML pages 
 
 - **index.html** — Math games hub page linking to available games
 - **circle-explorer-8th.html** — Interactive circle explorer with Learn, Playground, and Quiz tabs
-- **chapter7-prep.html** — Chapter 7 (Marshall Cavendish Course 2B) prep page: composite area, prism volume, surface area — formula cards + worked examples with canvas diagrams
+- **chapter7-prep.html** — Chapter 7 (Marshall Cavendish Course 2B): composite area, prism volume, surface area + Test tab
+- **chapter8-prep.html** — Chapter 8 Statistics: measures of center, stem-leaf & dot plots, histograms + Test tab
+- **chapter9-prep.html** — Chapter 9 Probability: simple events, theoretical vs experimental, compound events + Test tab
+
+Each prep page has 3 topic tabs (formula cards + worked examples with clickable step-click modals) and a fourth **Test** tab with a randomized 12-question multiple-choice quiz.
 
 ## Development
 

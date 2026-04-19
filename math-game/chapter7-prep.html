@@ -150,6 +150,33 @@ header .emoji{font-size:1.3rem;display:inline-block;animation:bounce 1.2s steps(
 .tip-content strong{color:#7ff5c3}
 
 .mini-label{font-family:'Press Start 2P',monospace;font-size:.45rem;color:#ffe47a;letter-spacing:1px;margin-bottom:.4rem;display:block}
+
+/* ===== TEST TAB ===== */
+.quiz-header{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;padding:1rem 1.25rem;margin-bottom:1rem}
+.quiz-header .streak{display:flex;gap:.15rem;flex-wrap:wrap}
+.streak-dot{width:20px;height:20px;border:2px solid #4a3660;display:grid;place-items:center;font-size:.6rem;transition:all .3s}
+.streak-dot.correct{border-color:#7ff5c3;background:#7ff5c320;color:#7ff5c3}
+.streak-dot.wrong{border-color:#ff6b9d;background:#ff6b9d20;color:#ff6b9d}
+.streak-dot.pending{border-color:#4a3660}
+.score-display{display:flex;align-items:baseline;gap:.3rem}
+.score-display .num{font-size:1.6rem;font-weight:700;font-family:'Press Start 2P',monospace;color:#ffe47a;text-shadow:2px 2px 0 #c4a030}
+.score-display .label{color:#b8a9cc;font-size:.7rem;font-weight:700;font-family:'Press Start 2P',monospace}
+.question{margin-bottom:1rem}
+.question h4{color:#e8dff5;font-size:1rem;margin-bottom:.75rem;font-weight:700;line-height:1.5}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.choice{padding:.75rem .8rem;border:2px solid #4a3660;background:#2d1f42;color:#e8dff5;cursor:pointer;text-align:center;transition:all .2s;font-size:.85rem;font-weight:600;font-family:'JetBrains Mono',monospace;position:relative;overflow:hidden;-webkit-touch-callout:none;user-select:none;box-shadow:3px 3px 0 #1a1028}
+.choice:active{transform:translateY(2px);box-shadow:1px 1px 0 #1a1028}
+.choice.correct{background:#1a3a28;border-color:#7ff5c3;color:#7ff5c3;box-shadow:3px 3px 0 #1a3a28,0 0 16px rgba(127,245,195,.2)}
+.choice.wrong{background:#3a1a28;border-color:#ff6b9d;color:#ff6b9d}
+.choice.disabled{pointer-events:none;opacity:.5}
+.btn{padding:.55rem 1.2rem;border:none;background:#ff6b9d;color:#1a1028;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.5rem;transition:all .2s;box-shadow:3px 3px 0 #c44d78}
+.btn:active{transform:translateY(2px);box-shadow:1px 1px 0 #c44d78}
+.feedback{padding:.75rem 1rem;margin-top:.75rem;font-size:.85rem;line-height:1.5;display:none;font-weight:600;border:2px solid}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.right{background:#1a3a28;border-color:#7ff5c3;color:#7ff5c3}
+.feedback.wrong-fb{background:#3a1a28;border-color:#ff6b9d;color:#ff6b9d}
+.feedback .explain{margin-top:.5rem;color:#e8dff5;font-size:.82rem;line-height:1.6;font-weight:500}
+@media(max-width:500px){.choices{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -167,6 +194,7 @@ header .emoji{font-size:1.3rem;display:inline-block;animation:bounce 1.2s steps(
     <button class="tab active" data-tab="s74">&#x1F9E9; 7.4 Composite Area</button>
     <button class="tab" data-tab="s75">&#x1F4E6; 7.5 Prism Volume</button>
     <button class="tab" data-tab="s76">&#x1F3E0; 7.6 Surface Area</button>
+    <button class="tab" data-tab="stest">&#x1F4DD; Test</button>
   </div>
 
   <!-- =================== 7.4 COMPOSITE AREA =================== -->
@@ -786,6 +814,19 @@ header .emoji{font-size:1.3rem;display:inline-block;animation:bounce 1.2s steps(
       </div>
     </div>
 
+  </div>
+
+  <!-- =================== TEST =================== -->
+  <div class="panel" id="stest">
+    <div class="glass quiz-header">
+      <div class="score-display"><span class="num" id="score">0</span><span class="label" id="scoreLabel">/ 12</span></div>
+      <div class="streak" id="streak"></div>
+      <button class="btn" id="newQuiz" style="margin-left:auto">&#x1F504; New Test 新測驗</button>
+    </div>
+    <div class="glass" style="padding:1rem 1.25rem;font-size:.82rem;color:#b8a9cc">
+      Test yourself on Chapter 7 topics: <strong style="color:#7ff5c3">composite area</strong>, <strong style="color:#7ecbf5">prism volume</strong>, and <strong style="color:#c084fc">surface area</strong>. Fresh questions every time. / 隨機題目，每次都不同。
+    </div>
+    <div id="quizArea"></div>
   </div>
 
   <footer style="text-align:center;padding:2rem 0 1rem;color:#6b5a85;font-size:.75rem">
@@ -2025,6 +2066,196 @@ document.getElementById('stepModal').addEventListener('click',(e)=>{
 addEventListener('keydown', (e)=>{
   if(e.key === 'Escape') closeStepModal();
 });
+
+/* ===================================================================
+ *  TEST: randomized multi-question quiz
+ * =================================================================== */
+function rndI(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function shuf(a){for(let i=a.length-1;i>0;i--){const j=rndI(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}
+function mcInt(correct, spread=5){
+  const out = new Set([String(correct)]);
+  let tries=0;
+  while(out.size<4 && tries<40){
+    const d = rndI(-spread, spread);
+    if(d!==0 && correct+d>=0) out.add(String(correct+d));
+    tries++;
+  }
+  while(out.size<4){ out.add(String(rndI(1,Math.max(20, correct*2)))); }
+  return shuf([...out]);
+}
+function mcNum(correct, spread){
+  const out = new Set([String(correct)]);
+  const isInt = Number.isInteger(correct);
+  let tries=0;
+  while(out.size<4 && tries<40){
+    const d = rndI(-spread, spread);
+    if(d!==0){
+      const v = isInt ? correct+d : +(correct + d*.5).toFixed(2);
+      if(v>0) out.add(String(v));
+    }
+    tries++;
+  }
+  while(out.size<4){ out.add(String(rndI(1,99))); }
+  return shuf([...out]);
+}
+
+const QB7 = [
+  /* --- composite area --- */
+  ()=>{ const l=rndI(6,14), w=rndI(3,9), r=rndI(2,5);
+    const A = l*w + Math.PI*r*r/2;
+    const ans = +A.toFixed(2);
+    return {q:`Rectangle ${l} × ${w} cm with a semicircle of radius ${r} on top. Area (use π = 3.14)?`,
+      correct:String(+(l*w + 3.14*r*r/2).toFixed(2)),
+      choices:mcNum(+(l*w + 3.14*r*r/2).toFixed(2), 8),
+      explain:`${l}×${w} + ½·π·${r}² = ${l*w} + ${(3.14*r*r/2).toFixed(2)} = <strong>${(l*w + 3.14*r*r/2).toFixed(2)} cm²</strong>.`}; },
+  ()=>{ const b1=rndI(5,12), b2=rndI(13,20), h=rndI(4,8);
+    const A = (b1+b2)*h/2;
+    return {q:`Trapezoid area — parallel sides ${b1} and ${b2}, height ${h}?`,
+      correct:String(A), choices:mcInt(A, 8),
+      explain:`½(${b1}+${b2})·${h} = ½·${b1+b2}·${h} = <strong>${A}</strong>.`}; },
+  ()=>{ const s=rndI(6,12), a=rndI(2,5), b=s;
+    const A = s*s - a*b/2;
+    return {q:`${s}×${s} square with a right triangle (legs ${a} and ${b}) cut out. Remaining area?`,
+      correct:String(A), choices:mcInt(A, 8),
+      explain:`${s*s} − ½·${a}·${b} = ${s*s} − ${a*b/2} = <strong>${A}</strong>.`}; },
+  ()=>{ const L=rndI(60,90), r=rndI(10,25); const H=2*r;
+    const A = L*H + Math.PI*r*r;
+    return {q:`Track: rectangle ${L}×${H} m with a semicircle on each end (radius ${r}). Total area (π = 3.14)?`,
+      correct:String(+(L*H + 3.14*r*r).toFixed(1)),
+      choices:mcNum(+(L*H + 3.14*r*r).toFixed(1), 30),
+      explain:`${L}×${H} + π·${r}² = ${L*H} + ${(3.14*r*r).toFixed(1)} = <strong>${(L*H + 3.14*r*r).toFixed(1)} m²</strong>.`}; },
+  /* --- prism volume --- */
+  ()=>{ const l=rndI(4,10), w=rndI(3,8), h=rndI(3,7);
+    const V = l*w*h;
+    return {q:`Rectangular prism: ${l} × ${w} × ${h} cm. Volume?`,
+      correct:String(V), choices:mcInt(V, 20),
+      explain:`V = ${l}·${w}·${h} = <strong>${V} cm³</strong>.`}; },
+  ()=>{ const b=rndI(3,8), h=rndI(3,8), L=rndI(6,15);
+    const V = b*h/2 * L;
+    return {q:`Triangular prism: right-triangle base with legs ${b} and ${h}, length ${L}. Volume?`,
+      correct:String(V), choices:mcInt(V, 20),
+      explain:`½·${b}·${h}·${L} = ${b*h/2}·${L} = <strong>${V}</strong>.`}; },
+  ()=>{ const b1=rndI(4,8), b2=rndI(9,14), h=rndI(3,6), L=rndI(8,14);
+    const V = (b1+b2)*h/2 * L;
+    return {q:`Trapezoidal prism: parallel sides ${b1} and ${b2}, trap height ${h}, prism length ${L}. Volume?`,
+      correct:String(V), choices:mcInt(V, 30),
+      explain:`½(${b1}+${b2})·${h}·${L} = ${(b1+b2)*h/2}·${L} = <strong>${V}</strong>.`}; },
+  ()=>({q:'Every slice parallel to the base of a prism is…',
+    correct:'congruent to the base', choices:shuf(['congruent to the base','smaller than the base','a point','rectangular']),
+    explain:'Definition of a prism: parallel slices are congruent copies of the base.'}),
+  /* --- surface area --- */
+  ()=>{ const l=rndI(3,8), w=rndI(2,6), h=rndI(3,7);
+    const SA = 2*(l*w + l*h + w*h);
+    return {q:`Rectangular prism ${l}×${w}×${h}. Surface area?`,
+      correct:String(SA), choices:mcInt(SA, 20),
+      explain:`2(lw+lh+wh) = 2(${l*w}+${l*h}+${w*h}) = <strong>${SA}</strong>.`}; },
+  ()=>{ const s=rndI(3,8); const SA = 6*s*s; const V = s**3;
+    return {q:`Cube with side ${s}. Surface area?`,
+      correct:String(SA), choices:mcInt(SA, 20),
+      explain:`6s² = 6·${s*s} = <strong>${SA}</strong>.`}; },
+  ()=>{ const s=rndI(3,8);
+    return {q:`Cube with side ${s}. Volume?`,
+      correct:String(s**3), choices:mcInt(s**3, 30),
+      explain:`s³ = ${s}³ = <strong>${s**3}</strong>.`}; },
+  ()=>({q:'When you glue two blocks together, the combined surface area is…',
+    correct:'less than the sum', choices:shuf(['less than the sum','exactly the sum','more than the sum','the same as one of them']),
+    explain:'The glued faces disappear from the outside — each face is counted in one block\'s SA but not in the combined solid.'}),
+  /* --- units --- */
+  ()=>({q:'Volume is measured in what kind of units?',
+    correct:'cubic (cm³, m³)', choices:shuf(['cubic (cm³, m³)','square (cm², m²)','linear (cm, m)','any unit']),
+    explain:'Volume fills 3D space → cubic units.'}),
+  ()=>({q:'Surface area is measured in what kind of units?',
+    correct:'square (cm², m²)', choices:shuf(['square (cm², m²)','cubic (cm³, m³)','linear (cm, m)','any unit']),
+    explain:'Surface area is a 2D measure → square units.'}),
+  /* --- composite subtract --- */
+  ()=>{ const W=rndI(8,14), H=rndI(6,10), cw=rndI(3,5), ch=rndI(2,4), L=rndI(4,8);
+    const V = (W*H - cw*ch) * L;
+    return {q:`L-shaped prism: big base ${W}×${H} minus a ${cw}×${ch} bite from the corner. Prism length ${L}. Volume?`,
+      correct:String(V), choices:mcInt(V, 40),
+      explain:`(${W*H}−${cw*ch})·${L} = ${W*H - cw*ch}·${L} = <strong>${V}</strong>.`}; },
+];
+
+let qTotal=12, qScore=0, qNow=0;
+let sData=[], qArr=[];
+function initSK(){ sData = Array(qTotal).fill('pending'); drawSK(); }
+function drawSK(){
+  const el=document.getElementById('streak');
+  if(!el) return;
+  el.innerHTML = sData.map(s=>{
+    const icon = s==='correct'?'✓':s==='wrong'?'✗':'';
+    return `<div class="streak-dot ${s}">${icon}</div>`;
+  }).join('');
+}
+function renderQuiz(){
+  const area = document.getElementById('quizArea');
+  if(!area) return;
+  qScore=0; qNow=0;
+  document.getElementById('score').textContent = '0';
+  document.getElementById('scoreLabel').textContent = '/ ' + qTotal;
+  qArr = [];
+  const pool = shuf(QB7.slice());
+  for(let i=0;i<qTotal;i++) qArr.push(pool[i % pool.length]());
+  let html = '';
+  qArr.forEach((qd,i)=>{
+    html += `<div class="glass question" id="q${i}" style="scroll-margin-top:1rem">`;
+    html += `<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">`;
+    html += `<span style="font-family:'Press Start 2P',monospace;font-size:.55rem;color:#ff6b9d;background:#ff6b9d20;padding:.3rem .5rem;min-width:28px;text-align:center">${i+1}</span>`;
+    html += `<span class="streak-dot pending" id="dot${i}" style="width:16px;height:16px;font-size:.5rem"></span>`;
+    html += `</div>`;
+    html += `<h4>${qd.q}</h4><div class="choices" id="choices${i}">`;
+    qd.choices.forEach(ch=>{ html += `<div class="choice" data-qi="${i}" data-val="${ch}">${ch}</div>`; });
+    html += `</div><div class="feedback" id="fb${i}"></div></div>`;
+  });
+  html += `<div class="glass" id="quizSummary" style="display:none;text-align:center;padding:2.5rem"></div>`;
+  area.innerHTML = html;
+  area.querySelectorAll('.choice').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const i = +el.dataset.qi;
+      const wrap = document.getElementById('choices'+i);
+      if(wrap.classList.contains('answered')) return;
+      wrap.classList.add('answered');
+      wrap.querySelectorAll('.choice').forEach(c=>c.classList.add('disabled'));
+      const qd = qArr[i];
+      const fb = document.getElementById('fb'+i);
+      const dot = document.getElementById('dot'+i);
+      if(el.dataset.val === qd.correct){
+        el.classList.add('correct');
+        qScore++; sData[i]='correct';
+        fb.className='feedback show right';
+        fb.innerHTML = `✓ Correct! / 正確！<div class="explain">${qd.explain}</div>`;
+        dot.className='streak-dot correct'; dot.textContent='✓';
+      } else {
+        el.classList.add('wrong'); sData[i]='wrong';
+        wrap.querySelector(`.choice[data-val="${CSS.escape(qd.correct)}"]`)?.classList.add('correct');
+        fb.className='feedback show wrong-fb';
+        fb.innerHTML = `✗ Not quite. / 再想想。<div class="explain">${qd.explain}</div>`;
+        dot.className='streak-dot wrong'; dot.textContent='✗';
+      }
+      qNow++;
+      document.getElementById('score').textContent = qScore;
+      drawSK();
+      if(qNow >= qTotal) showQuizSummary();
+    });
+  });
+  initSK();
+}
+function showQuizSummary(){
+  const el = document.getElementById('quizSummary');
+  if(!el) return;
+  const pct = Math.round(qScore/qTotal*100);
+  const msg = pct>=90?'Geometry guru! / 幾何大師！' : pct>=70?'Solid work! / 做得好！' : pct>=50?'Keep practicing! / 繼續練習！' : 'Review the lessons! / 回去複習吧！';
+  el.style.display='block';
+  el.innerHTML = `
+    <div style="font-family:'Press Start 2P',monospace;font-size:1rem;color:#ffe47a;margin-bottom:1rem">${pct}% / ${qScore} of ${qTotal}</div>
+    <div style="color:#e8dff5;font-size:.95rem;margin-bottom:1rem">${msg}</div>
+    <button class="btn" onclick="renderQuiz();document.getElementById('quizArea').scrollIntoView({behavior:'smooth'})">🔄 Try Again / 再試一次</button>
+  `;
+}
+document.getElementById('newQuiz')?.addEventListener('click',()=>{
+  renderQuiz();
+  document.getElementById('quizArea').scrollIntoView({behavior:'smooth'});
+});
+renderQuiz();
 </script>
 </body>
 </html>
